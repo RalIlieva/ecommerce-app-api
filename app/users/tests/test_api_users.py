@@ -11,7 +11,7 @@ from rest_framework import status
 
 
 CREATE_USER_URL = reverse('users:create')
-ME_URL = reverse('users:me')
+# ME_URL = reverse('users:me')
 
 
 def create_user(**params):
