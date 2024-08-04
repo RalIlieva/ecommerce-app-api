@@ -84,4 +84,5 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.data, {
             'name': self.user.name,
             'email': self.user.email,
+            'token': res.data.get('token'),
         })
