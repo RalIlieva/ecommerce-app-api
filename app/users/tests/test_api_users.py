@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from rest_framework.test import APIClient
+from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 
 
@@ -62,6 +62,65 @@ class PublicUserApiTests(TestCase):
             email=payload['email']
         ).exists()
         self.assertFalse(user_exists)
+
+
+class AuthenticationTests(APITestCase):
+    """Test the simple jwt authentication."""
+
+    def setUp(self):
+        self.user = create_user(
+            email='testuser@example.com',
+            password='good_pass'
+        )
+        self.url_login = reverse('token_obtain_pair')
+        self.url_refresh = reverse('token_refresh')
+
+    def test_jwt_authentication(self):
+        """Test obtaining token"""
+        response = self.client.post(
+            self.url_login,
+            {'email': 'testuser@example.com', 'password': 'good_pass'}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
+
+        access_token = response.data['access']
+        refresh_token = response.data['refresh']
+
+        """ Test accessing a protected endpoint with token. """
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access_token)
+        response = self.client.get(ME_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        """ Test refreshing token. """
+        response = self.client.post(
+            self.url_refresh,
+            {'refresh': refresh_token}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+
+        new_access_token = response.data['access']
+
+        """ Test accessing a protected endpoint with new token. """
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Bearer ' + new_access_token
+        )
+        response = self.client.get(ME_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_invalid_login(self):
+        """Test invalid login."""
+        response = self.client.post(
+            self.url_login,
+            {'email': 'testuser@example.com',
+             'password': 'wrong_pass'
+             }
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertNotIn('access', response.data)
+        self.assertNotIn('refresh', response.data)
 
 
 class PrivateUserApiTests(TestCase):
