@@ -10,7 +10,7 @@ from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 
 
-CREATE_USER_URL = reverse('users:create')
+CREATE_USER_URL = reverse('users:register')
 ME_URL = reverse('users:me')
 
 
