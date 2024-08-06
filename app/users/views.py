@@ -29,8 +29,8 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-class CreateUserView(generics.CreateAPIView):
-    """Create a new user in the system."""
+class RegisterUserView(generics.CreateAPIView):
+    """Register a new user in the system."""
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
