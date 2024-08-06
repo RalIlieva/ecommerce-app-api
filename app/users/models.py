@@ -9,6 +9,8 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
+from core.models import TimeStampedModel
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UserManager(BaseUserManager):
@@ -51,11 +53,28 @@ class User(AbstractUser, PermissionsMixin):
         return self.email
 
 
-# class CustomerProfile(models.Model):
-#     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#     phone_number = models.CharField(max_length=15, blank=True, null=True)
-#     address = models.CharField(max_length=255, blank=True, null=True)
-#     date_of_birth = models.DateField(blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.user.email
+class CustomerProfile(TimeStampedModel):
+    """Customer profile for users that are buyers."""
+
+    GENDER_MALE = "m"
+    GENDER_FEMALE = "f"
+    OTHER = "o"
+
+    GENDER_CHOICES = (
+        (GENDER_MALE, "Male"),
+        (GENDER_FEMALE, "Female"),
+        (OTHER, "Other"),
+    )
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name="customer_profile",
+        on_delete=models.CASCADE
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
+    phone_number = PhoneNumberField(blank=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    about = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.email
