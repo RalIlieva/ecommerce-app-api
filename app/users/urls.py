@@ -10,5 +10,5 @@ app_name = 'users'
 urlpatterns = [
     path('register/', views.RegisterUserView.as_view(), name='register'),
     path('me/', views.ManageUserView.as_view(), name='me'),
-    path('profile/', views.ManageCustomerProfileView.as_view(), name='customer-profile'),
+    path('profile/', views.ManageCustomerProfileView.as_view(), name='customer_profile'),
 ]
