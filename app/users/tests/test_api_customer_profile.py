@@ -57,3 +57,10 @@ class PrivateCustomerProfileApiTests(TestCase):
         self.assertEqual(profile.phone_number, payload['phone_number'])
         self.assertEqual(profile.address, payload['address'])
         self.assertEqual(profile.about, payload['about'])
+
+    def test_create_profile_fails_for_unauthenticated(self):
+        """Test that authentication is required for creating profile."""
+        self.client.force_authenticate(user=None)
+        res = self.client.get(PROFILE_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
