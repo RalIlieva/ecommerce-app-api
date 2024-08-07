@@ -10,6 +10,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import CustomerProfile
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -56,3 +58,18 @@ class UserSerializerWithToken(UserSerializer):
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
+
+
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    """Serializer for the profile of the customer."""
+    class Meta:
+        model = CustomerProfile
+        fields = [
+            'user',
+            'gender',
+            'phone_number',
+            'address',
+            'date_of_birth',
+            'about'
+        ]
+        read_only_fields = ['user']

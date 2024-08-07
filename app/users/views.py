@@ -2,16 +2,18 @@
 Views for the User API.
 """
 
-from rest_framework import generics
-from .serializers import (
-    UserSerializer,
-    UserSerializerWithToken,
-)
-from rest_framework import permissions
+from rest_framework import generics, permissions
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+from .serializers import (
+    UserSerializer,
+    UserSerializerWithToken,
+    CustomerProfileSerializer,
+)
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -43,3 +45,13 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         """Retrieve and return the authenticated user"""
         return self.request.user
+
+
+class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
+    """Manage the profile of the authenticated customer."""
+    serializer_class = CustomerProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        """Retrieve and return the authenticated customer."""
+        return self.request.user.customer_profile
