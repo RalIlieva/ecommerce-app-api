@@ -13,9 +13,11 @@ from users.models import CustomerProfile
 
 PROFILE_URL = reverse('users:customer_profile')
 
+
 def create_user(**params):
     """Helper function."""
     return get_user_model().objects.create_user(**params)
+
 
 class PrivateCustomerProfileApiTests(TestCase):
     """Test API requests that require authentication."""
