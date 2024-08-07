@@ -39,3 +39,21 @@ class PrivateCustomerProfileApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['user'], self.user.id)
+
+    def test_update_profile_success(self):
+        """Test updating the profile for authenticated user."""
+        payload = {
+            'gender': 'm',
+            'phone_number': '+359883388888',
+            'address': '123 Test Street',
+            'about': 'Testing'
+        }
+
+        res = self.client.patch(PROFILE_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        profile = CustomerProfile.objects.get(user=self.user)
+        self.assertEqual(profile.gender, payload['gender'])
+        self.assertEqual(profile.phone_number, payload['phone_number'])
+        self.assertEqual(profile.address, payload['address'])
+        self.assertEqual(profile.about, payload['about'])
