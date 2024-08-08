@@ -2,7 +2,7 @@
 Views for the User API.
 """
 
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, mixins, viewsets
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -14,7 +14,8 @@ from .serializers import (
     UserSerializerWithToken,
     CustomerProfileSerializer,
 )
-
+from .models import CustomerProfile
+from .permissions import IsOwner
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -50,8 +51,21 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
     """Manage the profile of the authenticated customer."""
     serializer_class = CustomerProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_object(self):
         """Retrieve and return the authenticated customer."""
         return self.request.user.customer_profile
+
+
+class AdminCustomerProfileViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    """Admin viewset for managing customer profiles."""
+    queryset = CustomerProfile.objects.all()
+    serializer_class = CustomerProfileSerializer
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
