@@ -65,6 +65,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerProfile
         fields = [
+            'id',
             'user',
             'gender',
             'phone_number',
@@ -72,4 +73,4 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'about'
         ]
-        read_only_fields = ['user']
+        read_only_fields = ['user', 'id']
