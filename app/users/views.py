@@ -17,6 +17,7 @@ from .serializers import (
 from .models import CustomerProfile
 from .permissions import IsOwner
 
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)

@@ -12,7 +12,11 @@ from . import views
 app_name = 'users'
 
 router = DefaultRouter()
-router.register(r'admin/customer-profiles', views.AdminCustomerProfileViewSet, basename='admin_customer_profile')
+router.register(
+    r'admin/customer-profiles',
+    views.AdminCustomerProfileViewSet,
+    basename='admin_customer_profile'
+)
 
 urlpatterns = [
     path('register/', views.RegisterUserView.as_view(), name='register'),
