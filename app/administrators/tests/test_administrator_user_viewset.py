@@ -59,3 +59,23 @@ class AdministratorUserViewSetTests(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.name, payload['name'])
+
+    def test_delete_user(self):
+        """Test deleting a user."""
+        url = detail_url(self.user.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(get_user_model().objects.filter(id=self.user.id).exists())
+
+    def test_non_admin_user_cannot_access(self):
+        """Test that non-admin users cannot access these endpoints."""
+        non_admin = get_user_model().objects.create_user(
+            email='nonadmin@example.com',
+            password='userpass',
+        )
+        self.client.force_authenticate(user=non_admin)
+
+
+        res = self.client.get(URL_LIST_ALL_USERS)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
