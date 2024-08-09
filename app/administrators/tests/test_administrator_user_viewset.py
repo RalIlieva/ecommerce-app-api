@@ -49,3 +49,13 @@ class AdministratorUserViewSetTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['email'], self.user.email)
+
+    def test_update_user(self):
+        """Test updating a user."""
+        url = detail_url(self.user.id)
+        payload = {'name': 'Updated Name'}
+        res = self.client.patch(url, payload)
+
+        self.user.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.user.name, payload['name'])
