@@ -14,7 +14,7 @@ from .serializers import (
     UserSerializerWithToken,
     CustomerProfileSerializer,
 )
-from .models import CustomerProfile
+
 from .permissions import IsOwner
 
 
@@ -57,16 +57,3 @@ class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         """Retrieve and return the authenticated customer."""
         return self.request.user.customer_profile
-
-
-# class AdminCustomerProfileViewSet(
-#     mixins.ListModelMixin,
-#     mixins.RetrieveModelMixin,
-#     mixins.UpdateModelMixin,
-#     mixins.DestroyModelMixin,
-#     viewsets.GenericViewSet
-# ):
-#     """Admin viewset for managing customer profiles."""
-#     queryset = CustomerProfile.objects.all()
-#     serializer_class = CustomerProfileSerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
