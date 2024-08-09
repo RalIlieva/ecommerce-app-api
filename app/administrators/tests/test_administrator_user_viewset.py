@@ -13,6 +13,11 @@ from rest_framework import status
 URL_LIST_ALL_USERS = reverse('administrators:administrators_users-list')
 
 
+def detail_url(user_id):
+    """Create and return a user detail URL."""
+    return reverse('administrators:administrators_users-detail', args=[user_id])
+
+
 class AdministratorUserViewSetTests(TestCase):
     """Tests for the AdministratorUserViewSet."""
 
@@ -36,3 +41,11 @@ class AdministratorUserViewSetTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 2)
+
+    def test_retrieve_user(self):
+        """Test retrieving a single user."""
+        url = detail_url(self.user.id)
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['email'], self.user.email)
