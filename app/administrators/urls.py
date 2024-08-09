@@ -17,6 +17,11 @@ router.register(
     views.AdministratorCustomerProfileViewSet,
     basename='administrators_customer_profile'
 )
+router.register(
+    r'users',
+    views.AdministratorUserViewSet,
+    basename='administrators_users'
+)
 
 urlpatterns = [
     path('', include(router.urls)),
