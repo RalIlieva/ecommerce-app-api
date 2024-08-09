@@ -59,14 +59,14 @@ class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
         return self.request.user.customer_profile
 
 
-class AdminCustomerProfileViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
-    """Admin viewset for managing customer profiles."""
-    queryset = CustomerProfile.objects.all()
-    serializer_class = CustomerProfileSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+# class AdminCustomerProfileViewSet(
+#     mixins.ListModelMixin,
+#     mixins.RetrieveModelMixin,
+#     mixins.UpdateModelMixin,
+#     mixins.DestroyModelMixin,
+#     viewsets.GenericViewSet
+# ):
+#     """Admin viewset for managing customer profiles."""
+#     queryset = CustomerProfile.objects.all()
+#     serializer_class = CustomerProfileSerializer
+#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]

@@ -33,6 +33,7 @@ urlpatterns = [
          SpectacularSwaggerView.as_view(url_name='api-schema'),
          name='api-docs',
          ),
+    path('api/administrator/', include('administrators.urls')),
     path('api/user/', include('users.urls')),
     path('api/login/', TokenObtainPairView.as_view(),
          name='token_obtain_pair'),
