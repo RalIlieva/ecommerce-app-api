@@ -15,7 +15,9 @@ URL_LIST_ALL_USERS = reverse('administrators:administrators_users-list')
 
 def detail_url(user_id):
     """Create and return a user detail URL."""
-    return reverse('administrators:administrators_users-detail', args=[user_id])
+    return reverse(
+        'administrators:administrators_users-detail', args=[user_id]
+    )
 
 
 class AdministratorUserViewSetTests(TestCase):
@@ -66,7 +68,9 @@ class AdministratorUserViewSetTests(TestCase):
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(get_user_model().objects.filter(id=self.user.id).exists())
+        self.assertFalse(
+            get_user_model().objects.filter(id=self.user.id).exists()
+        )
 
     def test_non_admin_user_cannot_access(self):
         """Test that non-admin users cannot access these endpoints."""
@@ -75,7 +79,6 @@ class AdministratorUserViewSetTests(TestCase):
             password='userpass',
         )
         self.client.force_authenticate(user=non_admin)
-
 
         res = self.client.get(URL_LIST_ALL_USERS)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

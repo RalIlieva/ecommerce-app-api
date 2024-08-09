@@ -9,10 +9,20 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 
-from users.models import CustomerProfile
+# from users.models import CustomerProfile
 
 
-URL_LIST_ALL_PROFILES = reverse('administrators:administrators_customer_profile-list')
+URL_LIST_ALL_PROFILES = reverse(
+    'administrators:administrators_customer_profile-list'
+)
+
+
+def detail_url(user_id):
+    """Create and return a customer profile detail URL."""
+    return reverse(
+        'administrators:administrators_customer_profile-detail', args=[user_id]
+    )
+
 
 class AdministratorCustomerProfileViewSetTests(TestCase):
     """Tests for the AdministratorCustomerProfileViewSet."""
@@ -36,4 +46,13 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         res = self.client.get(URL_LIST_ALL_PROFILES)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)  # Django Signals - creates automatically profiles for all users
+        # Django Signals - automatic profiles for all users
+        self.assertEqual(len(res.data), 2)
+
+    # def test_retrieve_customer_profile(self):
+    #     """Test retrieving a single customer profile."""
+    #     url = detail_url(self.user.id)
+    #     res = self.client.get(url)
+    #
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(res.data['email'], self.user.customer_profile.email)
