@@ -79,3 +79,17 @@ class AdministratorUserViewSetTests(TestCase):
 
         res = self.client.get(URL_LIST_ALL_USERS)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_non_admin_user_cannot_retrieve(self):
+        """Test that non-admin users cannot retrieve other user detail."""
+        non_admin = get_user_model().objects.create_user(
+            email='nonadmin@example.com',
+            password='userpass',
+        )
+
+        self.client.force_authenticate(user=non_admin)
+
+        url = detail_url(self.user.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
