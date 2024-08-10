@@ -49,10 +49,11 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         # Django Signals - automatic profiles for all users
         self.assertEqual(len(res.data), 2)
 
-    # def test_retrieve_customer_profile(self):
-    #     """Test retrieving a single customer profile."""
-    #     url = detail_url(self.user.id)
-    #     res = self.client.get(url)
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(res.data['email'], self.user.customer_profile.email)
+    def test_retrieve_customer_profile(self):
+        """Test retrieving a single customer profile."""
+        url = detail_url(self.user.id)
+        res = self.client.get(url)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['gender'], self.user.customer_profile.gender)
+        # to implement email - nested user serializer?
