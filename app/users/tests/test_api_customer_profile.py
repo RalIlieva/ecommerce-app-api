@@ -40,7 +40,9 @@ class PrivateCustomerProfileApiTests(TestCase):
         res = self.client.get(PROFILE_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data['user'], self.user.id)
+        self.assertEqual(res.data['user']['id'], self.user.id)
+        self.assertEqual(res.data['user']['email'], self.user.email)
+        self.assertEqual(res.data['user']['name'], self.user.name)
 
     def test_update_profile_success(self):
         """Test updating the profile for authenticated user."""

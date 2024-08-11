@@ -64,6 +64,8 @@ class UserSerializerWithToken(UserSerializer):
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
     """Serializer for the profile of the customer."""
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = CustomerProfile
         fields = [
