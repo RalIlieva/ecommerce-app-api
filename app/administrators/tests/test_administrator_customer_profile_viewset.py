@@ -2,6 +2,7 @@
 Tests for the API administrator for all CRUD on customer profiles.
 """
 
+from datetime import datetime
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -62,3 +63,44 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         self.assertEqual(res.data['user']['email'], self.user.email)
         self.assertEqual(res.data['user']['id'], self.user.id)
 
+    def test_update_customer_profile(self):
+        """Test updating a customer profile."""
+        payload = {
+            'address': '456 Main St',
+            'gender': 'f',
+            'phone_number': '+359883368888',
+            'date_of_birth': '2000-11-27',
+            'about': 'Testing'
+        }
+        url = detail_url(self.user.id)
+        res = self.client.patch(url, payload)
+
+        self.user.customer_profile.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.user.customer_profile.address, payload['address'])
+        self.assertEqual(self.user.customer_profile.gender, payload['gender'])
+        self.assertEqual(self.user.customer_profile.phone_number, payload['phone_number'])
+        # Convert date_of_birth from payload to datetime.date for comparison
+        expected_date_of_birth = datetime.strptime(payload['date_of_birth'], '%Y-%m-%d').date()
+        self.assertEqual(self.user.customer_profile.date_of_birth, expected_date_of_birth)
+        self.assertEqual(self.user.customer_profile.about, payload['about'])
+
+    # def test_delete_customer_profile(self):
+    #     """Test deleting a customer profile."""
+    #     url = reverse('administrator-customerprofile-detail', args=[self.customer_profile.id])
+    #     res = self.client.delete(url)
+    #
+    #     self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+    #     self.assertFalse(CustomerProfile.objects.filter(id=self.customer_profile.id).exists())
+    #
+    # def test_non_admin_user_cannot_access(self):
+    #     """Test that non-admin users cannot access these endpoints."""
+    #     non_admin = get_user_model().objects.create_user(
+    #         email='nonadmin@example.com',
+    #         password='userpass',
+    #     )
+    #     self.client.force_authenticate(user=non_admin)
+    #
+    #     url = reverse('administrator-customerprofile-list')
+    #     res = self.client.get(url)
+    #     self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
