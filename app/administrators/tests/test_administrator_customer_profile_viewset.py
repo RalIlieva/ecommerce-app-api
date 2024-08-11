@@ -11,6 +11,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 from users.models import CustomerProfile
+from users.serializers import CustomerProfileSerializer
 
 
 URL_LIST_ALL_PROFILES = reverse(
@@ -46,9 +47,14 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         """Test listing customer profiles."""
         res = self.client.get(URL_LIST_ALL_PROFILES)
 
+        # Test also the serialization
+        customer_profiles = CustomerProfile.objects.all()
+        serializer = CustomerProfileSerializer(customer_profiles, many=True)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # Django Signals - automatic profiles for all users
         self.assertEqual(len(res.data), 2)
+        self.assertEqual(res.data, serializer.data)
 
     def test_retrieve_customer_profile(self):
         """Test retrieving a single customer profile."""
