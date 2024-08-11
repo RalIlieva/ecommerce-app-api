@@ -93,14 +93,13 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(CustomerProfile.objects.filter(id=self.user.customer_profile.id).exists())
 
-    # def test_non_admin_user_cannot_access(self):
-    #     """Test that non-admin users cannot access these endpoints."""
-    #     non_admin = get_user_model().objects.create_user(
-    #         email='nonadmin@example.com',
-    #         password='userpass',
-    #     )
-    #     self.client.force_authenticate(user=non_admin)
-    #
-    #     url = reverse('administrator-customerprofile-list')
-    #     res = self.client.get(url)
-    #     self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+    def test_non_admin_user_cannot_access(self):
+        """Test that non-admin users cannot access these endpoints."""
+        non_admin = get_user_model().objects.create_user(
+            email='nonadmin@example.com',
+            password='userpass',
+        )
+        self.client.force_authenticate(user=non_admin)
+
+        res = self.client.get(URL_LIST_ALL_PROFILES)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
