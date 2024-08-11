@@ -57,7 +57,10 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['id'], self.user.customer_profile.id)
-        self.assertEqual(res.data['address'], self.user.customer_profile.address)
+        self.assertEqual(
+            res.data['address'],
+            self.user.customer_profile.address
+        )
         self.assertEqual(res.data['gender'], self.user.customer_profile.gender)
         # Nested user serializer - access via user
         self.assertEqual(res.data['user']['email'], self.user.email)
@@ -77,12 +80,20 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
 
         self.user.customer_profile.refresh_from_db()
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(self.user.customer_profile.address, payload['address'])
+        self.assertEqual(
+            self.user.customer_profile.address, payload['address']
+        )
         self.assertEqual(self.user.customer_profile.gender, payload['gender'])
-        self.assertEqual(self.user.customer_profile.phone_number, payload['phone_number'])
+        self.assertEqual(
+            self.user.customer_profile.phone_number, payload['phone_number']
+        )
         # Convert date_of_birth from payload to datetime.date for comparison
-        expected_date_of_birth = datetime.strptime(payload['date_of_birth'], '%Y-%m-%d').date()
-        self.assertEqual(self.user.customer_profile.date_of_birth, expected_date_of_birth)
+        expected_date_of_birth = datetime.strptime(
+            payload['date_of_birth'], '%Y-%m-%d').date()
+        self.assertEqual(
+            self.user.customer_profile.date_of_birth,
+            expected_date_of_birth
+        )
         self.assertEqual(self.user.customer_profile.about, payload['about'])
 
     def test_delete_customer_profile(self):
@@ -91,7 +102,11 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(CustomerProfile.objects.filter(id=self.user.customer_profile.id).exists())
+        self.assertFalse(
+            CustomerProfile.objects.
+            filter(id=self.user.customer_profile.id).
+            exists()
+        )
 
     def test_non_admin_user_cannot_access(self):
         """Test that non-admin users cannot access these endpoints."""
