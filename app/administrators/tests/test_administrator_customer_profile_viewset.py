@@ -55,5 +55,10 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['id'], self.user.customer_profile.id)
+        self.assertEqual(res.data['address'], self.user.customer_profile.address)
         self.assertEqual(res.data['gender'], self.user.customer_profile.gender)
-        # to implement email - nested user serializer?
+        # Nested user serializer - access via user
+        self.assertEqual(res.data['user']['email'], self.user.email)
+        self.assertEqual(res.data['user']['id'], self.user.id)
+
