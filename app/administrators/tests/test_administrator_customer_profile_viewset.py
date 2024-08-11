@@ -10,7 +10,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 
-# from users.models import CustomerProfile
+from users.models import CustomerProfile
 
 
 URL_LIST_ALL_PROFILES = reverse(
@@ -85,14 +85,14 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
         self.assertEqual(self.user.customer_profile.date_of_birth, expected_date_of_birth)
         self.assertEqual(self.user.customer_profile.about, payload['about'])
 
-    # def test_delete_customer_profile(self):
-    #     """Test deleting a customer profile."""
-    #     url = reverse('administrator-customerprofile-detail', args=[self.customer_profile.id])
-    #     res = self.client.delete(url)
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-    #     self.assertFalse(CustomerProfile.objects.filter(id=self.customer_profile.id).exists())
-    #
+    def test_delete_customer_profile(self):
+        """Test deleting a customer profile."""
+        url = detail_url(self.user.id)
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(CustomerProfile.objects.filter(id=self.user.customer_profile.id).exists())
+
     # def test_non_admin_user_cannot_access(self):
     #     """Test that non-admin users cannot access these endpoints."""
     #     non_admin = get_user_model().objects.create_user(
