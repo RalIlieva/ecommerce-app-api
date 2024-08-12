@@ -49,7 +49,11 @@ class Product(TimeStampedModel):
     name = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        Category,
+        related_name='products',
+        on_delete=models.CASCADE
+    )
     tags = models.ManyToManyField(Tag, blank=True, related_name='products')
     stock = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
@@ -61,7 +65,11 @@ class Product(TimeStampedModel):
 
 class ProductImage(models.Model):
     """Model representing an image associated with a product."""
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='images'
+    )
     image = models.ImageField(upload_to=product_image_file_path)
     alt_text = models.CharField(max_length=255, blank=True)
 
@@ -71,8 +79,14 @@ class ProductImage(models.Model):
 
 class Review(TimeStampedModel):
     """Reviews for users that are customers."""
-    product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, related_name='reviews',
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     comment = models.TextField()
 
