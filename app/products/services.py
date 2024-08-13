@@ -12,16 +12,20 @@ def create_product_with_related_data(validated_data):
 
     # Handle category
     if category_data:
-        if isinstance(category_data, dict):
-            # If category data is provided as a dict, create or get the category
-            category, created = Category.objects.get_or_create(**category_data)
+        category_slug = category_data.get('slug')
+        if category_slug:
+            # Try to retrieve the existing category by slug
+            category = Category.objects.filter(slug=category_slug).first()
+            if not category:
+                # If category doesn't exist, create a new one
+                category = Category.objects.create(**category_data)
         else:
-            # Otherwise, use the provided category instance
-            category = category_data
+            # If no slug is provided, create a new category
+            category = Category.objects.create(**category_data)
     else:
-        category = None
+        raise ValueError("Category data is required")
 
-    product = Product.objects.create(**validated_data)
+    product = Product.objects.create(category=category, **validated_data)
 
     for image_data in images_data:
         ProductImage.objects.create(product=product, **image_data)
