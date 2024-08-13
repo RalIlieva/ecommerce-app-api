@@ -4,7 +4,10 @@ Serializers for the product models.
 
 from rest_framework import serializers
 from .models import Product, ProductImage, Review, Tag, Category
-from .services import create_product_with_related_data, update_product_with_related_data
+from .services import (
+    create_product_with_related_data,
+    update_product_with_related_data
+)
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -58,7 +61,13 @@ class ProductDetailSerializer(ProductMiniSerializer):
 
     class Meta(ProductMiniSerializer.Meta):
         model = Product
-        fields = ProductMiniSerializer.Meta.fields + ['category', 'description', 'stock', 'images', 'reviews']
+        fields = ProductMiniSerializer.Meta.fields + [
+            'category',
+            'description',
+            'stock',
+            'images',
+            'reviews'
+        ]
         read_only_fields = ['id']
 
     def create(self, validated_data):

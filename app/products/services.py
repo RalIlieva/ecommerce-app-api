@@ -44,7 +44,10 @@ def update_product_with_related_data(instance, validated_data):
 
     # Update product instance
     instance.name = validated_data.get('name', instance.name)
-    instance.description = validated_data.get('description', instance.description)
+    instance.description = validated_data.get(
+        'description',
+        instance.description
+    )
     instance.price = validated_data.get('price', instance.price)
     instance.category = validated_data.get('category', instance.category)
     instance.stock = validated_data.get('stock', instance.stock)

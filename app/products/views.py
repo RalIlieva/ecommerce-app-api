@@ -91,7 +91,10 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 #     """
 #     queryset = Category.objects.all()
 #     serializer_class = CategorySerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 
 
 # Tag Views

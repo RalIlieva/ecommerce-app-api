@@ -6,7 +6,11 @@
 #
 # from rest_framework import viewsets, permissions
 # from .models import Product, Review
-# from .serializers import ProductDetailSerializer, ProductMiniSerializer, ReviewSerializer
+# from .serializers import (
+# ProductDetailSerializer,
+# ProductMiniSerializer,
+# ReviewSerializer
+# )
 # # from .permissions import IsAdminOrReadOnly
 # from .selectors import get_active_products, get_product_by_id
 #
@@ -14,7 +18,7 @@
 # class ProductViewSet(viewsets.ModelViewSet):
 #     """
 #     Viewset for managing products.
-#     Only superusers and administrators can perform create/update/delete actions.
+#     Only superusers & administrators - perform create/update/delete actions.
 #     All users can view products list and retrieve product detail by id.
 #     """
 #     queryset = get_active_products()
