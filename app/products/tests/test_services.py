@@ -3,7 +3,7 @@ Test for product services.
 """
 
 from django.test import TestCase
-from products.models import Product, Category, Tag
+# from products.models import Product, Category, Tag
 from products.services import create_product_with_related_data
 
 

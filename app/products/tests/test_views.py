@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from products.models import Category, Tag, Product
+from products.models import Product
 
 
 class ProductViewTest(TestCase):
@@ -21,7 +21,10 @@ class ProductViewTest(TestCase):
         )
         self.client.force_authenticate(user=self.admin_user)
 
-        # self.category = Category.objects.create(name="Electronics", slug="electronics")
+        # self.category = Category.objects.create(
+        # name="Electronics",
+        # slug="electronics"
+        # )
         # self.tag = Tag.objects.create(name="Tag1", slug="tag1")
         self.product_data = {
             "name": "Product 2",
@@ -34,7 +37,10 @@ class ProductViewTest(TestCase):
         }
 
     def test_create_product(self):
-        response = self.client.post(reverse('product-create'), self.product_data, format='json')
+        response = self.client.post(
+            reverse('product-create'),
+            self.product_data, format='json'
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Product.objects.count(), 1)
         self.assertEqual(Product.objects.get().name, "Product 2")
@@ -42,7 +48,10 @@ class ProductViewTest(TestCase):
     def test_create_product_with_existing_category(self):
         new_product_data = self.product_data.copy()
         new_product_data["name"] = "Product 3"
-        response = self.client.post(reverse('product-create'), new_product_data, format='json')
+        response = self.client.post(
+            reverse('product-create'),
+            new_product_data, format='json'
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Product.objects.count(), 1)
         self.assertEqual(Product.objects.get().name, "Product 3")
