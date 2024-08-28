@@ -29,11 +29,11 @@ class ProductSerializerTest(TestCase):
             "stock": 5
         }
         serializer = ProductDetailSerializer(data=data)
-        print("Serializer Errors:", serializer.errors)
         if not serializer.is_valid():
-            self.assertTrue(
-                serializer.is_valid(), "Serializer validation failed."
-            )
+            print("Serializer Errors:", serializer.errors)
+        self.assertTrue(
+            serializer.is_valid(), "Serializer validation failed."
+        )
 
     def test_valid_product_serializer_new_category(self):
         """Test serialization with new category (nested)."""
