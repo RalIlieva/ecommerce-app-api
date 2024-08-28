@@ -18,6 +18,7 @@ class ProductSerializerTest(TestCase):
         )
 
     def test_valid_product_serializer_existing_category(self):
+        """Test serailization with existing category (nested)."""
         data = {
             "name": "Product 2",
             "price": 10.00,
@@ -33,6 +34,7 @@ class ProductSerializerTest(TestCase):
         self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
 
     def test_valid_product_serializer_new_category(self):
+        """Test serialization with new category (nested)."""
         data = {
             "name": "Product 3",
             "price": 15.00,
@@ -46,6 +48,22 @@ class ProductSerializerTest(TestCase):
         if not serializer.is_valid():
             print("Serializer Errors:", serializer.errors)  # Print the errors for debugging
         self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
+
+    def test_invalid_category(self):
+        """Test invalid category raises an error in serialization."""
+        data = {
+            "name": "Product 4",
+            "price": 15.00,
+            "slug": "product-4",
+            "tags": [],
+            "category": {},
+            "description": "Description",
+            "stock": 7
+        }
+        serializer = ProductDetailSerializer(data=data)
+        self.assertFalse(serializer.is_valid(), "Serializer validation should fail for empty category.")
+        self.assertIn("category", serializer.errors, "Expected 'category' field error in serializer errors.")
+
 
 # from django.test import TestCase
 # from products.serializers import ProductDetailSerializer
