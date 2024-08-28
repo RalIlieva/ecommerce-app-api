@@ -57,32 +57,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
         raise ValidationError({"category": "Expected a dictionary with 'name' and optional 'slug' fields."})
 
-    # def to_internal_value(self, data):
-    #     if isinstance(data, dict):
-    #         name = data.get('name')
-    #         slug = data.get('slug', slugify(name))  # Generate slug if not provided
-    #
-    #         if not name:
-    #             raise ValidationError({"name": "This field is required."})
-    #
-    #         # Check for existing category
-    #         category = Category.objects.filter(name=name, slug=slug).first()
-    #         if category:
-    #             return category
-    #
-    #         parent_id = data.get('parent')
-    #         parent = None
-    #         if parent_id:
-    #             try:
-    #                 parent = Category.objects.get(pk=parent_id)
-    #             except Category.DoesNotExist:
-    #                 raise ValidationError(f"Parent category with id {parent_id} does not exist.")
-    #
-    #         # Create new category if not found
-    #         category, created = Category.objects.get_or_create(
-    #             name=name, defaults={'slug': slug, 'parent': parent}
-    #         )
-    #         return category
 
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tags."""
@@ -172,9 +146,3 @@ class ProductDetailSerializer(ProductMiniSerializer):
 
         # Update other fields of the product instance
         return super().update(instance, validated_data)
-
-    # def create(self, validated_data):
-    #     return create_product_with_related_data(validated_data)
-    #
-    # def update(self, instance, validated_data):
-    #     return update_product_with_related_data(instance, validated_data)
