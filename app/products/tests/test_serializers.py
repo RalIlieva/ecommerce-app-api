@@ -18,7 +18,7 @@ class ProductSerializerTest(TestCase):
         )
 
     def test_valid_product_serializer_existing_category(self):
-        """Test serailization with existing category (nested)."""
+        """Test serialization with existing category (nested)."""
         data = {
             "name": "Product 2",
             "price": 10.00,
