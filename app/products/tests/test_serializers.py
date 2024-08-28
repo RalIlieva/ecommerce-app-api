@@ -64,6 +64,28 @@ class ProductSerializerTest(TestCase):
         self.assertFalse(serializer.is_valid(), "Serializer validation should fail for empty category.")
         self.assertIn("category", serializer.errors, "Expected 'category' field error in serializer errors.")
 
+    def test_duplicate_slug(self):
+        """Test that creating a product with an existing slug raises an error."""
+        Product.objects.create(
+            name="Existing Product",
+            price=100.00,
+            slug="existing-slug",
+            category=self.category,
+            description="Existing product description",
+            stock=10
+        )
+        data = {
+            "name": "New Product",
+            "price": 120.00,
+            "slug": "existing-slug",
+            "tags": [],
+            "category": {"name": "Electronics", "slug": "electronics"},
+            "description": "Description of a new product with duplicate slug.",
+            "stock": 5
+        }
+        serializer = ProductDetailSerializer(data=data)
+        self.assertFalse(serializer.is_valid(), "Serializer should fail due to duplicate slug.")
+        self.assertIn("slug", serializer.errors, "Expected 'slug' field error in serializer errors.")
 
 # from django.test import TestCase
 # from products.serializers import ProductDetailSerializer
