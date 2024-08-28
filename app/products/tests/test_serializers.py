@@ -17,7 +17,7 @@ class ProductSerializerTest(TestCase):
             slug="electronics"
         )
 
-    def test_valid_product_serializer(self):
+    def test_valid_product_serializer_existing_category(self):
         data = {
             "name": "Product 2",
             "price": 10.00,
@@ -32,6 +32,20 @@ class ProductSerializerTest(TestCase):
             print("Serializer Errors:", serializer.errors)  # Print the errors for debugging
         self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
 
+    def test_valid_product_serializer_new_category(self):
+        data = {
+            "name": "Product 3",
+            "price": 15.00,
+            "slug": "product-3",
+            "tags": [],
+            "category": {"name": "New Category", "slug": "new-category"},
+            "description": "New description",
+            "stock": 6
+        }
+        serializer = ProductDetailSerializer(data=data)
+        if not serializer.is_valid():
+            print("Serializer Errors:", serializer.errors)  # Print the errors for debugging
+        self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
 
 # from django.test import TestCase
 # from products.serializers import ProductDetailSerializer
