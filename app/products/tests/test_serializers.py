@@ -4,7 +4,7 @@ Test API product serializers.
 
 from django.test import TestCase
 from products.serializers import ProductDetailSerializer
-from products.models import Category, Tag, Product
+from products.models import Category, Product
 
 
 class ProductSerializerTest(TestCase):
@@ -29,9 +29,11 @@ class ProductSerializerTest(TestCase):
             "stock": 5
         }
         serializer = ProductDetailSerializer(data=data)
+        print("Serializer Errors:", serializer.errors)
         if not serializer.is_valid():
-            print("Serializer Errors:", serializer.errors)  # Print the errors for debugging
-        self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
+            self.assertTrue(
+                serializer.is_valid(), "Serializer validation failed."
+            )
 
     def test_valid_product_serializer_new_category(self):
         """Test serialization with new category (nested)."""
@@ -45,8 +47,9 @@ class ProductSerializerTest(TestCase):
             "stock": 6
         }
         serializer = ProductDetailSerializer(data=data)
+        # Print the errors for debugging
         if not serializer.is_valid():
-            print("Serializer Errors:", serializer.errors)  # Print the errors for debugging
+            print("Serializer Errors:", serializer.errors)
         self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
 
     def test_invalid_category(self):
@@ -61,11 +64,18 @@ class ProductSerializerTest(TestCase):
             "stock": 7
         }
         serializer = ProductDetailSerializer(data=data)
-        self.assertFalse(serializer.is_valid(), "Serializer validation should fail for empty category.")
-        self.assertIn("category", serializer.errors, "Expected 'category' field error in serializer errors.")
+        self.assertFalse(
+            serializer.is_valid(),
+            "Serializer validation should fail for empty category."
+        )
+        self.assertIn(
+            "category",
+            serializer.errors,
+            "Expected 'category' field error in serializer errors."
+        )
 
     def test_duplicate_slug(self):
-        """Test that creating a product with an existing slug raises an error."""
+        """Test creating a product with an existing slug raises an error."""
         Product.objects.create(
             name="Existing Product",
             price=100.00,
@@ -84,8 +94,14 @@ class ProductSerializerTest(TestCase):
             "stock": 5
         }
         serializer = ProductDetailSerializer(data=data)
-        self.assertFalse(serializer.is_valid(), "Serializer should fail due to duplicate slug.")
-        self.assertIn("slug", serializer.errors, "Expected 'slug' field error in serializer errors.")
+        self.assertFalse(
+            serializer.is_valid(),
+            "Serializer should fail due to duplicate slug."
+        )
+        self.assertIn(
+            "slug", serializer.errors,
+            "Expected 'slug' field error in serializer errors."
+        )
 
 # from django.test import TestCase
 # from products.serializers import ProductDetailSerializer

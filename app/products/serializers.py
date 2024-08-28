@@ -31,7 +31,8 @@ class CategorySerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         if isinstance(data, dict):
             name = data.get('name')
-            slug = data.get('slug', slugify(name))  # Generate slug if not provided
+            # Generate slug if not provided
+            slug = data.get('slug', slugify(name))
 
             if not name:
                 raise ValidationError({"name": "This field is required."})
@@ -47,7 +48,9 @@ class CategorySerializer(serializers.ModelSerializer):
                 try:
                     parent = Category.objects.get(pk=parent_id)
                 except Category.DoesNotExist:
-                    raise ValidationError(f"Parent category with id {parent_id} does not exist.")
+                    raise ValidationError(
+                        f"Parent category with id {parent_id} does not exist."
+                    )
 
             # Create new category if not found
             category, created = Category.objects.get_or_create(
@@ -55,7 +58,9 @@ class CategorySerializer(serializers.ModelSerializer):
             )
             return category
 
-        raise ValidationError({"category": "Expected a dictionary with 'name' and optional 'slug' fields."})
+        raise ValidationError(
+            {"category": "Expected a dict with 'name'/optional 'slug' fields."}
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -109,7 +114,7 @@ class ProductDetailSerializer(ProductMiniSerializer):
         if isinstance(category_data, Category):
             category = category_data  # Already a Category instance
         elif isinstance(category_data, dict):
-            # Convert category_data to an internal value, i.e., a Category instance
+            # Convert category_data to Category instance
             category = self.fields['category'].to_internal_value(category_data)
         else:
             raise ValidationError({"category": "Invalid category data."})
@@ -122,7 +127,7 @@ class ProductDetailSerializer(ProductMiniSerializer):
         # Create the product with the validated category
         product = Product.objects.create(**validated_data)
 
-        # Handle the many-to-many relationship for tags after the product is created
+        # Handle the many-to-many r-ship for tags after product is created
         for tag_data in tags_data:
             tag, created = Tag.objects.get_or_create(**tag_data)
             product.tags.add(tag)

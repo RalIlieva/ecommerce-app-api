@@ -19,7 +19,7 @@
 #         # If category_data is already a Category instance, use it directly
 #         category = category_data
 #     elif category_data is not None:
-#         # Handle category creation or retrieval if category_data is a dictionary
+#         # Handle category creation/retrieval if category_data is a dict
 #         category_slug = category_data.get('slug')
 #         if category_slug:
 #             # Retrieve the existing category by slug or create a new one
@@ -48,7 +48,10 @@
 #     #     print("Retrieved Category:", category)
 #     #     if not category:
 #     #         # If the category does not exist, create it
-#     #         category = Category.objects.create(slug=category_slug, name=category_name)
+#     #         category = Category.objects.create(
+#     slug=category_slug,
+#     name=category_name
+#     )
 #     #         print("Created New Category:", category)
 #     #
 #     #     validated_data['category'] = category
