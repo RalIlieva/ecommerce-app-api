@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from products.models import Product
+from products.models import Product, Category, Tag
 
 
 class ProductViewTest(TestCase):
@@ -21,11 +21,11 @@ class ProductViewTest(TestCase):
         )
         self.client.force_authenticate(user=self.admin_user)
 
-        # self.category = Category.objects.create(
-        # name="Electronics",
-        # slug="electronics"
-        # )
-        # self.tag = Tag.objects.create(name="Tag1", slug="tag1")
+        self.category = Category.objects.create(
+            name="Electronics",
+            slug="electronics"
+        )
+        self.tag = Tag.objects.create(name="Tag1", slug="tag1")
         self.product_data = {
             "name": "Product 2",
             "price": 10.00,
