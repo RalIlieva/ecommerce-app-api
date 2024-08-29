@@ -28,7 +28,8 @@ def detail_url(product_id):
 def create_product(category=None, **params):
     """Create and return a sample product."""
     if category is None:
-        category = Category.objects.create(name="General Category", slug="general-category")
+        # Use get_or_create to avoid creating duplicate categories
+        category, _ = Category.objects.get_or_create(name="General Category", slug="general-category")
 
     defaults = {
             "name": "Product 2",
