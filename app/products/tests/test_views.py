@@ -74,7 +74,7 @@ class ProductViewTest(TestCase):
     def test_create_product(self):
         """Test create product."""
         response = self.client.post(
-            reverse('products:product-create'),
+            CREATE_PRODUCTS_URL,
             self.product_data, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -86,7 +86,7 @@ class ProductViewTest(TestCase):
         new_product_data = self.product_data.copy()
         new_product_data["name"] = "Product 3"
         response = self.client.post(
-            reverse('products:product-create'),
+            CREATE_PRODUCTS_URL,
             new_product_data, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
