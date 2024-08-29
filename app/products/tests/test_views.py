@@ -5,7 +5,6 @@ from random import randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APIClient
 from products.models import Product, Category, Tag
@@ -19,6 +18,10 @@ CREATE_PRODUCTS_URL = reverse('products:product-create')
 def detail_url(product_id):
     """Create and return a product detail URL."""
     return reverse('products:product-detail', args=[product_id])
+
+def manage_url(product_id):
+    """Manage - update, delete a product detail URL."""
+    return reverse('products:product-manage', args=[product_id])
 
 
 # def image_upload_url(product_id):
@@ -140,3 +143,29 @@ class ProductViewTest(TestCase):
         res = self.client.get(url)
         serializer = ProductDetailSerializer(product)
         self.assertEqual(res.data, serializer.data)
+
+    def test_partial_update(self):
+        """Test partial update of a product."""
+        category = Category.objects.get_or_create(
+            name="General Category",
+            slug="general-category"
+        )[0]
+
+        original_description = 'Initial description'
+        product = create_product(
+            name='Test Product',
+            price=10.00,
+            slug='test-product',
+            category=category,
+            description=original_description,
+            stock=2
+        )
+
+        payload = {'name': 'Updated Test Name'}
+        url = manage_url(product.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        product.refresh_from_db()
+        self.assertEqual(product.name, payload['name'])
+        self.assertEqual(product.description, original_description)
