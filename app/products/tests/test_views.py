@@ -1,10 +1,11 @@
 """
 Test API views for products.
 """
-
+from random import randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APIClient
 from products.models import Product, Category, Tag
@@ -25,16 +26,20 @@ def detail_url(product_id):
 #     return reverse('products:product-upload-image', args=[product_id])
 
 
-def create_product(category=None, **params):
+def create_product(category=None,slug=None, **params):
     """Create and return a sample product."""
     if category is None:
         # Use get_or_create to avoid creating duplicate categories
         category, _ = Category.objects.get_or_create(name="General Category", slug="general-category")
 
+    if slug is None:
+        # Generate a unique slug by appending a random number to the name
+        slug = f"product-{randint(1000, 9999)}"
+
     defaults = {
             "name": "Product 2",
             "price": 10.00,
-            "slug": "product-2",
+            "slug": slug,
             "category": category,
             "description": "Test description",
             "stock": 5
@@ -119,10 +124,10 @@ class ProductViewTest(TestCase):
     def test_retrieve_products(self):
         """Test retrieving a list of products."""
         create_product()
-        # create_product()
+        create_product()
 
         res = self.client.get(PRODUCTS_URL)
-        products = Product.objects.all().order_by('-id')
+        products = Product.objects.all().order_by('id')
         serializer = ProductMiniSerializer(products, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
