@@ -17,6 +17,10 @@ from .views import (
     ProductImageUploadView
 )
 
+
+# A namespace for the products app
+app_name = 'products'
+
 urlpatterns = [
     # Product URLs
     path('products/', ProductListView.as_view(), name='product-list'),
