@@ -9,7 +9,7 @@ from django.utils.text import slugify
 from rest_framework import status
 from rest_framework.test import APIClient
 from products.models import Product, Category, Tag
-from products.serializers import ProductMiniSerializer
+from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
 
 PRODUCTS_URL = reverse('products:product-list')
@@ -130,4 +130,13 @@ class ProductViewTest(TestCase):
         products = Product.objects.all().order_by('id')
         serializer = ProductMiniSerializer(products, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_get_product_detail(self):
+        """Test get product detail."""
+        product = create_product()
+
+        url = detail_url(product.id)
+        res = self.client.get(url)
+        serializer = ProductDetailSerializer(product)
         self.assertEqual(res.data, serializer.data)
