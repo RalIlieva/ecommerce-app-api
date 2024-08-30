@@ -5,6 +5,7 @@ from random import randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.test import APIClient
 from products.models import Product, Category, Tag
@@ -206,8 +207,8 @@ class ProductViewTest(TestCase):
         url = manage_url(product.id)
         res = self.client.put(url, payload, format='json')
 
-        print("Test payload:", payload)  # Debug print statement
-        print("Response data:", res.data)  # Debug print statement
+        # print("Test payload:", payload)  # Debug print statement
+        # print("Response data:", res.data)  # Debug print statement
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         product.refresh_from_db()
@@ -225,3 +226,32 @@ class ProductViewTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Product.objects.filter(id=product.id).exists())
+
+
+class ProductCategoryDeletionTest(TestCase):
+    """Test deletion of products and categories."""
+    def setUp(self):
+        # Set up initial data
+        self.category = Category.objects.create(name="Electronics", slug="electronics")
+        self.product = Product.objects.create(
+            name="Product 1",
+            description="Test product",
+            price=10.00,
+            category=self.category,
+            stock=5,
+            slug="product-1"
+        )
+
+    def test_category_deletion(self):
+        """Test that deleting a category deletes associated products."""
+        self.category.delete()
+        with self.assertRaises(Product.DoesNotExist):
+            Product.objects.get(id=self.product.id)
+
+    def test_category_deletion_prevention(self):
+        """Test that deleting a category with associated products is allowed and deletes products."""
+        # Attempt to delete category
+        self.category.delete()
+        # Confirm that the product is deleted, not prevented
+        with self.assertRaises(Product.DoesNotExist):
+            Product.objects.get(id=self.product.id)
