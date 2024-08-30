@@ -54,7 +54,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
             # Create new category if not found
             category, created = Category.objects.get_or_create(
-                name=name, defaults={'slug': slug, 'parent': parent}
+                name=name, slug=slug, defaults={'parent': parent}
             )
             return category
 
@@ -137,9 +137,24 @@ class ProductDetailSerializer(ProductMiniSerializer):
     def update(self, instance, validated_data):
         # Handle category update
         category_data = validated_data.pop('category', None)
-        if category_data:
+
+        print("Validated category data:", category_data)  # Debug print statement
+
+        if category_data and isinstance(category_data, dict):
+            # Correctly process category data
             category = self.fields['category'].to_internal_value(category_data)
             instance.category = category
+        elif category_data and isinstance(category_data, str):
+            # If the category is received as a string, you might need to handle it differently.
+            # Attempt to find or create the category with the provided string name.
+            category, created = Category.objects.get_or_create(name=category_data)
+            instance.category = category
+        else:
+            print("Invalid category data:", category_data)
+
+        # if category_data:
+        #     category = self.fields['category'].to_internal_value(category_data)
+        #     instance.category = category
 
         # Handle tags update
         tags_data = validated_data.pop('tags', None)
@@ -148,6 +163,10 @@ class ProductDetailSerializer(ProductMiniSerializer):
             for tag_data in tags_data:
                 tag, created = Tag.objects.get_or_create(**tag_data)
                 instance.tags.add(tag)
+
+        # Set the remaining fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
 
         # Update other fields of the product instance
         return super().update(instance, validated_data)
