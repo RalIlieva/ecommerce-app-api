@@ -228,7 +228,7 @@ class ProductViewTest(TestCase):
 
 
 class ProductCategoryDeletionTest(TestCase):
-    """Test deletion of products and categories."""
+    """Test the impact of category deletion on products."""
     def setUp(self):
         # Set up initial data
         self.category = Category.objects.create(
@@ -260,3 +260,35 @@ class ProductCategoryDeletionTest(TestCase):
         # Confirm that the product is deleted, not prevented
         with self.assertRaises(Product.DoesNotExist):
             Product.objects.get(id=self.product.id)
+
+
+class NestedCategoryTest(TestCase):
+    """Test handling of nested categories."""
+
+    def setUp(self):
+        self.parent_category = Category.objects.create(name="Parent Category", slug="parent-category")
+        self.child_category = Category.objects.create(name="Child Category", slug="child-category", parent=self.parent_category)
+        self.product = Product.objects.create(
+            name="Test Product with Nested Category",
+            price=30.00,
+            slug="test-product-nested",
+            category=self.child_category,
+            description="A product for testing nested category behavior.",
+            stock=5
+        )
+
+    def test_product_with_nested_category(self):
+        """Test product assignment to a nested category."""
+        product = Product.objects.get(id=self.product.id)
+        self.assertEqual(product.category.name, "Child Category", "Product should be assigned to the child category.")
+        self.assertEqual(product.category.parent.name, "Parent Category", "Child category's parent should be the parent category.")
+
+    def test_change_nested_category(self):
+        """Test changing a product's category to another nested category."""
+        new_child_category = Category.objects.create(name="New Child Category", slug="new-child-category", parent=self.parent_category)
+        self.product.category = new_child_category
+        self.product.save()
+
+        product = Product.objects.get(id=self.product.id)
+        self.assertEqual(product.category.name, "New Child Category", "Product's category should be updated to new child category.")
+        self.assertEqual(product.category.parent.name, "Parent Category", "New child category's parent should be the parent category.")
