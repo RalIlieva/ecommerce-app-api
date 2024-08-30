@@ -140,17 +140,28 @@ class ProductDetailSerializer(ProductMiniSerializer):
 
         print("Validated category data:", category_data)  # Debug print statement
 
-        if category_data and isinstance(category_data, dict):
-            # Correctly process category data
-            category = self.fields['category'].to_internal_value(category_data)
+        if category_data:
+            if isinstance(category_data, dict):
+                # Process category data correctly
+                category, created = Category.objects.get_or_create(
+                    name=category_data['name'],
+                    slug=category_data.get('slug', slugify(category_data['name'])),
+                    defaults={'parent': category_data.get('parent')}
+                )
+            elif isinstance(category_data, Category):
+                category = category_data  # It's already a Category instance
+
             instance.category = category
-        elif category_data and isinstance(category_data, str):
-            # If the category is received as a string, you might need to handle it differently.
-            # Attempt to find or create the category with the provided string name.
-            category, created = Category.objects.get_or_create(name=category_data)
-            instance.category = category
-        else:
-            print("Invalid category data:", category_data)
+
+        # if category_data and isinstance(category_data, dict):
+        #     # Process category data correctly
+        #     category = self.fields['category'].to_internal_value(category_data)
+        #     if isinstance(category, Category):  # Ensure category is a Category instance
+        #         instance.category = category
+        #     else:
+        #         print("Invalid category data:", category_data)
+        # else:
+        #     print("Invalid category data:", category_data)
 
         # if category_data:
         #     category = self.fields['category'].to_internal_value(category_data)
@@ -168,5 +179,8 @@ class ProductDetailSerializer(ProductMiniSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        # Update other fields of the product instance
-        return super().update(instance, validated_data)
+        instance.save()  # Ensure the instance is saved with the updated fields
+        return instance
+
+        # # Update other fields of the product instance
+        # return super().update(instance, validated_data)

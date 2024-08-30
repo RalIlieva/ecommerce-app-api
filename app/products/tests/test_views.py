@@ -170,45 +170,45 @@ class ProductViewTest(TestCase):
         self.assertEqual(product.name, payload['name'])
         self.assertEqual(product.description, original_description)
 
-    # def test_full_update(self):
-    #     """Test full update of a product."""
-    #     category = Category.objects.get_or_create(
-    #         name="General Category",
-    #         slug="general-category"
-    #     )[0]
-    #
-    #     product = create_product(
-    #         name='Test Product',
-    #         price=10.00,
-    #         slug='test-product',
-    #         category=category,
-    #         description='Original description',
-    #         stock=2
-    #     )
-    #
-    #     payload = {
-    #         'name': 'Updated Test Name',
-    #         'price': 12.00,
-    #         'slug': 'updated-test-name',
-    #         'category': {'name': 'Updated Category', 'slug': 'updated-category'},
-    #         'description': 'Updated description',
-    #         'stock': 1,
-    #         'tags': [],
-    #         'is_active': True
-    #     }
-    #     url = manage_url(product.id)
-    #     res = self.client.put(url, payload, format='json')
-    #
-    #     print("Test payload:", payload)  # Debug print statement
-    #     print("Response data:", res.data)  # Debug print statement
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     product.refresh_from_db()
-    #     for k, v in payload.items():
-    #         if k == 'category':
-    #             self.assertEqual(getattr(product, k).name, v['name'])
-    #         else:
-    #             self.assertEqual(getattr(product, k), v)
+    def test_full_update(self):
+        """Test full update of a product."""
+        category = Category.objects.get_or_create(
+            name="General Category",
+            slug="general-category"
+        )[0]
+
+        product = create_product(
+            name='Test Product',
+            price=10.00,
+            slug='test-product',
+            category=category,
+            description='Original description',
+            stock=2
+        )
+
+        payload = {
+            'name': 'Updated Test Name',
+            'price': 12.00,
+            'slug': 'updated-test-name',
+            'category': {'name': 'Updated Category', 'slug': 'updated-category'},
+            'description': 'Updated description',
+            'stock': 1,
+            # 'tags': [],
+            'is_active': True
+        }
+        url = manage_url(product.id)
+        res = self.client.put(url, payload, format='json')
+
+        print("Test payload:", payload)  # Debug print statement
+        print("Response data:", res.data)  # Debug print statement
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        product.refresh_from_db()
+        for k, v in payload.items():
+            if k == 'category':
+                self.assertEqual(getattr(product, k).name, v['name'])
+            else:
+                self.assertEqual(getattr(product, k), v)
 
     def test_delete_product(self):
         """Test deleting a product successful."""
