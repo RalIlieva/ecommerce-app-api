@@ -138,8 +138,6 @@ class ProductDetailSerializer(ProductMiniSerializer):
         # Handle category update
         category_data = validated_data.pop('category', None)
 
-        print("Validated category data:", category_data)  # Debug print statement
-
         if category_data:
             if isinstance(category_data, dict):
                 # Process category data correctly
@@ -152,20 +150,6 @@ class ProductDetailSerializer(ProductMiniSerializer):
                 category = category_data  # It's already a Category instance
 
             instance.category = category
-
-        # if category_data and isinstance(category_data, dict):
-        #     # Process category data correctly
-        #     category = self.fields['category'].to_internal_value(category_data)
-        #     if isinstance(category, Category):  # Ensure category is a Category instance
-        #         instance.category = category
-        #     else:
-        #         print("Invalid category data:", category_data)
-        # else:
-        #     print("Invalid category data:", category_data)
-
-        # if category_data:
-        #     category = self.fields['category'].to_internal_value(category_data)
-        #     instance.category = category
 
         # Handle tags update
         tags_data = validated_data.pop('tags', None)
@@ -181,6 +165,3 @@ class ProductDetailSerializer(ProductMiniSerializer):
 
         instance.save()  # Ensure the instance is saved with the updated fields
         return instance
-
-        # # Update other fields of the product instance
-        # return super().update(instance, validated_data)
