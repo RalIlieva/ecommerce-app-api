@@ -320,26 +320,44 @@ class NestedCategoryTest(TestCase):
             "New child category's parent should be the parent category."
         )
 
+
 class OrphanProductTest(TestCase):
     """Test product handling when a parent category is deleted."""
 
     def setUp(self):
-        self.parent_category = Category.objects.create(name="Parent Category", slug="parent-category")
-        self.child_category = Category.objects.create(name="Child Category", slug="child-category", parent=self.parent_category)
+        self.parent_category = Category.objects.create(
+            name="Parent Category",
+            slug="parent-category"
+        )
+        self.child_category = Category.objects.create(
+            name="Child Category",
+            slug="child-category",
+            parent=self.parent_category
+        )
         self.product = Product.objects.create(
             name="Test Product Orphaning",
             price=40.00,
             slug="test-product-orphan",
             category=self.child_category,
-            description="A product for testing orphaning behavior on category deletion.",
+            description="Testing orphaning behavior on category deletion.",
             stock=8
         )
 
     def test_parent_category_deletion(self):
-        """Test that deleting a parent category does not delete the child category or the product."""
+        """
+        Test that deleting a parent category does not delete
+        the child category or the product.
+        """
         self.parent_category.delete()
         product = Product.objects.get(id=self.product.id)
         child_category = Category.objects.get(id=self.child_category.id)
 
-        self.assertIsNotNone(child_category, "Child category should not be deleted if parent is deleted.")
-        self.assertEqual(product.category, child_category, "Product should still be assigned to the child category.")
+        self.assertIsNotNone(
+            child_category,
+            "Child category should not be deleted if parent is deleted."
+        )
+        self.assertEqual(
+            product.category,
+            child_category,
+            "Product should still be assigned to the child category."
+        )
