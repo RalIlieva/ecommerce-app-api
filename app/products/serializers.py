@@ -143,7 +143,9 @@ class ProductDetailSerializer(ProductMiniSerializer):
                 # Process category data correctly
                 category, created = Category.objects.get_or_create(
                     name=category_data['name'],
-                    slug=category_data.get('slug', slugify(category_data['name'])),
+                    slug=category_data.get(
+                        'slug', slugify(category_data['name'])
+                    ),
                     defaults={'parent': category_data.get('parent')}
                 )
             elif isinstance(category_data, Category):

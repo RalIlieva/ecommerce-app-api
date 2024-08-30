@@ -19,6 +19,7 @@ def detail_url(product_id):
     """Create and return a product detail URL."""
     return reverse('products:product-detail', args=[product_id])
 
+
 def manage_url(product_id):
     """Manage - update, delete a product detail URL."""
     return reverse('products:product-manage', args=[product_id])
@@ -29,11 +30,14 @@ def manage_url(product_id):
 #     return reverse('products:product-upload-image', args=[product_id])
 
 
-def create_product(category=None,slug=None, **params):
+def create_product(category=None, slug=None, **params):
     """Create and return a sample product."""
     if category is None:
         # Use get_or_create to avoid creating duplicate categories
-        category, _ = Category.objects.get_or_create(name="General Category", slug="general-category")
+        category, _ = Category.objects.get_or_create(
+            name="General Category",
+            slug="general-category"
+        )
 
     if slug is None:
         # Generate a unique slug by appending a random number to the name
@@ -190,7 +194,10 @@ class ProductViewTest(TestCase):
             'name': 'Updated Test Name',
             'price': 12.00,
             'slug': 'updated-test-name',
-            'category': {'name': 'Updated Category', 'slug': 'updated-category'},
+            'category': {
+                'name': 'Updated Category',
+                'slug': 'updated-category'
+            },
             'description': 'Updated description',
             'stock': 1,
             # 'tags': [],
