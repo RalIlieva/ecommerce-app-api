@@ -226,6 +226,16 @@ class ProductViewTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Product.objects.filter(id=product.id).exists())
 
+    def test_adding_tags_to_product(self):
+        """Test adding tags to a product."""
+        product = create_product(name='Product with tags', slug='product-with-tags')
+        tag1, created = Tag.objects.get_or_create(name='Tag1', slug='tag1')
+        tag2, created = Tag.objects.get_or_create(name='Tag2', slug='tag2')
+        product.tags.add(tag1, tag2)
+
+        self.assertIn(tag1, product.tags.all())
+        self.assertIn(tag2, product.tags.all())
+
 
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
