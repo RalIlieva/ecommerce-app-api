@@ -247,6 +247,14 @@ class ProductViewTest(TestCase):
         self.assertIn(tag1, product.tags.all())
         self.assertIn(tag2, product.tags.all())
 
+    def test_removing_tags_from_product(self):
+        """Test removing tags from a product."""
+        product = create_product(name='Product with tags', slug='product-with-tags')
+        tag3, created = Tag.objects.get_or_create(name='Tag3', slug='tag3')
+        product.tags.add(tag3)
+        product.tags.remove(tag3)
+
+        self.assertNotIn(tag3, product.tags.all())
 
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
