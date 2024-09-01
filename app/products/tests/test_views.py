@@ -8,7 +8,12 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from products.models import Product, Category, Tag
+from products.models import (
+    Product,
+    Category,
+    Tag,
+    Review,
+)
 from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
 
@@ -60,6 +65,11 @@ def create_product(category=None, slug=None, **params):
 def create_admin_user(**params):
     """Create and return a new admin user."""
     return get_user_model().objects.create_superuser(**params)
+
+
+def create_user(**params):
+    """Create and return a new admin user."""
+    return get_user_model().objects.create_user(**params)
 
 
 class ProductViewTest(TestCase):
@@ -268,6 +278,20 @@ class ProductViewTest(TestCase):
 
         self.assertIn(tag4, product2.tags.all())
         self.assertNotIn(tag4, product1.tags.all())
+
+    def test_creating_review(self):
+        """Test creating a review for a product."""
+        product = create_product(name='Product with review', slug='product-with-review')
+        user = create_user(email='reviewer@example.com', password='test_pass')
+        review = Review.objects.create(
+            product=product,
+            user=user,
+            rating=4,
+            comment='Great product!'
+        )
+
+        self.assertEqual(product.reviews.count(), 1)
+        self.assertEqual(product.reviews.first().rating, 4)
 
 
 class ProductCategoryDeletionTest(TestCase):
