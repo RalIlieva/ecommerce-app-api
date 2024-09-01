@@ -310,6 +310,20 @@ class ProductViewTest(TestCase):
         self.assertEqual(product.reviews.first().rating, 5)
         self.assertEqual(product.reviews.first().comment, 'Excellent product!')
 
+    def test_deleting_review(self):
+        """Test deleting a review."""
+        product = create_product(name='Product with review', slug='product-with-review')
+        user = create_user(email='reviewer@example.com', password='test_pass')
+        review = Review.objects.create(
+            product=product,
+            user=user,
+            rating=4,
+            comment='Great product!'
+        )
+        review.delete()
+
+        self.assertEqual(product.reviews.count(), 0)
+
 
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
