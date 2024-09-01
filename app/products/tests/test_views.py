@@ -256,6 +256,20 @@ class ProductViewTest(TestCase):
 
         self.assertNotIn(tag3, product.tags.all())
 
+    def test_updating_tags_does_not_affect_other_products(self):
+        """Ensure updating tags of one product does not affect other products."""
+        product1 = create_product(name='Product1', slug='product1')
+        product2 = create_product(name='Product2', slug='product2')
+        tag4, created = Tag.objects.get_or_create(name='Tag4', slug='tag4')
+        product1.tags.add(tag4)
+
+        product2.tags.add(tag4)
+        product1.tags.remove(tag4)
+
+        self.assertIn(tag4, product2.tags.all())
+        self.assertNotIn(tag4, product1.tags.all())
+
+
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
     def setUp(self):
