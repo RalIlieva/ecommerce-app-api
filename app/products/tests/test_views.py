@@ -1,6 +1,7 @@
 """
 Test API views for products.
 """
+import uuid
 from random import randint
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -226,11 +227,21 @@ class ProductViewTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Product.objects.filter(id=product.id).exists())
 
-    def test_adding_tags_to_product(self):
+    def test_adding_tags_to_product_first(self):
         """Test adding tags to a product."""
         product = create_product(name='Product with tags', slug='product-with-tags')
         tag1, created = Tag.objects.get_or_create(name='Tag1', slug='tag1')
         tag2, created = Tag.objects.get_or_create(name='Tag2', slug='tag2')
+        product.tags.add(tag1, tag2)
+
+        self.assertIn(tag1, product.tags.all())
+        self.assertIn(tag2, product.tags.all())
+
+    def test_adding_tags_to_product_second(self):
+        """Test adding tags to a product."""
+        product = create_product(name='Product with tags', slug='product-with-tags')
+        tag1 = Tag.objects.create(name='Tag1', slug=f'tag1-{uuid.uuid4()}')
+        tag2 = Tag.objects.create(name='Tag2', slug=f'tag2-{uuid.uuid4()}')
         product.tags.add(tag1, tag2)
 
         self.assertIn(tag1, product.tags.all())
