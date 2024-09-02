@@ -504,3 +504,11 @@ class ImageUploadTests(TestCase):
         product_image = ProductImage.objects.filter(product=self.product).first()
         self.assertTrue(product_image)
         self.assertTrue(os.path.exists(product_image.image.path))
+
+    def test_upload_image_bad_request(self):
+        """Test uploading invalid image."""
+        url = image_upload_url(self.product.id)
+        payload = {'image': 'notanimage'}
+        res = self.client.post(url, payload, format='multipart')
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
