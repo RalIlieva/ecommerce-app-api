@@ -6,7 +6,8 @@ from .models import ProductImage
 @receiver(post_delete, sender=ProductImage)
 def delete_image_file(sender, instance, **kwargs):
     """
-    Delete the image file from the filesystem when a ProductImage instance is deleted.
+    Delete the image file from the filesystem
+    when a ProductImage instance is deleted.
     """
     if instance.image:
         instance.image.delete(save=False)

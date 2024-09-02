@@ -547,7 +547,10 @@ class ImageUploadTests(TestCase):
             img.save(image_file, format='JPEG')
             image_file.seek(0)
             payload = {'image': image_file}
-            upload_response = self.client.post(url, payload, format='multipart')
+            upload_response = self.client.post(
+                url, payload,
+                format='multipart'
+            )
 
         # Ensure the image upload was successful
         self.product.refresh_from_db()
@@ -555,19 +558,31 @@ class ImageUploadTests(TestCase):
         self.assertIn('image', upload_response.data)
 
         # Verify the image object in the database
-        product_image = ProductImage.objects.filter(product=self.product).first()
+        product_image = ProductImage.objects.filter(
+            product=self.product
+        ).first()
         self.assertTrue(product_image)
         self.assertTrue(os.path.exists(product_image.image.path))
 
         # Step 2: Delete the image
-        delete_url = reverse('products:product-image-delete', args=[self.product.id, product_image.id])
+        delete_url = reverse(
+            'products:product-image-delete',
+            args=[self.product.id, product_image.id]
+        )
         delete_response = self.client.delete(delete_url)
 
         # Step 3: Check if the response status code is 204 No Content
-        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(
+            delete_response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
 
-        # Step 4: Check that the image has been removed from the database
-        self.assertFalse(ProductImage.objects.filter(id=product_image.id).exists())
+        # Step 4: Check the image is removed from the db
+        self.assertFalse(
+            ProductImage.objects.filter(
+                id=product_image.id
+            ).exists()
+        )
 
-        # Step 5: Optionally check if the file has been deleted from the file system
+        # Step 5: Optionally check the file deleted from the file system
         self.assertFalse(os.path.exists(product_image.image.path))
