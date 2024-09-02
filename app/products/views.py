@@ -140,3 +140,16 @@ class ProductImageUploadView(generics.CreateAPIView):
         product_id = self.kwargs.get('product_id')
         product = Product.objects.get(id=product_id)
         serializer.save(product=product)
+
+
+class ProductImageDeleteView(generics.DestroyAPIView):
+    """View to delete a product image."""
+    queryset = ProductImage.objects.all()
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    lookup_field = 'id'
+    lookup_url_kwarg = 'image_id'
+
+    def get_queryset(self):
+        """Filter to only allow deletion of images related to the product."""
+        product_id = self.kwargs.get('product_id')
+        return self.queryset.filter(product_id=product_id)

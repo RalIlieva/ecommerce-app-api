@@ -537,3 +537,37 @@ class ImageUploadTests(TestCase):
         res = self.client.post(url, payload, format='multipart')
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_image(self):
+        """Test deleting an image from a product."""
+        # Step 1: Upload an image to the product
+        url = image_upload_url(self.product.id)
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
+            img = Image.new('RGB', (10, 10))
+            img.save(image_file, format='JPEG')
+            image_file.seek(0)
+            payload = {'image': image_file}
+            upload_response = self.client.post(url, payload, format='multipart')
+
+        # Ensure the image upload was successful
+        self.product.refresh_from_db()
+        self.assertEqual(upload_response.status_code, status.HTTP_201_CREATED)
+        self.assertIn('image', upload_response.data)
+
+        # Verify the image object in the database
+        product_image = ProductImage.objects.filter(product=self.product).first()
+        self.assertTrue(product_image)
+        self.assertTrue(os.path.exists(product_image.image.path))
+
+        # Step 2: Delete the image
+        delete_url = reverse('products:product-image-delete', args=[self.product.id, product_image.id])
+        delete_response = self.client.delete(delete_url)
+
+        # Step 3: Check if the response status code is 204 No Content
+        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Step 4: Check that the image has been removed from the database
+        self.assertFalse(ProductImage.objects.filter(id=product_image.id).exists())
+
+        # Step 5: Optionally check if the file has been deleted from the file system
+        self.assertFalse(os.path.exists(product_image.image.path))
