@@ -3,6 +3,12 @@ Test API views for products.
 """
 import uuid
 from random import randint
+
+import tempfile
+import os
+
+from PIL import Image
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -13,6 +19,7 @@ from products.models import (
     Category,
     Tag,
     Review,
+    ProductImage,
 )
 from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
@@ -31,9 +38,9 @@ def manage_url(product_id):
     return reverse('products:product-manage', args=[product_id])
 
 
-# def image_upload_url(product_id):
-#     """Create and return an image upload URL."""
-#     return reverse('products:product-upload-image', args=[product_id])
+def image_upload_url(product_id):
+    """Create and return an image upload URL."""
+    return reverse('products:product-image-upload', args=[product_id])
 
 
 def create_product(category=None, slug=None, **params):
@@ -459,3 +466,41 @@ class OrphanProductTest(TestCase):
             child_category,
             "Product should still be assigned to the child category."
         )
+
+
+class ImageUploadTests(TestCase):
+    """Tests for the image upload API."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = create_admin_user(
+            email='admin_user@example.com',
+            password='password123',
+        )
+        self.client.force_authenticate(self.admin_user)
+        self.product = create_product(
+            name='Product with image',
+            slug='product-with-image'
+        )
+
+    def tearDown(self):
+        ProductImage.objects.filter(product=self.product).delete()
+
+    def test_upload_image(self):
+        """Test uploading an image to a product."""
+        url = image_upload_url(self.product.id)
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
+            img = Image.new('RGB', (10, 10))
+            img.save(image_file, format='JPEG')
+            image_file.seek(0)
+            payload = {'image': image_file}
+            res = self.client.post(url, payload, format='multipart')
+
+        self.product.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertIn('image', res.data)
+
+        # Check that the image was saved to the correct path
+        product_image = ProductImage.objects.filter(product=self.product).first()
+        self.assertTrue(product_image)
+        self.assertTrue(os.path.exists(product_image.image.path))
