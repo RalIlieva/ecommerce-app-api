@@ -246,7 +246,10 @@ class ProductViewTest(TestCase):
 
     def test_adding_tags_to_product_first(self):
         """Test adding tags to a product."""
-        product = create_product(name='Product with tags', slug='product-with-tags')
+        product = create_product(
+            name='Product with tags',
+            slug='product-with-tags'
+        )
         tag1, created = Tag.objects.get_or_create(name='Tag1', slug='tag1')
         tag2, created = Tag.objects.get_or_create(name='Tag2', slug='tag2')
         product.tags.add(tag1, tag2)
@@ -256,7 +259,10 @@ class ProductViewTest(TestCase):
 
     def test_adding_tags_to_product_second(self):
         """Test adding tags to a product."""
-        product = create_product(name='Product with tags', slug='product-with-tags')
+        product = create_product(
+            name='Product with tags',
+            slug='product-with-tags'
+        )
         tag1 = Tag.objects.create(name='Tag1', slug=f'tag1-{uuid.uuid4()}')
         tag2 = Tag.objects.create(name='Tag2', slug=f'tag2-{uuid.uuid4()}')
         product.tags.add(tag1, tag2)
@@ -266,7 +272,10 @@ class ProductViewTest(TestCase):
 
     def test_removing_tags_from_product(self):
         """Test removing tags from a product."""
-        product = create_product(name='Product with tags', slug='product-with-tags')
+        product = create_product(
+            name='Product with tags',
+            slug='product-with-tags'
+        )
         tag3, created = Tag.objects.get_or_create(name='Tag3', slug='tag3')
         product.tags.add(tag3)
         product.tags.remove(tag3)
@@ -274,7 +283,9 @@ class ProductViewTest(TestCase):
         self.assertNotIn(tag3, product.tags.all())
 
     def test_updating_tags_does_not_affect_other_products(self):
-        """Ensure updating tags of one product does not affect other products."""
+        """
+        Ensure updating tags of one product does not affect other products.
+        """
         product1 = create_product(name='Product1', slug='product1')
         product2 = create_product(name='Product2', slug='product2')
         tag4, created = Tag.objects.get_or_create(name='Tag4', slug='tag4')
@@ -288,9 +299,15 @@ class ProductViewTest(TestCase):
 
     def test_creating_review(self):
         """Test creating a review for a product."""
-        product = create_product(name='Product with review', slug='product-with-review')
-        user = create_user(email='reviewer@example.com', password='test_pass')
-        review = Review.objects.create(
+        product = create_product(
+            name='Product with review',
+            slug='product-with-review'
+        )
+        user = create_user(
+            email='reviewer@example.com',
+            password='test_pass'
+        )
+        Review.objects.create(
             product=product,
             user=user,
             rating=4,
@@ -302,7 +319,10 @@ class ProductViewTest(TestCase):
 
     def test_updating_review(self):
         """Test updating a review for a product."""
-        product = create_product(name='Product with review', slug='product-with-review')
+        product = create_product(
+            name='Product with review',
+            slug='product-with-review'
+        )
         user = create_user(email='reviewer@example.com', password='test_pass')
         review = Review.objects.create(
             product=product,
@@ -319,7 +339,10 @@ class ProductViewTest(TestCase):
 
     def test_deleting_review(self):
         """Test deleting a review."""
-        product = create_product(name='Product with review', slug='product-with-review')
+        product = create_product(
+            name='Product with review',
+            slug='product-with-review'
+        )
         user = create_user(email='reviewer@example.com', password='test_pass')
         review = Review.objects.create(
             product=product,
@@ -501,7 +524,9 @@ class ImageUploadTests(TestCase):
         self.assertIn('image', res.data)
 
         # Check that the image was saved to the correct path
-        product_image = ProductImage.objects.filter(product=self.product).first()
+        product_image = ProductImage.objects.filter(
+            product=self.product
+        ).first()
         self.assertTrue(product_image)
         self.assertTrue(os.path.exists(product_image.image.path))
 
