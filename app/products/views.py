@@ -29,12 +29,8 @@ class ProductListView(generics.ListAPIView):
         Optionally restricts the returned products by filtering against
         a `category` and 'tags' query parameter in the URL.
         """
-        # tags = self.request.query_params.get('tags')
         category = self.request.query_params.get('category')
         queryset = super().get_queryset()
-        # if tags:
-        #     tag_ids = self.tags
-        #     queryset = queryset.filter(tags__id__in=tag_ids)
         tag_id = self.request.query_params.get('tag')
         if tag_id:
             queryset = queryset.filter(tags__id=tag_id)
