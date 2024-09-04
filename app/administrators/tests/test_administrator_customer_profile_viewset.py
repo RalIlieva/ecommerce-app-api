@@ -53,8 +53,8 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # Django Signals - automatic profiles for all users
-        self.assertEqual(len(res.data), 2)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertEqual(res.data['results'], serializer.data)
 
     def test_retrieve_customer_profile(self):
         """Test retrieving a single customer profile."""

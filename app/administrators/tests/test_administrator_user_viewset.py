@@ -42,7 +42,7 @@ class AdministratorUserViewSetTests(TestCase):
         res = self.client.get(URL_LIST_ALL_USERS)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
+        self.assertEqual(len(res.data['results']), 2)
 
     def test_retrieve_user(self):
         """Test retrieving a single user."""

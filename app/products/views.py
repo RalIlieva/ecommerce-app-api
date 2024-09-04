@@ -16,6 +16,7 @@ from .serializers import (
 # from .permissions import IsAdminOrReadOnly
 from .selectors import get_active_products
 from .filters import ProductFilter
+from .pagination import CustomPagination
 
 
 # Product Views
@@ -24,11 +25,12 @@ class ProductListView(generics.ListAPIView):
     View to list all products.
     All users can access this view.
     """
-    queryset = get_active_products().prefetch_related('tags', 'category')
+    queryset = get_active_products().prefetch_related('tags', 'category').order_by('id')
     serializer_class = ProductMiniSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ProductFilter
     search_fields = ['name', 'description']  # Fields to search by
+    pagination_class = CustomPagination
 
     # def get_queryset(self):
     #     """

@@ -20,7 +20,7 @@ class AdministratorUserViewSet(
     viewsets.GenericViewSet
 ):
     """Administrator viewset for managing users."""
-    queryset = get_user_model().objects.all()
+    queryset = get_user_model().objects.all().order_by('id')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
@@ -33,6 +33,6 @@ class AdministratorCustomerProfileViewSet(
     viewsets.GenericViewSet
 ):
     """Administrator viewset for managing customer profiles."""
-    queryset = CustomerProfile.objects.all()
+    queryset = CustomerProfile.objects.all().order_by('id')
     serializer_class = CustomerProfileSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]

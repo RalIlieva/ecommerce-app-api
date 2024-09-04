@@ -22,11 +22,6 @@ class ProductFilter(django_filters.FilterSet):
         to_field_name='id',
         label='Filter by Tags'
     )
-    # category = django_filters.ModelChoiceFilter(
-    #     queryset=Category.objects.all(),
-    #     field_name='category__slug',
-    #     label='Filter by Category'
-    # )
     category = django_filters.CharFilter(
         field_name='category__slug',
         label='Filter by Category'

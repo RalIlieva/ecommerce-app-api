@@ -155,7 +155,7 @@ class ProductViewTest(TestCase):
         products = Product.objects.all().order_by('id')
         serializer = ProductMiniSerializer(products, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+        self.assertEqual(res.data['results'], serializer.data)
 
     def test_get_product_detail(self):
         """Test get product detail."""
@@ -385,10 +385,10 @@ class ProductViewTest(TestCase):
         print(f"Response Data: {res.data}")
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
-        self.assertIn(product1.id, [prod['id'] for prod in res.data])
-        self.assertIn(product2.id, [prod['id'] for prod in res.data])
-        self.assertNotIn(product3.id, [prod['id'] for prod in res.data])
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertIn(product1.id, [prod['id'] for prod in res.data['results']])
+        self.assertIn(product2.id, [prod['id'] for prod in res.data['results']])
+        self.assertNotIn(product3.id, [prod['id'] for prod in res.data['results']])
 
     def test_filtering_products_by_tags(self):
         """Test filtering products by tags."""
@@ -405,10 +405,10 @@ class ProductViewTest(TestCase):
         res = self.client.get(PRODUCTS_URL, {'tags': tag1.id})
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
-        self.assertIn(product1.id, [prod['id'] for prod in res.data])
-        self.assertIn(product2.id, [prod['id'] for prod in res.data])
-        self.assertNotIn(product3.id, [prod['id'] for prod in res.data])
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertIn(product1.id, [prod['id'] for prod in res.data['results']])
+        self.assertIn(product2.id, [prod['id'] for prod in res.data['results']])
+        self.assertNotIn(product3.id, [prod['id'] for prod in res.data['results']])
 
 
 class ProductCategoryDeletionTest(TestCase):
@@ -642,3 +642,38 @@ class ImageUploadTests(TestCase):
 
         # Step 5: Optionally check the file deleted from the file system
         self.assertFalse(os.path.exists(product_image.image.path))
+
+
+class PaginationTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_pagination_is_applied(self):
+        """Test that pagination is applied to the product list"""
+        category = Category.objects.create(name="Category", slug="category")
+
+        # Create 15 products
+        for i in range(15):
+            create_product(name=f'Product {i}', slug=f'product-{i}', category=category)
+
+        res = self.client.get(PRODUCTS_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data['results']), 10)  # Check if 10 products are returned by default
+        self.assertIn('next', res.data['links'])
+        self.assertIn('previous', res.data['links'])
+
+    def test_custom_page_size(self):
+        """Test that a custom page size can be applied"""
+        category = Category.objects.create(name="Category", slug="category")
+
+        # Create 15 products
+        for i in range(15):
+            create_product(name=f'Product {i}', slug=f'product-{i}', category=category)
+
+        res = self.client.get(PRODUCTS_URL, {'page_size': 5})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data['results']), 5)  # Check if 5 products are returned
+        self.assertIn('next', res.data['links'])
+        self.assertIn('previous', res.data['links'])
