@@ -24,6 +24,26 @@ class ProductListView(generics.ListAPIView):
     queryset = get_active_products()
     serializer_class = ProductMiniSerializer
 
+    def get_queryset(self):
+        """
+        Optionally restricts the returned products by filtering against
+        a `category` and 'tags' query parameter in the URL.
+        """
+        # tags = self.request.query_params.get('tags')
+        category = self.request.query_params.get('category')
+        queryset = super().get_queryset()
+        # if tags:
+        #     tag_ids = self.tags
+        #     queryset = queryset.filter(tags__id__in=tag_ids)
+        tag_id = self.request.query_params.get('tag')
+        if tag_id:
+            queryset = queryset.filter(tags__id=tag_id)
+        if category:
+            category_ids = self.category
+            queryset = queryset.filter(category__id__in=category_ids)
+
+        return queryset
+
 
 class ProductDetailView(generics.RetrieveAPIView):
     """

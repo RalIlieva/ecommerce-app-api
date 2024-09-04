@@ -354,6 +354,40 @@ class ProductViewTest(TestCase):
 
         self.assertEqual(product.reviews.count(), 0)
 
+    # def test_filtering_products_by_category(self):
+    #     """Test filtering products by category."""
+    #     category = Category.objects.create(name="Filter Category", slug="filter-category")
+    #     product1 = create_product(name='Product 1', slug='product-1', category=category)
+    #     product2 = create_product(name='Product 2', slug='product-2', category=category)
+    #     product3 = create_product(name='Product 3', slug='product-3')  # Different category
+    #
+    #     res = self.client.get(PRODUCTS_URL, {'category': category.id})
+    #
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(len(res.data), 2)
+    #     self.assertIn(product1.id, [prod['id'] for prod in res.data])
+    #     self.assertIn(product2.id, [prod['id'] for prod in res.data])
+    #     self.assertNotIn(product3.id, [prod['id'] for prod in res.data])
+
+    def test_filtering_products_by_tags(self):
+        """Test filtering products by tags."""
+        tag1 = Tag.objects.create(name="Filter Tag", slug="filter-tag")
+        tag2 = Tag.objects.create(name="Different", slug="different")
+        product1 = create_product(name='Product 1', slug='product-1')
+        product2 = create_product(name='Product 2', slug='product-2')
+        product3 = create_product(name='Product 3', slug='product-3')  # Different tag
+        product1.tags.add(tag1)
+        product2.tags.add(tag1)
+        product3.tags.add(tag2)
+
+        res = self.client.get(PRODUCTS_URL, {'tag': tag1.id})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 2)
+        self.assertIn(product1.id, [prod['id'] for prod in res.data])
+        self.assertIn(product2.id, [prod['id'] for prod in res.data])
+        self.assertNotIn(product3.id, [prod['id'] for prod in res.data])
+
 
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
