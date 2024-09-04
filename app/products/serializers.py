@@ -82,10 +82,11 @@ class ReviewSerializer(serializers.ModelSerializer):
 class ProductMiniSerializer(serializers.ModelSerializer):
     """Basic serializer for product."""
     tags = TagSerializer(many=True, required=False)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'price', 'slug', 'tags']
+        fields = ['id', 'name', 'price', 'slug', 'tags', 'category']
         read_only_fields = ['id', 'slug']
 
 

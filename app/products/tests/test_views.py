@@ -380,7 +380,7 @@ class ProductViewTest(TestCase):
         product2.tags.add(tag1)
         product3.tags.add(tag2)
 
-        res = self.client.get(PRODUCTS_URL, {'tag': tag1.id})
+        res = self.client.get(PRODUCTS_URL, {'tags': tag1.id})
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 2)

@@ -2,6 +2,8 @@
 Views for the products API.
 """
 
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
@@ -13,6 +15,7 @@ from .serializers import (
 )
 # from .permissions import IsAdminOrReadOnly
 from .selectors import get_active_products
+from .filters import ProductFilter
 
 
 # Product Views
@@ -21,24 +24,27 @@ class ProductListView(generics.ListAPIView):
     View to list all products.
     All users can access this view.
     """
-    queryset = get_active_products()
+    queryset = get_active_products().prefetch_related('tags', 'category')
     serializer_class = ProductMiniSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ProductFilter
+    search_fields = ['name', 'description']  # Fields to search by
 
-    def get_queryset(self):
-        """
-        Optionally restricts the returned products by filtering against
-        a `category` and 'tags' query parameter in the URL.
-        """
-        category = self.request.query_params.get('category')
-        queryset = super().get_queryset()
-        tag_id = self.request.query_params.get('tag')
-        if tag_id:
-            queryset = queryset.filter(tags__id=tag_id)
-        if category:
-            category_ids = self.category
-            queryset = queryset.filter(category__id__in=category_ids)
-
-        return queryset
+    # def get_queryset(self):
+    #     """
+    #     Optionally restricts the returned products by filtering against
+    #     a `category` and 'tags' query parameter in the URL.
+    #     """
+    #     category = self.request.query_params.get('category')
+    #     queryset = super().get_queryset()
+    #     tag_id = self.request.query_params.get('tag')
+    #     if tag_id:
+    #         queryset = queryset.filter(tags__id=tag_id)
+    #     if category:
+    #         category_ids = self.category
+    #         queryset = queryset.filter(category__id__in=category_ids)
+    #
+    #     return queryset
 
 
 class ProductDetailView(generics.RetrieveAPIView):
