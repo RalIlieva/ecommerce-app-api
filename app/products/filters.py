@@ -14,9 +14,25 @@ class ProductFilter(django_filters.FilterSet):
         to_field_name='id',
         label='Filter by Tags'
     )
-    category = django_filters.ModelChoiceFilter(queryset=Category.objects.all(), label='Filter by Category')
-    min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte', label='Min Price')
-    max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte', label='Max Price')
+    # category = django_filters.ModelChoiceFilter(
+    #     queryset=Category.objects.all(),
+    #     field_name='category__slug',
+    #     label='Filter by Category'
+    # )
+    category = django_filters.CharFilter(
+        field_name='category__slug',
+        label='Filter by Category'
+    )
+    min_price = django_filters.NumberFilter(
+        field_name='price',
+        lookup_expr='gte',
+        label='Min Price'
+    )
+    max_price = django_filters.NumberFilter(
+        field_name='price',
+        lookup_expr='lte',
+        label='Max Price'
+    )
 
     class Meta:
         model = Product

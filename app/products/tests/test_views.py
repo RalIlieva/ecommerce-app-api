@@ -354,20 +354,26 @@ class ProductViewTest(TestCase):
 
         self.assertEqual(product.reviews.count(), 0)
 
-    # def test_filtering_products_by_category(self):
-    #     """Test filtering products by category."""
-    #     category = Category.objects.create(name="Filter Category", slug="filter-category")
-    #     product1 = create_product(name='Product 1', slug='product-1', category=category)
-    #     product2 = create_product(name='Product 2', slug='product-2', category=category)
-    #     product3 = create_product(name='Product 3', slug='product-3')  # Different category
-    #
-    #     res = self.client.get(PRODUCTS_URL, {'category': category.id})
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(res.data), 2)
-    #     self.assertIn(product1.id, [prod['id'] for prod in res.data])
-    #     self.assertIn(product2.id, [prod['id'] for prod in res.data])
-    #     self.assertNotIn(product3.id, [prod['id'] for prod in res.data])
+    def test_filtering_products_by_category(self):
+        """Test filtering products by category."""
+        category = Category.objects.create(name="Filter Category", slug="filter-category")
+        product1 = create_product(name='Product 1', slug='product-1', category=category)
+        product2 = create_product(name='Product 2', slug='product-2', category=category)
+        product3 = create_product(name='Product 3', slug='product-3')  # Different category
+
+        # Print the slug to verify
+        print(f"Category Slug: {category.slug}")
+
+        res = self.client.get(PRODUCTS_URL, {'category': category.slug})
+
+        print(f"Response Status Code: {res.status_code}")
+        print(f"Response Data: {res.data}")
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 2)
+        self.assertIn(product1.id, [prod['id'] for prod in res.data])
+        self.assertIn(product2.id, [prod['id'] for prod in res.data])
+        self.assertNotIn(product3.id, [prod['id'] for prod in res.data])
 
     def test_filtering_products_by_tags(self):
         """Test filtering products by tags."""
