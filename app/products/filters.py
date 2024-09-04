@@ -3,11 +3,19 @@ Filters for products.
 """
 
 import django_filters
-from .models import Product, Tag, Category
+from .models import (
+    Product,
+    Tag,
+    # Category,
+)
 
 
 class ProductFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(field_name='name', lookup_expr='icontains', label='Search by Name')
+    name = django_filters.CharFilter(
+        field_name='name',
+        lookup_expr='icontains',
+        label='Search by Name'
+    )
     tags = django_filters.ModelMultipleChoiceFilter(
         queryset=Tag.objects.all(),
         field_name='tags__id',  # Filter by tag IDs

@@ -356,10 +356,25 @@ class ProductViewTest(TestCase):
 
     def test_filtering_products_by_category(self):
         """Test filtering products by category."""
-        category = Category.objects.create(name="Filter Category", slug="filter-category")
-        product1 = create_product(name='Product 1', slug='product-1', category=category)
-        product2 = create_product(name='Product 2', slug='product-2', category=category)
-        product3 = create_product(name='Product 3', slug='product-3')  # Different category
+        category = Category.objects.create(
+            name="Filter Category",
+            slug="filter-category"
+        )
+        product1 = create_product(
+            name='Product 1',
+            slug='product-1',
+            category=category
+        )
+        product2 = create_product(
+            name='Product 2',
+            slug='product-2',
+            category=category
+        )
+        # Different category
+        product3 = create_product(
+            name='Product 3',
+            slug='product-3'
+        )
 
         # Print the slug to verify
         print(f"Category Slug: {category.slug}")
@@ -381,7 +396,8 @@ class ProductViewTest(TestCase):
         tag2 = Tag.objects.create(name="Different", slug="different")
         product1 = create_product(name='Product 1', slug='product-1')
         product2 = create_product(name='Product 2', slug='product-2')
-        product3 = create_product(name='Product 3', slug='product-3')  # Different tag
+        # Different tag
+        product3 = create_product(name='Product 3', slug='product-3')
         product1.tags.add(tag1)
         product2.tags.add(tag1)
         product3.tags.add(tag2)
