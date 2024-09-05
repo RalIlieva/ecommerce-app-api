@@ -386,9 +386,18 @@ class ProductViewTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['results']), 2)
-        self.assertIn(product1.id, [prod['id'] for prod in res.data['results']])
-        self.assertIn(product2.id, [prod['id'] for prod in res.data['results']])
-        self.assertNotIn(product3.id, [prod['id'] for prod in res.data['results']])
+        self.assertIn(
+            product1.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertIn(
+            product2.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertNotIn(
+            product3.id,
+            [prod['id'] for prod in res.data['results']]
+        )
 
     def test_filtering_products_by_tags(self):
         """Test filtering products by tags."""
@@ -406,9 +415,18 @@ class ProductViewTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['results']), 2)
-        self.assertIn(product1.id, [prod['id'] for prod in res.data['results']])
-        self.assertIn(product2.id, [prod['id'] for prod in res.data['results']])
-        self.assertNotIn(product3.id, [prod['id'] for prod in res.data['results']])
+        self.assertIn(
+            product1.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertIn(
+            product2.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertNotIn(
+            product3.id,
+            [prod['id'] for prod in res.data['results']]
+        )
 
 
 class ProductCategoryDeletionTest(TestCase):
@@ -654,12 +672,17 @@ class PaginationTest(TestCase):
 
         # Create 15 products
         for i in range(15):
-            create_product(name=f'Product {i}', slug=f'product-{i}', category=category)
+            create_product(
+                name=f'Product {i}',
+                slug=f'product-{i}',
+                category=category
+            )
 
         res = self.client.get(PRODUCTS_URL)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data['results']), 10)  # Check if 10 products are returned by default
+        # Check if 10 products are returned by default
+        self.assertEqual(len(res.data['results']), 10)
         self.assertIn('next', res.data['links'])
         self.assertIn('previous', res.data['links'])
 
@@ -669,11 +692,16 @@ class PaginationTest(TestCase):
 
         # Create 15 products
         for i in range(15):
-            create_product(name=f'Product {i}', slug=f'product-{i}', category=category)
+            create_product(
+                name=f'Product {i}',
+                slug=f'product-{i}',
+                category=category
+            )
 
         res = self.client.get(PRODUCTS_URL, {'page_size': 5})
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data['results']), 5)  # Check if 5 products are returned
+        # Check if 5 products are returned
+        self.assertEqual(len(res.data['results']), 5)
         self.assertIn('next', res.data['links'])
         self.assertIn('previous', res.data['links'])

@@ -25,7 +25,8 @@ class ProductListView(generics.ListAPIView):
     View to list all products.
     All users can access this view.
     """
-    queryset = get_active_products().prefetch_related('tags', 'category').order_by('id')
+    queryset = get_active_products().prefetch_related('tags', 'category').\
+        order_by('id')
     serializer_class = ProductMiniSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ProductFilter
