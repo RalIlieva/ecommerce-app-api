@@ -5,6 +5,7 @@ Business logic - fetching from db.
 from .models import Product
 
 
+# TO DECIDE - keep or use in filters
 def get_product_by_id(product_id):
     """Retrieve a product by its ID."""
     return Product.objects.filter(id=product_id).first()
