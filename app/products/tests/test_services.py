@@ -55,7 +55,7 @@ class ProductServiceTest(TestCase):
         self.assertEqual(product.category.name, "Electronics")
         self.assertEqual(product.tags.count(), 1)
 
-    def test_update_product_with_related_data(self):
+    def test_update_product_with_related_data_first(self):
         data = {
             "name": "Product 3",
             "price": 15.00,
@@ -78,13 +78,13 @@ class ProductServiceTest(TestCase):
             "description": "Updated description",
         }
         url = manage_url(product.id)
-        res = self.client.patch(url, payload)
+        res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         product.refresh_from_db()
 
         # Debugging output to check tags
-        print("Product Tags after update:", product.tags.all())  # Print the tags
+        print("Product Tags after update:", product.tags.all())
 
         self.assertEqual(product.name, payload['name'])
         self.assertEqual(product.name, "Updated Product 3")
@@ -95,8 +95,7 @@ class ProductServiceTest(TestCase):
         self.assertIn("Tag1", [tag.name for tag in tags])
         self.assertIn("Tag2", [tag.name for tag in tags])
 
-
-    def test_update_product_with_related_data(self):
+    def test_update_product_with_related_data_second(self):
         # Step 1: Create initial product with category and tags
         initial_data = {
             "name": "Product 3",
@@ -122,10 +121,16 @@ class ProductServiceTest(TestCase):
             "name": "Updated Product 3",
             "price": 10.00,
             "slug": "updated-product-3",
-            "tags": [{"name": "Tag1", "slug": "tag1"}, {"name": "Tag2", "slug": "tag2"}],
+            "tags": [
+                {"name": "Tag1", "slug": "tag1"},
+                {"name": "Tag2", "slug": "tag2"}
+            ],
             "description": "Updated description",
         }
-        updated_product = update_product_with_related_data(product, update_data)
+        updated_product = update_product_with_related_data(
+            product,
+            update_data
+        )
 
         # Step 3: Refresh from the database and check updates
         updated_product.refresh_from_db()
