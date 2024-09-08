@@ -55,42 +55,46 @@ class ProductServiceTest(TestCase):
         self.assertEqual(product.category.name, "Electronics")
         self.assertEqual(product.tags.count(), 1)
 
-    # def test_update_product_with_related_data(self):
-    #     data = {
-    #         "name": "Product 3",
-    #         "price": 15.00,
-    #         "slug": "product-3",
-    #         "tags": [{"name": "Tag1", "slug": "tag1"}],
-    #         "category": {"name": "Electronics", "slug": "electronics"},
-    #         "description": "About description",
-    #         "stock": 4
-    #     }
-    #     product = create_product_with_related_data(data)
-    #
-    #     payload = {
-    #         "name": "Updated Product 3",
-    #         "price": 10.00,
-    #         "slug": "updated-product-3",
-    #         "tags": [{"name": "Tag1", "slug": "tag1"}, {"name": "Tag2", "slug": "tag2"}],
-    #         "description": "Updated description",
-    #     }
-    #     url = manage_url(product.id)
-    #     res = self.client.patch(url, payload)
-    #
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     product.refresh_from_db()
-    #
-    #     # Debugging output to check tags
-    #     print("Product Tags after update:", product.tags.all())  # Print the tags
-    #
-    #     self.assertEqual(product.name, payload['name'])
-    #     self.assertEqual(product.name, "Updated Product 3")
-    #     self.assertEqual(product.category.name, "Electronics")
-    #     # self.assertEqual(product.tags.count(), 2)
-    #     # Assert specific tags are present
-    #     tags = product.tags.all()
-    #     self.assertIn("Tag1", [tag.name for tag in tags])
-    #     self.assertIn("Tag2", [tag.name for tag in tags])
+    def test_update_product_with_related_data(self):
+        data = {
+            "name": "Product 3",
+            "price": 15.00,
+            "slug": "product-3",
+            "tags": [{"name": "Tag1", "slug": "tag1"}],
+            "category": {"name": "Electronics", "slug": "electronics"},
+            "description": "About description",
+            "stock": 4
+        }
+        product = create_product_with_related_data(data)
+
+        payload = {
+            "name": "Updated Product 3",
+            "price": 10.00,
+            "slug": "updated-product-3",
+            "tags": [
+                {"name": "Tag1", "slug": "tag1"},
+                {"name": "Tag2", "slug": "tag2"}
+            ],
+            "description": "Updated description",
+        }
+        url = manage_url(product.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        product.refresh_from_db()
+
+        # Debugging output to check tags
+        print("Product Tags after update:", product.tags.all())  # Print the tags
+
+        self.assertEqual(product.name, payload['name'])
+        self.assertEqual(product.name, "Updated Product 3")
+        self.assertEqual(product.category.name, "Electronics")
+        self.assertEqual(product.tags.count(), 2)
+        # Assert specific tags are present
+        tags = product.tags.all()
+        self.assertIn("Tag1", [tag.name for tag in tags])
+        self.assertIn("Tag2", [tag.name for tag in tags])
+
 
     def test_update_product_with_related_data(self):
         # Step 1: Create initial product with category and tags
