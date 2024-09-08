@@ -3,8 +3,8 @@ Serializers for the product models.
 """
 
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from django.utils.text import slugify
+# from rest_framework.exceptions import ValidationError
+# from django.utils.text import slugify
 
 from .models import Product, ProductImage, Review, Tag, Category
 from .services import (
@@ -50,7 +50,7 @@ class CategorySerializer(serializers.ModelSerializer):
         #             parent = Category.objects.get(pk=parent_id)
         #         except Category.DoesNotExist:
         #             raise ValidationError(
-        #                 f"Parent category with id {parent_id} does not exist."
+        #                 f"Parent categ with id {parent_id} does not exist."
         #             )
         #
         #     # Create new category if not found
@@ -60,7 +60,9 @@ class CategorySerializer(serializers.ModelSerializer):
         #     return category
         #
         # raise ValidationError(
-        #     {"category": "Expected a dict with 'name'/optional 'slug' fields."}
+        #     {
+        #     "category": "Expected a dict with 'name'/optional 'slug' fields."
+        #     }
         # )
         return get_or_create_category(data)
 
@@ -118,7 +120,8 @@ class ProductDetailSerializer(ProductMiniSerializer):
     #         category = category_data  # Already a Category instance
     #     elif isinstance(category_data, dict):
     #         # Convert category_data to Category instance
-    #         category = self.fields['category'].to_internal_value(category_data)
+    #         category = self.fields['category'].
+    #         to_internal_value(category_data)
     #     else:
     #         raise ValidationError({"category": "Invalid category data."})
     #
@@ -168,7 +171,8 @@ class ProductDetailSerializer(ProductMiniSerializer):
     #     for attr, value in validated_data.items():
     #         setattr(instance, attr, value)
     #
-    #     instance.save()  # Ensure the instance is saved with the updated fields
+    # Ensure the instance is saved with the updated fields
+    #     instance.save()
     #     return instance
 
     def create(self, validated_data):

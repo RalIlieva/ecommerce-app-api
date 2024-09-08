@@ -72,7 +72,10 @@ def create_product_with_related_data(validated_data):
     # Handle the many-to-many r-ship for tags after product is created
     # for tag_data in tags_data:
     #     slug = tag_data.get('slug', slugify(tag_data['name']))
-    #     tag, created = Tag.objects.get_or_create(slug=slug, defaults=tag_data)
+    #     tag, created = Tag.objects.get_or_create(
+    #     slug=slug,
+    #     defaults=tag_data
+    #     )
     #     product.tags.add(tag)
     for tag_data in tags_data:
         tag, created = Tag.objects.get_or_create(**tag_data)
@@ -109,9 +112,14 @@ def update_product_with_related_data(instance, validated_data):
             print(f"Processing tag: {tag_data}")  # Debug output
             tag, created = Tag.objects.get_or_create(**tag_data)
             instance.tags.add(tag)
-            # slug = tag_data.get('slug', slugify(tag_data['name']))  # Ensure a slug is generated
-            # tag, created = Tag.objects.get_or_create(slug=slug, defaults={'name': tag_data['name']})
-            # instance.tags.add(tag)  # Re-add the tag, whether it's new or already existed
+            # Ensure a slug is generated
+            # slug = tag_data.get('slug', slugify(tag_data['name']))
+            # tag, created = Tag.objects.get_or_create(
+            # slug=slug,
+            # defaults={'name': tag_data['name']}
+            # )
+            # Re-add the tag, whether it's new or already existed
+            # instance.tags.add(tag)
 
     # Set the remaining fields
     for attr, value in validated_data.items():
