@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from .models import (
     Product,
-    ProductImage,
+    # ProductImage,
     Tag,
     Category
 )
@@ -70,6 +70,10 @@ def create_product_with_related_data(validated_data):
     product = Product.objects.create(**validated_data)
 
     # Handle the many-to-many r-ship for tags after product is created
+    # for tag_data in tags_data:
+    #     slug = tag_data.get('slug', slugify(tag_data['name']))
+    #     tag, created = Tag.objects.get_or_create(slug=slug, defaults=tag_data)
+    #     product.tags.add(tag)
     for tag_data in tags_data:
         tag, created = Tag.objects.get_or_create(**tag_data)
         product.tags.add(tag)
@@ -98,11 +102,16 @@ def update_product_with_related_data(instance, validated_data):
 
     # Handle tags update
     tags_data = validated_data.pop('tags', None)
-    if tags_data:
+    if tags_data is not None:
+        print("Updating tags...")  # Debug output
         instance.tags.clear()
         for tag_data in tags_data:
+            print(f"Processing tag: {tag_data}")  # Debug output
             tag, created = Tag.objects.get_or_create(**tag_data)
             instance.tags.add(tag)
+            # slug = tag_data.get('slug', slugify(tag_data['name']))  # Ensure a slug is generated
+            # tag, created = Tag.objects.get_or_create(slug=slug, defaults={'name': tag_data['name']})
+            # instance.tags.add(tag)  # Re-add the tag, whether it's new or already existed
 
     # Set the remaining fields
     for attr, value in validated_data.items():

@@ -377,12 +377,12 @@ class ProductViewTest(TestCase):
         )
 
         # Print the slug to verify
-        print(f"Category Slug: {category.slug}")
+        # print(f"Category Slug: {category.slug}")
 
         res = self.client.get(PRODUCTS_URL, {'category': category.slug})
 
-        print(f"Response Status Code: {res.status_code}")
-        print(f"Response Data: {res.data}")
+        # print(f"Response Status Code: {res.status_code}")
+        # print(f"Response Data: {res.data}")
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['results']), 2)
