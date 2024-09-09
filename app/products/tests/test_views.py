@@ -79,8 +79,125 @@ def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
 
-class ProductViewTest(TestCase):
-    """Test product API views."""
+class ProductListViewTest(TestCase):
+    """Test product API list views."""
+    def setUp(self):
+        self.client = APIClient()
+
+        self.admin_user = get_user_model().objects.create_superuser(
+            email='admin@example.com',
+            password='adminpass'
+        )
+        self.client.force_authenticate(user=self.admin_user)
+
+        self.category = Category.objects.create(
+            name="Electronics",
+            slug="electronics"
+        )
+        self.tag = Tag.objects.create(name="Tag1", slug="tag1")
+        self.product_data = {
+            "name": "Product 2",
+            "price": 10.00,
+            "slug": "product-2",
+            "tags": [{"name": "Tag1", "slug": "tag1"}],
+            "category": {"name": "Electronics", "slug": "electronics"},
+            "description": "Test description",
+            "stock": 5
+        }
+
+    def test_retrieve_products(self):
+        """Test retrieving a list of products."""
+        create_product()
+        create_product()
+
+        res = self.client.get(PRODUCTS_URL)
+        products = Product.objects.all().order_by('id')
+        serializer = ProductMiniSerializer(products, many=True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data['results'], serializer.data)
+        self.assertEqual(len(res.data['results']), 2)
+
+    def test_filtering_products_by_category(self):
+        """Test filtering products by category."""
+        category = Category.objects.create(
+            name="Filter Category",
+            slug="filter-category"
+        )
+        product1 = create_product(
+            name='Product 1',
+            slug='product-1',
+            category=category
+        )
+        product2 = create_product(
+            name='Product 2',
+            slug='product-2',
+            category=category
+        )
+        # Different category
+        product3 = create_product(
+            name='Product 3',
+            slug='product-3'
+        )
+
+        res = self.client.get(PRODUCTS_URL, {'category': category.slug})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertIn(
+            product1.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertIn(
+            product2.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertNotIn(
+            product3.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+
+    def test_filtering_products_by_tags(self):
+        """Test filtering products by tags."""
+        tag1 = Tag.objects.create(name="Filter Tag", slug="filter-tag")
+        tag2 = Tag.objects.create(name="Different", slug="different")
+        product1 = create_product(name='Product 1', slug='product-1')
+        product2 = create_product(name='Product 2', slug='product-2')
+        # Different tag
+        product3 = create_product(name='Product 3', slug='product-3')
+        product1.tags.add(tag1)
+        product2.tags.add(tag1)
+        product3.tags.add(tag2)
+
+        res = self.client.get(PRODUCTS_URL, {'tags': tag1.id})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data['results']), 2)
+        self.assertIn(
+            product1.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertIn(
+            product2.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+        self.assertNotIn(
+            product3.id,
+            [prod['id'] for prod in res.data['results']]
+        )
+
+    # def test_search_product_by_name(self):
+    #     """Test searching for products by name"""
+    #     product1 = create_product(name='Test Product 1', slug='product-1')
+    #     product2 = create_product(name='Test Product 2', slug='product-2')
+    #
+    #     res = self.client.get(PRODUCTS_URL, {'search': 'Test Product 1'})
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertIn(self.product1.id, [product['id'] for product in res.data['results']])
+
+
+class ProductCreateViewTest(TestCase):
+    """Test creating products."""
+
     def setUp(self):
         self.client = APIClient()
 
@@ -146,16 +263,13 @@ class ProductViewTest(TestCase):
         self.assertEqual(product.name, "Test Product")
         self.assertEqual(product.category.slug, "new-category")
 
-    def test_retrieve_products(self):
-        """Test retrieving a list of products."""
-        create_product()
-        create_product()
-
-        res = self.client.get(PRODUCTS_URL)
-        products = Product.objects.all().order_by('id')
-        serializer = ProductMiniSerializer(products, many=True)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data['results'], serializer.data)
+    def test_create_product_non_admin_forbidden(self):
+        """Test creating a product as a non-admin"""
+        non_admin_user = create_user(email='user@example.com', password='userpass')
+        self.client.force_authenticate(non_admin_user)
+        payload = {'name': 'Unauthorized Product'}
+        res = self.client.post(CREATE_PRODUCTS_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_product_detail(self):
         """Test get product detail."""
@@ -354,79 +468,6 @@ class ProductViewTest(TestCase):
 
         self.assertEqual(product.reviews.count(), 0)
 
-    def test_filtering_products_by_category(self):
-        """Test filtering products by category."""
-        category = Category.objects.create(
-            name="Filter Category",
-            slug="filter-category"
-        )
-        product1 = create_product(
-            name='Product 1',
-            slug='product-1',
-            category=category
-        )
-        product2 = create_product(
-            name='Product 2',
-            slug='product-2',
-            category=category
-        )
-        # Different category
-        product3 = create_product(
-            name='Product 3',
-            slug='product-3'
-        )
-
-        # Print the slug to verify
-        # print(f"Category Slug: {category.slug}")
-
-        res = self.client.get(PRODUCTS_URL, {'category': category.slug})
-
-        # print(f"Response Status Code: {res.status_code}")
-        # print(f"Response Data: {res.data}")
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data['results']), 2)
-        self.assertIn(
-            product1.id,
-            [prod['id'] for prod in res.data['results']]
-        )
-        self.assertIn(
-            product2.id,
-            [prod['id'] for prod in res.data['results']]
-        )
-        self.assertNotIn(
-            product3.id,
-            [prod['id'] for prod in res.data['results']]
-        )
-
-    def test_filtering_products_by_tags(self):
-        """Test filtering products by tags."""
-        tag1 = Tag.objects.create(name="Filter Tag", slug="filter-tag")
-        tag2 = Tag.objects.create(name="Different", slug="different")
-        product1 = create_product(name='Product 1', slug='product-1')
-        product2 = create_product(name='Product 2', slug='product-2')
-        # Different tag
-        product3 = create_product(name='Product 3', slug='product-3')
-        product1.tags.add(tag1)
-        product2.tags.add(tag1)
-        product3.tags.add(tag2)
-
-        res = self.client.get(PRODUCTS_URL, {'tags': tag1.id})
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data['results']), 2)
-        self.assertIn(
-            product1.id,
-            [prod['id'] for prod in res.data['results']]
-        )
-        self.assertIn(
-            product2.id,
-            [prod['id'] for prod in res.data['results']]
-        )
-        self.assertNotIn(
-            product3.id,
-            [prod['id'] for prod in res.data['results']]
-        )
 
 
 class ProductCategoryDeletionTest(TestCase):
