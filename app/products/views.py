@@ -140,7 +140,7 @@ class TagListView(generics.ListAPIView):
     """
     View to list all tags.
     """
-    queryset = Tag.objects.all()
+    queryset = Tag.objects.all().order_by('id')
     serializer_class = TagSerializer
 
 
