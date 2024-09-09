@@ -26,6 +26,7 @@ from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
 PRODUCTS_URL = reverse('products:product-list')
 CREATE_PRODUCTS_URL = reverse('products:product-create')
+CATEGORY_URL = reverse('products:category-list')
 
 
 def detail_url(product_id):
@@ -271,6 +272,19 @@ class ProductCreateViewTest(TestCase):
         res = self.client.post(CREATE_PRODUCTS_URL, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
+
+class ProductDetailViewTest(TestCase):
+    """Test retrieving product detail view."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+        self.admin_user = get_user_model().objects.create_superuser(
+            email='admin@example.com',
+            password='adminpass'
+            )
+        self.client.force_authenticate(user=self.admin_user)
+
     def test_get_product_detail(self):
         """Test get product detail."""
         product = create_product()
@@ -279,6 +293,36 @@ class ProductCreateViewTest(TestCase):
         res = self.client.get(url)
         serializer = ProductDetailSerializer(product)
         self.assertEqual(res.data, serializer.data)
+
+
+class ProductUpdateDeleteViewTest(TestCase):
+    """
+    Test product update and delete.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+
+        self.admin_user = get_user_model().objects.create_superuser(
+            email='admin@example.com',
+            password='adminpass'
+            )
+        self.client.force_authenticate(user=self.admin_user)
+
+        self.category = Category.objects.create(
+            name="Electronics",
+            slug="electronics"
+        )
+        self.tag = Tag.objects.create(name="Tag1", slug="tag1")
+        self.product_data = {
+            "name": "Product 2",
+            "price": 10.00,
+            "slug": "product-2",
+            "tags": [{"name": "Tag1", "slug": "tag1"}],
+            "category": {"name": "Electronics", "slug": "electronics"},
+            "description": "Test description",
+            "stock": 5
+        }
 
     def test_partial_update(self):
         """Test partial update of a product."""
@@ -337,9 +381,6 @@ class ProductCreateViewTest(TestCase):
         }
         url = manage_url(product.id)
         res = self.client.put(url, payload, format='json')
-
-        # print("Test payload:", payload)  # Debug print statement
-        # print("Response data:", res.data)  # Debug print statement
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         product.refresh_from_db()
@@ -468,6 +509,30 @@ class ProductCreateViewTest(TestCase):
 
         self.assertEqual(product.reviews.count(), 0)
 
+
+class CategoryListViewTest(TestCase):
+    """Test categories list views."""
+    def setUp(self):
+        self.client = APIClient()
+
+        self.admin_user = get_user_model().objects.create_superuser(
+            email='admin@example.com',
+            password='adminpass'
+        )
+        self.client.force_authenticate(user=self.admin_user)
+
+        Category.objects.create(name="Electronics", slug="electronics")
+
+        Category.objects.create(
+            name="Books",
+            slug="books"
+        )
+
+    def test_retrieve_category_list(self):
+        """Test retrieving the list of categories"""
+        res = self.client.get(CATEGORY_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data['results']), 2)
 
 
 class ProductCategoryDeletionTest(TestCase):

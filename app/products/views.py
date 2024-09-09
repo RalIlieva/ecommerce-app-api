@@ -84,7 +84,7 @@ class CategoryListView(generics.ListAPIView):
     """
     View to list all categories to all users.
     """
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('id')
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated]
 
