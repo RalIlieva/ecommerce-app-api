@@ -27,6 +27,7 @@ from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 PRODUCTS_URL = reverse('products:product-list')
 CREATE_PRODUCTS_URL = reverse('products:product-create')
 CATEGORY_URL = reverse('products:category-list')
+CREATE_CATEGORY_URL = reverse('products:category-create')
 TAG_CREATE_URL = reverse('products:tag-create')
 
 
@@ -536,6 +537,33 @@ class CategoryListViewTest(TestCase):
         self.assertEqual(len(res.data['results']), 2)
 
 
+class CategoryCreateViewTest(TestCase):
+    """Test creating categories"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = create_admin_user(email='admin@example.com', password='adminpass')
+        self.non_admin_user = create_user(email='user@example.com', password='userpass')
+
+    # def test_create_category_as_admin(self):
+    #     """Test creating a category as an admin"""
+    #     self.client.force_authenticate(user=self.admin_user)
+    #     payload = {
+    #         'name': 'New Category',
+    #         'slug': 'new-category',
+    #         # 'parent': None
+    #     }
+    #     res = self.client.post(CREATE_CATEGORY_URL, payload, format='json')
+    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_category_as_non_admin(self):
+        """Test creating a category as a non-admin"""
+        self.client.force_authenticate(user=self.non_admin_user)
+        payload = {'name': 'Unauthorized Category', 'slug': 'unauthorized-category'}
+        res = self.client.post(CREATE_CATEGORY_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
     def setUp(self):
@@ -673,6 +701,7 @@ class OrphanProductTest(TestCase):
 
 
 class TagCreateViewTest(TestCase):
+    """Test tags creation is successful."""
     def setUp(self):
         self.client = APIClient()
         self.admin_user = create_admin_user(email='admin@example.com', password='adminpass')

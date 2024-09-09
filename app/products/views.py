@@ -14,6 +14,7 @@ from .serializers import (
     ProductImageSerializer
 )
 # from .permissions import IsAdminOrReadOnly
+from .services import get_or_create_category
 from .selectors import get_active_products
 from .filters import ProductFilter
 from .pagination import CustomPagination
@@ -97,6 +98,11 @@ class CategoryCreateView(generics.CreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    # def perform_create(self, serializer):
+    #     # Perform the logic of getting or creating a category here
+    #     category = get_or_create_category(serializer.validated_data)
+    #     serializer.save(id=category.id)
 
 
 class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
