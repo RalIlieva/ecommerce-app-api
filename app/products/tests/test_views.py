@@ -27,6 +27,7 @@ from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 PRODUCTS_URL = reverse('products:product-list')
 CREATE_PRODUCTS_URL = reverse('products:product-create')
 CATEGORY_URL = reverse('products:category-list')
+TAG_CREATE_URL = reverse('products:tag-create')
 
 
 def detail_url(product_id):
@@ -669,6 +670,27 @@ class OrphanProductTest(TestCase):
             child_category,
             "Product should still be assigned to the child category."
         )
+
+
+class TagCreateViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.admin_user = create_admin_user(email='admin@example.com', password='adminpass')
+        self.client.force_authenticate(self.admin_user)
+
+    def test_create_tag_successful(self):
+        """Test creating a tag as an admin"""
+        payload = {'name': 'New Tag', 'slug': 'new-tag'}
+        res = self.client.post(TAG_CREATE_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_tag_non_admin_forbidden(self):
+        """Test creating a tag as a non-admin"""
+        non_admin_user = create_user(email='user@example.com', password='userpass')
+        self.client.force_authenticate(non_admin_user)
+        payload = {'name': 'Unauthorized Tag'}
+        res = self.client.post(TAG_CREATE_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class ImageUploadTests(TestCase):
