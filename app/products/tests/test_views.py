@@ -28,6 +28,7 @@ PRODUCTS_URL = reverse('products:product-list')
 CREATE_PRODUCTS_URL = reverse('products:product-create')
 CATEGORY_URL = reverse('products:category-list')
 CREATE_CATEGORY_URL = reverse('products:category-create')
+TAG_URL = reverse('products:tag-list')
 TAG_CREATE_URL = reverse('products:tag-create')
 
 
@@ -564,6 +565,50 @@ class CategoryCreateViewTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
 
+class CategoryUpdateDeleteViewTest(TestCase):
+    """Tests for update and delete of categories."""
+
+    # def setUp(self):
+    #     self.client = APIClient()
+    #     self.admin_user = create_admin_user(email='admin@example.com', password='adminpass')
+    #     self.non_admin_user = create_user(email='user@example.com', password='userpass')
+    #     self.category = Category.objects.create(name='Old Category', slug='old-category')
+    #     self.url = reverse('products:category-manage', args=[self.category.id])
+    #
+    # def test_update_category_as_admin(self):
+    #     """Test updating a category as an admin"""
+    #     self.client.force_authenticate(user=self.admin_user)
+    #     payload = {'name': 'Updated Category'}
+    #     res = self.client.patch(self.url, payload, format='json')
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.category.refresh_from_db()
+    #     self.assertEqual(self.category.name, 'Updated Category')
+    #
+    # def test_delete_category_as_admin(self):
+    #     """Test deleting a category as an admin"""
+    #     self.client.force_authenticate(user=self.admin_user)
+    #     res = self.client.delete(self.url)
+    #     self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+    #
+    # def test_update_delete_category_as_non_admin(self):
+    #     """Test updating or deleting a category as a non-admin"""
+    #     self.client.force_authenticate(user=self.non_admin_user)
+    #     payload = {'name': 'Unauthorized Update'}
+    #     update_res = self.client.patch(self.url, payload, format='json')
+    #     delete_res = self.client.delete(self.url)
+    #     self.assertEqual(update_res.status_code, status.HTTP_403_FORBIDDEN)
+    #     self.assertEqual(delete_res.status_code, status.HTTP_403_FORBIDDEN)
+    #
+    # def test_update_delete_invalid_category(self):
+    #     """Test updating or deleting a category with an invalid ID"""
+    #     self.client.force_authenticate(user=self.admin_user)
+    #     invalid_url = reverse('products:category-manage', args=[999])
+    #     update_res = self.client.patch(invalid_url, {'name': 'Invalid Category'}, format='json')
+    #     delete_res = self.client.delete(invalid_url)
+    #     self.assertEqual(update_res.status_code, status.HTTP_404_NOT_FOUND)
+    #     self.assertEqual(delete_res.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class ProductCategoryDeletionTest(TestCase):
     """Test the impact of category deletion on products."""
     def setUp(self):
@@ -698,6 +743,21 @@ class OrphanProductTest(TestCase):
             child_category,
             "Product should still be assigned to the child category."
         )
+
+
+class TagListViewTest(TestCase):
+    """Test listing tags."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.tag1 = Tag.objects.create(name="Tag 1")
+        self.tag2 = Tag.objects.create(name="Tag 2")
+
+    def test_list_all_tags(self):
+        """Test listing all tags"""
+        res = self.client.get(TAG_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data['results']), 2)
 
 
 class TagCreateViewTest(TestCase):
