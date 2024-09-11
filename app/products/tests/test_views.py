@@ -574,16 +574,16 @@ class CategoryCreateViewTest(TestCase):
             password='userpass'
         )
 
-    # def test_create_category_as_admin(self):
-    #     """Test creating a category as an admin"""
-    #     self.client.force_authenticate(user=self.admin_user)
-    #     payload = {
-    #         'name': 'New Category',
-    #         'slug': 'new-category',
-    #         # 'parent': None
-    #     }
-    #     res = self.client.post(CREATE_CATEGORY_URL, payload, format='json')
-    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+    def test_create_category_as_admin(self):
+        """Test creating a category as an admin"""
+        self.client.force_authenticate(user=self.admin_user)
+        payload = {
+            'name': 'Testing Creating New Category',
+            'slug': 'testing-creating-new-category',
+            # 'parent': None
+        }
+        res = self.client.post(CREATE_CATEGORY_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_create_category_as_non_admin(self):
         """Test creating a category as a non-admin"""

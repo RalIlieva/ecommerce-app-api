@@ -30,7 +30,13 @@ class CategorySerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def to_internal_value(self, data):
-        return get_or_create_category(data)
+        return data
+
+    def validate(self, data):
+        """Ensure category name is not empty."""
+        if not data.get('name'):
+            raise serializers.ValidationError({"name": "This field is required."})
+        return data
 
 
 class TagSerializer(serializers.ModelSerializer):
