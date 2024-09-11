@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 from .models import Product, ProductImage, Review, Tag, Category
 from .services import (
-    get_or_create_category,
+    # get_or_create_category,
     create_product_with_related_data,
     update_product_with_related_data
 )
@@ -30,12 +30,15 @@ class CategorySerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def to_internal_value(self, data):
+        """Custom internal value processing."""
         return data
 
     def validate(self, data):
         """Ensure category name is not empty."""
         if not data.get('name'):
-            raise serializers.ValidationError({"name": "This field is required."})
+            raise serializers.ValidationError(
+                {"name": "This field is required."}
+            )
         return data
 
 

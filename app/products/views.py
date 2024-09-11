@@ -15,7 +15,7 @@ from .serializers import (
     ProductImageSerializer
 )
 # from .permissions import IsAdminOrReadOnly
-from .services import get_or_create_category
+# from .services import get_or_create_category
 from .selectors import get_active_products
 from .filters import ProductFilter
 from .pagination import CustomPagination
@@ -110,16 +110,6 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    # def partial_update(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(
-    #     instance,
-    #     data=request.data,
-    #     partial=True
-    #     )
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()  # Save with validated data, not a model instance
-    #     return Response(serializer.data)
 
 # class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 #     """
