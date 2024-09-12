@@ -83,8 +83,8 @@ class ProductServiceTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         product.refresh_from_db()
 
-        # Debugging output to check tags
-        print("Product Tags after update:", product.tags.all())
+        # # Debugging output to check tags
+        # print("Product Tags after update:", product.tags.all())
 
         self.assertEqual(product.name, payload['name'])
         self.assertEqual(product.name, "Updated Product 3")
