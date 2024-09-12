@@ -237,3 +237,20 @@ class ProductImageSerializerTest(TestCase):
         self.assertTrue(
             serializer.is_valid(), "Serializer validation failed."
         )
+
+    def test_missing_image(self):
+        """Test missing image raises an error in serialization."""
+        data = {
+            "product": self.product.id,
+            "alt_text": "Test image without file"
+        }
+        serializer = ProductImageSerializer(data=data)
+        self.assertFalse(
+            serializer.is_valid(),
+            "Serializer validation should fail for missing image."
+        )
+        self.assertIn(
+            "image",
+            serializer.errors,
+            "Expected 'image' field error in serializer errors."
+        )
