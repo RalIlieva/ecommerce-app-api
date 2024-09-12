@@ -2,13 +2,14 @@
 Serializers for the product models.
 """
 
+import re
 from rest_framework import serializers
 # from rest_framework.exceptions import ValidationError
-# from django.utils.text import slugify
+from django.utils.text import slugify
 
 from .models import Product, ProductImage, Review, Tag, Category
 from .services import (
-    # get_or_create_category,
+    get_or_create_category,
     create_product_with_related_data,
     update_product_with_related_data
 )
@@ -30,15 +31,62 @@ class CategorySerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def to_internal_value(self, data):
-        """Custom internal value processing."""
+        """
+        Custom internal value processing.
+        Ensure the serializer does not try to automatically map or \
+        validate the Category and related data prematurely.\
+        By returning raw data (return data), the custom functions are\
+        called (get_or_create_category) in services.py to proceed the data\
+        the way needed before saving or updating the model.
+        """
         return data
 
     def validate(self, data):
-        """Ensure category name is not empty."""
-        if not data.get('name'):
+        """Ensure category name is not empty, unique, and nesting depth is valid."""
+        data = data.copy()
+
+        name = data.get('name')
+        slug = data.get('slug', slugify(name))
+        parent_id = data.get('parent')
+
+        if not name:
             raise serializers.ValidationError(
                 {"name": "This field is required."}
             )
+
+        # Slug validation
+        if not re.match(r'^[a-zA-Z0-9_-]+$', slug):
+            raise serializers.ValidationError(
+                {"slug": "Slug can only contain letters, numbers, hyphens, and underscores."}
+            )
+        # Check if parent is an empty list, and set it to None
+        if parent_id == '' or parent_id == []:
+            parent_id = None
+
+            # Check that a category is not its own parent and validate the parent
+        if parent_id:
+            try:
+                parent_category = Category.objects.get(id=parent_id)
+                # Check that a category is not its own parent
+                if self.instance and parent_category.id == self.instance.id:
+                    raise serializers.ValidationError(
+                        {"parent": "A category cannot be its own parent."}
+                    )
+
+                # Limit the depth of nested categories
+                if parent_category.parent:
+                    raise serializers.ValidationError(
+                        {"parent": "Categories cannot be nested more than one level."}
+                    )
+
+                data['parent'] = parent_category  # Set the validated parent
+            except Category.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"parent": f"Parent category with id {parent_id} does not exist."}
+                )
+            else:
+                data['parent'] = None  # Set parent to None if no parent provided
+
         return data
 
 

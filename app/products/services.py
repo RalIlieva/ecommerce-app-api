@@ -22,7 +22,7 @@ def get_or_create_category(data):
         if not name:
             raise ValidationError({"name": "This field is required."})
 
-        # Check for existing category
+        # Check for existing category instance
         category = Category.objects.filter(name=name, slug=slug).first()
         if category:
             return category
@@ -37,10 +37,11 @@ def get_or_create_category(data):
                     f"Parent category with id {parent_id} does not exist."
                 )
 
-        # Create new category if not found
+        # Create new category instance if not found
         category, created = Category.objects.get_or_create(
             name=name, slug=slug, defaults={'parent': parent}
         )
+        # Returns a category instance
         return category
 
     raise ValidationError(
