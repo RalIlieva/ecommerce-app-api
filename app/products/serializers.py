@@ -32,62 +32,122 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         """
-        Custom internal value processing.
-        Ensure the serializer does not try to automatically map or \
-        validate the Category and related data prematurely.\
-        By returning raw data (return data), the custom functions are\
-        called (get_or_create_category) in services.py to proceed the data\
-        the way needed before saving or updating the model.
+        Convert the input data into native Python types and validate it.
         """
-        return data
-
-    def validate(self, data):
-        """Ensure category name is not empty, unique, and nesting depth is valid."""
-        data = data.copy()
-
+        # Extract the fields from the incoming data
         name = data.get('name')
-        slug = data.get('slug', slugify(name))
+        slug = data.get('slug', slugify(name) if name else '')
         parent_id = data.get('parent')
 
+        # Perform the validation
+        errors = {}
+
         if not name:
-            raise serializers.ValidationError(
-                {"name": "This field is required."}
-            )
+            errors['name'] = 'This field is required.'
 
         # Slug validation
-        if not re.match(r'^[a-zA-Z0-9_-]+$', slug):
-            raise serializers.ValidationError(
-                {"slug": "Slug can only contain letters, numbers, hyphens, and underscores."}
-            )
-        # Check if parent is an empty list, and set it to None
-        if parent_id == '' or parent_id == []:
-            parent_id = None
+        if not slug:
+            errors['slug'] = 'This field is required.'
+        elif not re.match(r'^[a-zA-Z0-9_-]+$', slug):
+            errors['slug'] = 'Slug can only contain letters, numbers, hyphens, and underscores.'
 
-            # Check that a category is not its own parent and validate the parent
+        # Validate the parent
+        if parent_id == '' or parent_id == []:
+            parent_id = None  # Handle empty strings or lists for parent
+
         if parent_id:
             try:
                 parent_category = Category.objects.get(id=parent_id)
-                # Check that a category is not its own parent
-                if self.instance and parent_category.id == self.instance.id:
-                    raise serializers.ValidationError(
-                        {"parent": "A category cannot be its own parent."}
-                    )
+                if parent_category.id == self.instance.id if self.instance else None:
+                    errors['parent'] = 'A category cannot be its own parent.'
 
                 # Limit the depth of nested categories
                 if parent_category.parent:
-                    raise serializers.ValidationError(
-                        {"parent": "Categories cannot be nested more than one level."}
-                    )
-
-                data['parent'] = parent_category  # Set the validated parent
+                    errors['parent'] = 'Categories cannot be nested more than one level.'
             except Category.DoesNotExist:
-                raise serializers.ValidationError(
-                    {"parent": f"Parent category with id {parent_id} does not exist."}
-                )
-            else:
-                data['parent'] = None  # Set parent to None if no parent provided
+                errors['parent'] = f'Parent category with id {parent_id} does not exist.'
 
-        return data
+        # If there are validation errors, raise a ValidationError
+        if errors:
+            raise serializers.ValidationError(errors)
+
+        # Return the validated data as native Python types
+        return {
+            'name': name,
+            'slug': slug,
+            'parent': parent_category if parent_id else None,
+        }
+
+    def create(self, validated_data):
+        """Create a category using the validated data."""
+        return Category.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """Update a category using the validated data."""
+        instance.name = validated_data.get('name', instance.name)
+        instance.slug = validated_data.get('slug', instance.slug)
+        instance.parent = validated_data.get('parent', instance.parent)
+        instance.save()
+        return instance
+
+    # def to_internal_value(self, data):
+    #     """
+    #     Custom internal value processing.
+    #     Ensure the serializer does not try to automatically map or \
+    #     validate the Category and related data prematurely.\
+    #     By returning raw data (return data), the custom functions are\
+    #     called (get_or_create_category) in services.py to proceed the data\
+    #     the way needed before saving or updating the model.
+    #     """
+    #     return data
+
+    # def validate(self, data):
+    #     """Ensure category name is not empty, unique, and nesting depth is valid."""
+    #     data = data.copy()
+    #
+    #     name = data.get('name')
+    #     slug = data.get('slug', slugify(name))
+    #     parent_id = data.get('parent')
+    #
+    #     if not name:
+    #         raise serializers.ValidationError(
+    #             {"name": "This field is required."}
+    #         )
+    #
+    #     # Slug validation
+    #     if not re.match(r'^[a-zA-Z0-9_-]+$', slug):
+    #         raise serializers.ValidationError(
+    #             {"slug": "Slug can only contain letters, numbers, hyphens, and underscores."}
+    #         )
+    #     # Check if parent is an empty list, and set it to None
+    #     if parent_id == '' or parent_id == []:
+    #         parent_id = None
+    #
+    #         # Check that a category is not its own parent and validate the parent
+    #     if parent_id:
+    #         try:
+    #             parent_category = Category.objects.get(id=parent_id)
+    #             # Check that a category is not its own parent
+    #             if self.instance and parent_category.id == self.instance.id:
+    #                 raise serializers.ValidationError(
+    #                     {"parent": "A category cannot be its own parent."}
+    #                 )
+    #
+    #             # Limit the depth of nested categories
+    #             if parent_category.parent:
+    #                 raise serializers.ValidationError(
+    #                     {"parent": "Categories cannot be nested more than one level."}
+    #                 )
+    #
+    #             data['parent'] = parent_category  # Set the validated parent
+    #         except Category.DoesNotExist:
+    #             raise serializers.ValidationError(
+    #                 {"parent": f"Parent category with id {parent_id} does not exist."}
+    #             )
+    #         else:
+    #             data['parent'] = None  # Set parent to None if no parent provided
+    #
+    #     return data
 
 
 class TagSerializer(serializers.ModelSerializer):
