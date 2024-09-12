@@ -68,3 +68,10 @@ class ProductSelectorTest(TestCase):
         products = search_products_by_name("Sample Product")
         self.assertIn(self.product2, products)
         self.assertNotIn(self.product1, products)
+
+    def test_get_active_products(self):
+        """Test filtering active products."""
+        active_products = get_active_products()
+        self.assertIn(self.product1, active_products)
+        self.assertIn(self.product3, active_products)
+        self.assertNotIn(self.product2, active_products)
