@@ -161,7 +161,10 @@ class ReviewModelTest(TestCase):
             email='testuser@example.com',
             password='password123'
         )
-        self.category = Category.objects.create(name="Electronics", slug="electronics")
+        self.category = Category.objects.create(
+            name="Electronics",
+            slug="electronics"
+        )
         self.product = Product.objects.create(
             name="Product 2",
             description="Test description",
@@ -192,4 +195,7 @@ class ReviewModelTest(TestCase):
             rating=4,
             comment="Good product."
         )
-        self.assertEqual(str(review), f"Review for {self.product.name} by {self.user.email}")
+        self.assertEqual(
+            str(review),
+            f"Review for {self.product.name} by {self.user.email}"
+        )
