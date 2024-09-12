@@ -2,11 +2,13 @@
 Test the product models.
 """
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from products.models import (
     Category,
     Product,
-    Tag
+    Tag,
+    ProductImage
 )
 
 
@@ -97,3 +99,52 @@ class TagModelTest(TestCase):
         """Test the string representation of the tag."""
         tag = Tag.objects.create(name="Featured")
         self.assertEqual(str(tag), "Featured")
+
+
+class ProductImageModelTest(TestCase):
+    """Test creating and managing product images."""
+
+    def setUp(self):
+        """Create a product for testing images."""
+        self.category = Category.objects.create(
+            name="Electronics",
+            slug="electronics"
+        )
+        self.product = Product.objects.create(
+            name="Product 2",
+            description="Test description",
+            price=10.00,
+            category=self.category,
+            stock=5,
+            slug="product-2"
+        )
+
+    def test_create_product_image(self):
+        """Test creating a product image."""
+        image = SimpleUploadedFile(
+            name='test_image.jpg',
+            content=b'\x00\x01\x02',
+            content_type='image/jpeg'
+        )
+        product_image = ProductImage.objects.create(
+            product=self.product,
+            image=image,
+            alt_text="Test Image"
+        )
+        self.assertEqual(product_image.product, self.product)
+        self.assertEqual(product_image.alt_text, "Test Image")
+        self.assertIn('uploads/product/', product_image.image.name)
+
+    def test_product_image_str(self):
+        """Test the string representation of product images."""
+        image = SimpleUploadedFile(
+            name='test_image.jpg',
+            content=b'\x00\x01\x02',
+            content_type='image/jpeg'
+        )
+        product_image = ProductImage.objects.create(
+            product=self.product,
+            image=image,
+            alt_text="Test Image"
+        )
+        self.assertEqual(str(product_image), f'Image for {self.product.name}')
