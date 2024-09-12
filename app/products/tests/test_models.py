@@ -3,7 +3,11 @@ Test the product models.
 """
 
 from django.test import TestCase
-from products.models import Category, Product
+from products.models import (
+    Category,
+    Product,
+    Tag
+)
 
 
 class CategoryModelTest(TestCase):
@@ -74,3 +78,22 @@ class ProductModelTest(TestCase):
             slug="product-2"
         )
         self.assertEqual(str(product), "Product 2")
+
+
+class TagModelTest(TestCase):
+    """Test for creating tag model."""
+
+    def test_create_tag(self):
+        tag = Tag.objects.create(name="Sale", slug="sale")
+        self.assertEqual(tag.name, "Sale")
+        self.assertEqual(tag.slug, "sale")
+
+    def test_tag_auto_slug(self):
+        """Test tag slug is automatically generated."""
+        tag = Tag.objects.create(name="New Arrival")
+        self.assertEqual(tag.slug, "new-arrival")
+
+    def test_tag_str(self):
+        """Test the string representation of the tag."""
+        tag = Tag.objects.create(name="Featured")
+        self.assertEqual(str(tag), "Featured")
