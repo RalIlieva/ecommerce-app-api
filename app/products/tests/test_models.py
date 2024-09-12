@@ -38,6 +38,14 @@ class CategoryModelTest(TestCase):
 
 class ProductModelTest(TestCase):
     """Test creating a product with an existing category."""
+
+    def setUp(self):
+        """Create a category for products."""
+        self.category = Category.objects.create(
+            name="Generic",
+            slug="generic"
+        )
+
     def test_create_product(self):
         category = Category.objects.create(
             name="Electronics",
@@ -54,3 +62,15 @@ class ProductModelTest(TestCase):
         self.assertEqual(product.name, "Product 2")
         self.assertEqual(product.price, 10.00)
         self.assertEqual(product.category.name, "Electronics")
+
+    def test_product_str(self):
+        """Test the string representation of the product."""
+        product = Product.objects.create(
+            name="Product 2",
+            description="Test description",
+            price=10.00,
+            category=self.category,
+            stock=5,
+            slug="product-2"
+        )
+        self.assertEqual(str(product), "Product 2")
