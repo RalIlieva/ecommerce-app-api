@@ -57,3 +57,14 @@ class ProductSelectorTest(TestCase):
         # Test non-existing product
         product = get_product_by_id(999)  # ID does not exist
         self.assertIsNone(product)
+
+    def test_search_products_by_name(self):
+        """Test searching products by name."""
+        products = search_products_by_name("Test")
+        self.assertIn(self.product1, products)
+        self.assertIn(self.product3, products)
+        self.assertNotIn(self.product2, products)
+
+        products = search_products_by_name("Sample Product")
+        self.assertIn(self.product2, products)
+        self.assertNotIn(self.product1, products)
