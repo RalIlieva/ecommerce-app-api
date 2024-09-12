@@ -6,8 +6,15 @@ from django.test import TestCase
 from products.serializers import (
     ProductDetailSerializer,
     CategorySerializer,
+    TagSerializer,
+    ProductImageSerializer
 )
-from products.models import Category, Product
+from products.models import (
+    Category,
+    Product,
+    Tag,
+    ProductImage
+)
 
 
 class ProductSerializerTest(TestCase):
@@ -117,6 +124,43 @@ class CategorySerializerTest(TestCase):
             "slug": "home-appliances"
         }
         serializer = CategorySerializer(data=data)
+        if not serializer.is_valid():
+            print("Serializer Errors:", serializer.errors)
+        self.assertTrue(
+            serializer.is_valid(), "Serializer validation failed."
+        )
+
+    # def test_duplicate_slug_category(self):
+    #     """Test creating a category with an existing slug raises an error."""
+    #     Category.objects.create(
+    #         name="Existing Category",
+    #         slug="existing-slug"
+    #     )
+    #     data = {
+    #         "name": "New Category",
+    #         "slug": "existing-slug"
+    #     }
+    #     serializer = CategorySerializer(data=data)
+    #     self.assertFalse(
+    #         serializer.is_valid(),
+    #         "Serializer should fail due to duplicate slug."
+    #     )
+    #     self.assertIn(
+    #         "slug", serializer.errors,
+    #         "Expected 'slug' field error in serializer errors."
+    #     )
+
+
+class TagSerializerTest(TestCase):
+    """Test the tag serialization is successful."""
+
+    def test_valid_tag_serializer(self):
+        """Test serialization with valid tag data."""
+        data = {
+            "name": "Summer Sale",
+            "slug": "summer-sale"
+        }
+        serializer = TagSerializer(data=data)
         if not serializer.is_valid():
             print("Serializer Errors:", serializer.errors)
         self.assertTrue(
