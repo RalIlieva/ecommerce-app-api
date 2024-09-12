@@ -2,13 +2,15 @@
 Test the product models.
 """
 
+from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from products.models import (
     Category,
     Product,
     Tag,
-    ProductImage
+    ProductImage,
+    Review
 )
 
 
@@ -148,3 +150,46 @@ class ProductImageModelTest(TestCase):
             alt_text="Test Image"
         )
         self.assertEqual(str(product_image), f'Image for {self.product.name}')
+
+
+class ReviewModelTest(TestCase):
+    """Test creating reviews for products."""
+
+    def setUp(self):
+        """Create a user and product for testing reviews."""
+        self.user = get_user_model().objects.create_user(
+            email='testuser@example.com',
+            password='password123'
+        )
+        self.category = Category.objects.create(name="Electronics", slug="electronics")
+        self.product = Product.objects.create(
+            name="Product 2",
+            description="Test description",
+            price=10.00,
+            category=self.category,
+            stock=5,
+            slug="product-2"
+        )
+
+    def test_create_review(self):
+        """Test creating a review for a product."""
+        review = Review.objects.create(
+            product=self.product,
+            user=self.user,
+            rating=5,
+            comment="Great product!"
+        )
+        self.assertEqual(review.product, self.product)
+        self.assertEqual(review.user, self.user)
+        self.assertEqual(review.rating, 5)
+        self.assertEqual(review.comment, "Great product!")
+
+    def test_review_str(self):
+        """Test the string representation of a review."""
+        review = Review.objects.create(
+            product=self.product,
+            user=self.user,
+            rating=4,
+            comment="Good product."
+        )
+        self.assertEqual(str(review), f"Review for {self.product.name} by {self.user.email}")
