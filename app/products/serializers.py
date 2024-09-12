@@ -9,7 +9,7 @@ from django.utils.text import slugify
 
 from .models import Product, ProductImage, Review, Tag, Category
 from .services import (
-    get_or_create_category,
+    # get_or_create_category,
     create_product_with_related_data,
     update_product_with_related_data
 )
@@ -49,7 +49,8 @@ class CategorySerializer(serializers.ModelSerializer):
         if not slug:
             errors['slug'] = 'This field is required.'
         elif not re.match(r'^[a-zA-Z0-9_-]+$', slug):
-            errors['slug'] = 'Slug can only contain letters, numbers, hyphens, and underscores.'
+            errors['slug'] = \
+                'Slug contains only letters, numbers, hyphens, underscores.'
 
         # Validate the parent
         if parent_id == '' or parent_id == []:
@@ -58,14 +59,17 @@ class CategorySerializer(serializers.ModelSerializer):
         if parent_id:
             try:
                 parent_category = Category.objects.get(id=parent_id)
-                if parent_category.id == self.instance.id if self.instance else None:
+                if parent_category.id == self.instance.id\
+                        if self.instance else None:
                     errors['parent'] = 'A category cannot be its own parent.'
 
                 # Limit the depth of nested categories
                 if parent_category.parent:
-                    errors['parent'] = 'Categories cannot be nested more than one level.'
+                    errors['parent'] = \
+                        'Categories cannot be nested more than one level.'
             except Category.DoesNotExist:
-                errors['parent'] = f'Parent category with id {parent_id} does not exist.'
+                errors['parent'] = \
+                    f'Parent category with id {parent_id} does not exist.'
 
         # If there are validation errors, raise a ValidationError
         if errors:
@@ -102,7 +106,10 @@ class CategorySerializer(serializers.ModelSerializer):
     #     return data
 
     # def validate(self, data):
-    #     """Ensure category name is not empty, unique, and nesting depth is valid."""
+    #     """
+    #     Ensure category name is not empty, unique,
+    #     and nesting depth is valid.
+    #     """
     #     data = data.copy()
     #
     #     name = data.get('name')
@@ -117,13 +124,16 @@ class CategorySerializer(serializers.ModelSerializer):
     #     # Slug validation
     #     if not re.match(r'^[a-zA-Z0-9_-]+$', slug):
     #         raise serializers.ValidationError(
-    #             {"slug": "Slug can only contain letters, numbers, hyphens, and underscores."}
+    #             {
+    #             "slug":
+    #             "Slug contains only letters, numbers, hyphens, underscores."
+    #             }
     #         )
     #     # Check if parent is an empty list, and set it to None
     #     if parent_id == '' or parent_id == []:
     #         parent_id = None
     #
-    #         # Check that a category is not its own parent and validate the parent
+    #         # Check if a categ is not its own parent & validate the parent
     #     if parent_id:
     #         try:
     #             parent_category = Category.objects.get(id=parent_id)
@@ -136,16 +146,23 @@ class CategorySerializer(serializers.ModelSerializer):
     #             # Limit the depth of nested categories
     #             if parent_category.parent:
     #                 raise serializers.ValidationError(
-    #                     {"parent": "Categories cannot be nested more than one level."}
+    #                     {
+    #                     "parent":
+    #                     "Categories cannot be nested more than one level."
+    #                     }
     #                 )
     #
     #             data['parent'] = parent_category  # Set the validated parent
     #         except Category.DoesNotExist:
     #             raise serializers.ValidationError(
-    #                 {"parent": f"Parent category with id {parent_id} does not exist."}
+    #                 {
+    #                 "parent":
+    #                 f"Parent category with id {parent_id} does not exist."
+    #                 }
     #             )
     #         else:
-    #             data['parent'] = None  # Set parent to None if no parent provided
+    # # Set parent to None if no parent provided
+    #             data['parent'] = None
     #
     #     return data
 
