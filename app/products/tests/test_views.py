@@ -844,7 +844,9 @@ class TagCreateViewTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_tag_with_duplicate_slug(self):
-        """Test that creating a tag with an existing slug raises a 400 error."""
+        """
+        Test that creating a tag with an existing slug raises a 400 error.
+        """
         # Create a tag with a slug
         Tag.objects.create(
             name="Existing Tag",
@@ -860,7 +862,10 @@ class TagCreateViewTest(TestCase):
         response = self.client.post(TAG_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Tag with this slug already exists.', str(response.content))
+        self.assertIn(
+            'Tag with this slug already exists.',
+            str(response.content)
+        )
 
 
 class TagUpdateDeleteViewTest(TestCase):

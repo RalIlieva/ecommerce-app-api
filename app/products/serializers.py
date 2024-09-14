@@ -110,13 +110,15 @@ class TagSerializer(serializers.ModelSerializer):
     #     """
     #     Check that the slug is unique only for new tags.
     #     """
-    #     # If this is an update (i.e., self.instance exists), we shouldn't validate the slug
+    #     # If an update (self.instance exists), no slug validation
     #     if self.instance is not None:
     #         return value
     #
     #     # If it's a new tag, validate slug uniqueness
     #     if Tag.objects.filter(slug=value).exists():
-    #         raise serializers.ValidationError("Tag with this slug already exists.")
+    #         raise serializers.ValidationError(
+    #         "Tag with this slug already exists."
+    #         )
     #
     #     return value
 

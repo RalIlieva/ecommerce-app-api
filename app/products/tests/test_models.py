@@ -2,7 +2,6 @@
 Test the product models.
 """
 
-from rest_framework import status
 from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -203,7 +202,9 @@ class ReviewModelTest(TestCase):
         )
 
     def test_duplicate_slug_tag(self):
-        """Test creating a tag with an existing slug raises an IntegrityError."""
+        """
+        Test creating a tag with an existing slug raises an IntegrityError.
+        """
         Tag.objects.create(
             name="Existing Tag",
             slug="existing-slug"

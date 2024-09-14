@@ -5,9 +5,12 @@ Views for the products API.
 from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-from rest_framework.response import Response
+# from rest_framework.response import Response
 from rest_framework import generics, permissions, status
-from rest_framework.exceptions import ValidationError, APIException
+from rest_framework.exceptions import (
+    # ValidationError,
+    APIException
+)
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
     ProductDetailSerializer,
@@ -163,7 +166,7 @@ class TagCreateView(generics.CreateAPIView):
         try:
             serializer.save()
         except IntegrityError as e:
-            # Catch the unique constraint error on slug and raise a custom exception
+            # Catch the unique constraint error and raise a custom exception
             if 'unique constraint' in str(e):
                 raise TagAlreadyExistsException()
             raise e
