@@ -11,6 +11,7 @@ from rest_framework.exceptions import (
     # ValidationError,
     APIException
 )
+from core.exceptions import DuplicateSlugException
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
     ProductDetailSerializer,
@@ -26,10 +27,10 @@ from .filters import ProductFilter
 from .pagination import CustomPagination
 
 
-class TagAlreadyExistsException(APIException):
-    status_code = status.HTTP_400_BAD_REQUEST
-    default_detail = 'Tag with this slug already exists.'
-    default_code = 'tag_exists'
+# class TagAlreadyExistsException(APIException):
+#     status_code = status.HTTP_400_BAD_REQUEST
+#     default_detail = 'Tag with this slug already exists.'
+#     default_code = 'tag_exists'
 
 
 # Product Views
@@ -87,7 +88,7 @@ class ProductCreateView(generics.CreateAPIView):
         except IntegrityError as e:
             # Handle integrity error due to slug uniqueness
             if 'unique constraint' in str(e):
-                raise TagAlreadyExistsException()
+                raise DuplicateSlugException()
             raise e
 
 
@@ -168,7 +169,7 @@ class TagCreateView(generics.CreateAPIView):
         except IntegrityError as e:
             # Catch the unique constraint error and raise a custom exception
             if 'unique constraint' in str(e):
-                raise TagAlreadyExistsException()
+                raise DuplicateSlugException()
             raise e
 
 

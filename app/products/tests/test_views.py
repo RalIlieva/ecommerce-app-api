@@ -863,7 +863,7 @@ class TagCreateViewTest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
-            'Tag with this slug already exists.',
+            'An object with this slug already exists.',
             str(response.content)
         )
 
