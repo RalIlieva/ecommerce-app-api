@@ -596,7 +596,9 @@ class CategoryCreateViewTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_category_with_duplicate_slug(self):
-        """Test that creating a category with an existing slug raises a 400 error."""
+        """
+        Test creating a category with an existing slug raises a 400 error.
+        """
         self.client.force_authenticate(user=self.admin_user)
         Category.objects.create(
             name="Existing Category",

@@ -5,7 +5,7 @@ Views for the products API.
 from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions
 from core.exceptions import DuplicateSlugException
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
@@ -116,7 +116,9 @@ class CategoryCreateView(generics.CreateAPIView):
             serializer.save()
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
-                raise DuplicateSlugException('Category with this slug already exists.')
+                raise DuplicateSlugException(
+                    'Category with this slug already exists.'
+                )
             raise e
 
 
