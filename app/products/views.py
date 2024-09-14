@@ -111,6 +111,14 @@ class CategoryCreateView(generics.CreateAPIView):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
+    def perform_create(self, serializer):
+        try:
+            serializer.save()
+        except IntegrityError as e:
+            if 'unique constraint' in str(e).lower():
+                raise DuplicateSlugException('Category with this slug already exists.')
+            raise e
+
 
 class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """

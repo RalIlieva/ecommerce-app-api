@@ -595,6 +595,33 @@ class CategoryCreateViewTest(TestCase):
         res = self.client.post(CREATE_CATEGORY_URL, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_create_category_with_duplicate_slug(self):
+        """Test that creating a category with an existing slug raises a 400 error."""
+        self.client.force_authenticate(user=self.admin_user)
+        Category.objects.create(
+            name="Existing Category",
+            slug="existing-slug"
+        )
+
+        payload = {
+            "name": "New Category",
+            "slug": "existing-slug"
+        }
+
+        response = self.client.post(
+            CREATE_CATEGORY_URL, payload,
+            format='json'
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertIn(
+            'Category with this slug already exists.',
+            str(response.content)
+        )
+
 
 class CategoryUpdateDeleteViewTest(TestCase):
     """
