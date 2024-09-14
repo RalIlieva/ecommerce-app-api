@@ -4,12 +4,10 @@ Serializers for the product models.
 
 import re
 from rest_framework import serializers
-# from rest_framework.exceptions import ValidationError
 from django.utils.text import slugify
 
 from .models import Product, ProductImage, Review, Tag, Category
 from .services import (
-    # get_or_create_category,
     create_product_with_related_data,
     update_product_with_related_data
 )
@@ -98,29 +96,13 @@ class CategorySerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tags."""
 
-    slug = serializers.CharField(validators=[])  # Remove UniqueValidator
+    # Remove UniqueValidator
+    slug = serializers.CharField(validators=[])
 
     class Meta:
         model = Tag
         fields = ['id', 'name', 'slug']
         read_only_fields = ['id']
-        # validators = []  # Remove a default "unique together" constraint.
-
-    # def validate_slug(self, value):
-    #     """
-    #     Check that the slug is unique only for new tags.
-    #     """
-    #     # If an update (self.instance exists), no slug validation
-    #     if self.instance is not None:
-    #         return value
-    #
-    #     # If it's a new tag, validate slug uniqueness
-    #     if Tag.objects.filter(slug=value).exists():
-    #         raise serializers.ValidationError(
-    #         "Tag with this slug already exists."
-    #         )
-    #
-    #     return value
 
 
 class ReviewSerializer(serializers.ModelSerializer):

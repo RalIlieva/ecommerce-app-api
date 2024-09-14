@@ -5,12 +5,7 @@ Views for the products API.
 from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
-# from rest_framework.response import Response
 from rest_framework import generics, permissions, status
-from rest_framework.exceptions import (
-    # ValidationError,
-    APIException
-)
 from core.exceptions import DuplicateSlugException
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
@@ -25,12 +20,6 @@ from .serializers import (
 from .selectors import get_active_products
 from .filters import ProductFilter
 from .pagination import CustomPagination
-
-
-# class TagAlreadyExistsException(APIException):
-#     status_code = status.HTTP_400_BAD_REQUEST
-#     default_detail = 'Tag with this slug already exists.'
-#     default_code = 'tag_exists'
 
 
 # Product Views
