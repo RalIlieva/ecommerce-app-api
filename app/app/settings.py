@@ -166,6 +166,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'products.pagination.CustomPagination',
     'PAGE_SIZE': 10,
+    'EXCEPTION_HANDLER': 'core.handlers.custom_exception_handler',
 }
 
 SIMPLE_JWT = {
