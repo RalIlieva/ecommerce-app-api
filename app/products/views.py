@@ -143,6 +143,26 @@ class TagCreateView(generics.CreateAPIView):
     serializer_class = TagSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
+    # def post(self, request, *args, **kwargs):
+    #     # Extract tags data from the request
+    #     tags_data = request.data.get('tags', [])
+    #
+    #     tag_slugs = set()
+    #     for tag_data in tags_data:
+    #         slug = tag_data.get('slug')
+    #         if not slug:
+    #             return Response({"tags": "Each tag must include a 'slug' field."}, status=status.HTTP_400_BAD_REQUEST)
+    #
+    #         if slug in tag_slugs:
+    #             return Response({"tags": f"Duplicate tag slug found: {slug}"}, status=status.HTTP_400_BAD_REQUEST)
+    #         tag_slugs.add(slug)
+    #
+    #         # Handle creation or updating of tags
+    #         tag, created = Tag.objects.get_or_create(**tag_data)
+    #         # You may want to add the tag to a product or other related model here
+    #
+    #     return Response({"status": "Tags processed successfully"}, status=status.HTTP_201_CREATED)
+
     # def perform_create(self, serializer):
     #     # Ensure the serializer data is valid
     #     try:
