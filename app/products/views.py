@@ -2,11 +2,12 @@
 Views for the products API.
 """
 
+from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework import generics, permissions, status
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, APIException
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
     ProductDetailSerializer,
@@ -20,6 +21,12 @@ from .serializers import (
 from .selectors import get_active_products
 from .filters import ProductFilter
 from .pagination import CustomPagination
+
+
+class TagAlreadyExistsException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = 'Tag with this slug already exists.'
+    default_code = 'tag_exists'
 
 
 # Product Views
@@ -70,6 +77,15 @@ class ProductCreateView(generics.CreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def perform_create(self, serializer):
+        try:
+            serializer.save()
+        except IntegrityError as e:
+            # Handle integrity error due to slug uniqueness
+            if 'unique constraint' in str(e):
+                raise TagAlreadyExistsException()
+            raise e
 
 
 class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -143,44 +159,14 @@ class TagCreateView(generics.CreateAPIView):
     serializer_class = TagSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    # def post(self, request, *args, **kwargs):
-    #     # Extract tags data from the request
-    #     tags_data = request.data.get('tags', [])
-    #
-    #     tag_slugs = set()
-    #     for tag_data in tags_data:
-    #         slug = tag_data.get('slug')
-    #         if not slug:
-    #             return Response({"tags": "Each tag must include a 'slug' field."}, status=status.HTTP_400_BAD_REQUEST)
-    #
-    #         if slug in tag_slugs:
-    #             return Response({"tags": f"Duplicate tag slug found: {slug}"}, status=status.HTTP_400_BAD_REQUEST)
-    #         tag_slugs.add(slug)
-    #
-    #         # Handle creation or updating of tags
-    #         tag, created = Tag.objects.get_or_create(**tag_data)
-    #         # You may want to add the tag to a product or other related model here
-    #
-    #     return Response({"status": "Tags processed successfully"}, status=status.HTTP_201_CREATED)
-
-    # def perform_create(self, serializer):
-    #     # Ensure the serializer data is valid
-    #     try:
-    #         serializer.is_valid(raise_exception=True)
-    #         serializer.save()  # Save the valid data
-    #     except ValidationError as e:
-    #         # Handle validation error
-    #         raise e  # Re-raise the exception to return the proper error response
-
-    # def post(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     try:
-    #         serializer.is_valid(raise_exception=True)
-    #         self.perform_create(serializer)
-    #         headers = self.get_success_headers(serializer.data)
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    #     except ValidationError as e:
-    #         return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        try:
+            serializer.save()
+        except IntegrityError as e:
+            # Catch the unique constraint error on slug and raise a custom exception
+            if 'unique constraint' in str(e):
+                raise TagAlreadyExistsException()
+            raise e
 
 
 class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
