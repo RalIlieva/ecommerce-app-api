@@ -16,7 +16,6 @@ from .serializers import (
     ProductImageSerializer
 )
 # from .permissions import IsAdminOrReadOnly
-# from .services import get_or_create_category
 from .selectors import get_active_products
 from .filters import ProductFilter
 from .pagination import CustomPagination
@@ -77,7 +76,9 @@ class ProductCreateView(generics.CreateAPIView):
         except IntegrityError as e:
             # Handle integrity error due to slug uniqueness
             if 'unique constraint' in str(e):
-                raise DuplicateSlugException()
+                raise DuplicateSlugException(
+                    'Tag with this slug already exists.'
+                )
             raise e
 
 
@@ -158,7 +159,9 @@ class TagCreateView(generics.CreateAPIView):
         except IntegrityError as e:
             # Catch the unique constraint error and raise a custom exception
             if 'unique constraint' in str(e):
-                raise DuplicateSlugException()
+                raise DuplicateSlugException(
+                    'Tag with this slug already exists.'
+                )
             raise e
 
 
