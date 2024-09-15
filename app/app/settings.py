@@ -91,6 +91,8 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
+        # Keep connections open for 600 seconds
+        'CONN_MAX_AGE': 600,
     }
 }
 

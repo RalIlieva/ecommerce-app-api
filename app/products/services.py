@@ -2,6 +2,7 @@
 Business logic - functions - write to db.
 """
 
+from django.db import transaction
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from .models import (
@@ -49,6 +50,7 @@ def get_or_create_category(data):
     )
 
 
+@transaction.atomic
 def create_product_with_related_data(validated_data):
     """Create a product with its related category and tags."""
     # Extract and process the category data
@@ -76,6 +78,7 @@ def create_product_with_related_data(validated_data):
     return product
 
 
+@transaction.atomic
 def update_product_with_related_data(instance, validated_data):
     # Handle category update
     category_data = validated_data.pop('category', None)
