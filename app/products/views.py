@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
+from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
 from .models import Product, Category, Tag, ProductImage
 from .serializers import (
@@ -197,8 +198,13 @@ class ProductImageUploadView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         product_id = self.kwargs.get('product_id')
-        product = Product.objects.get(id=product_id)
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            raise serializers.ValidationError({"product_id": "Product does not exist."})
         serializer.save(product=product)
+        # product = Product.objects.get(id=product_id)
+        # serializer.save(product=product)
 
 
 class ProductImageDeleteView(generics.DestroyAPIView):
