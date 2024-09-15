@@ -92,7 +92,9 @@ class ProductCreateView(generics.CreateAPIView):
             raise dse
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
-                raise DuplicateSlugException('A product with this slug already exists.')
+                raise DuplicateSlugException(
+                    'A product with this slug already exists.'
+                )
             raise e
 
 
