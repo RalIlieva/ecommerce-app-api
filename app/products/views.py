@@ -3,6 +3,7 @@ Views for the products API.
 """
 
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
@@ -71,15 +72,27 @@ class ProductCreateView(generics.CreateAPIView):
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
+    # def perform_create(self, serializer):
+    #     try:
+    #         serializer.save()
+    #     except IntegrityError as e:
+    #         # Handle integrity error due to slug uniqueness
+    #         if 'unique constraint' in str(e):
+    #             raise DuplicateSlugException(
+    #                 'Tag with this slug already exists.'
+    #             )
+    #         raise e
+
     def perform_create(self, serializer):
         try:
             serializer.save()
+        except ValidationError as ve:
+            raise serializers.ValidationError(ve.detail)
+        except DuplicateSlugException as dse:
+            raise dse
         except IntegrityError as e:
-            # Handle integrity error due to slug uniqueness
-            if 'unique constraint' in str(e):
-                raise DuplicateSlugException(
-                    'Tag with this slug already exists.'
-                )
+            if 'unique constraint' in str(e).lower():
+                raise DuplicateSlugException('A product with this slug already exists.')
             raise e
 
 
@@ -205,8 +218,6 @@ class ProductImageUploadView(generics.CreateAPIView):
                 {"product_id": "Product does not exist."}
             )
         serializer.save(product=product)
-        # product = Product.objects.get(id=product_id)
-        # serializer.save(product=product)
 
 
 class ProductImageDeleteView(generics.DestroyAPIView):
