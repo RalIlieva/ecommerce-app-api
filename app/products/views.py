@@ -201,7 +201,9 @@ class ProductImageUploadView(generics.CreateAPIView):
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
-            raise serializers.ValidationError({"product_id": "Product does not exist."})
+            raise serializers.ValidationError(
+                {"product_id": "Product does not exist."}
+            )
         serializer.save(product=product)
         # product = Product.objects.get(id=product_id)
         # serializer.save(product=product)
