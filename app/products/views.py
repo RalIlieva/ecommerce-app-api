@@ -37,22 +37,6 @@ class ProductListView(generics.ListAPIView):
     search_fields = ['name', 'description']  # Fields to search by
     pagination_class = CustomPagination
 
-    # def get_queryset(self):
-    #     """
-    #     Optionally restricts the returned products by filtering against
-    #     a `category` and 'tags' query parameter in the URL.
-    #     """
-    #     category = self.request.query_params.get('category')
-    #     queryset = super().get_queryset()
-    #     tag_id = self.request.query_params.get('tag')
-    #     if tag_id:
-    #         queryset = queryset.filter(tags__id=tag_id)
-    #     if category:
-    #         category_ids = self.category
-    #         queryset = queryset.filter(category__id__in=category_ids)
-    #
-    #     return queryset
-
 
 class ProductDetailView(generics.RetrieveAPIView):
     """
@@ -72,31 +56,6 @@ class ProductCreateView(generics.CreateAPIView):
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    # def perform_create(self, serializer):
-    #     try:
-    #         serializer.save()
-    #     except IntegrityError as e:
-    #         # Handle integrity error due to slug uniqueness
-    #         if 'unique constraint' in str(e):
-    #             raise DuplicateSlugException(
-    #                 'Tag with this slug already exists.'
-    #             )
-    #         raise e
-
-    def perform_create(self, serializer):
-        try:
-            serializer.save()
-        except ValidationError as ve:
-            raise serializers.ValidationError(ve.detail)
-        except DuplicateSlugException as dse:
-            raise dse
-        except IntegrityError as e:
-            if 'unique constraint' in str(e).lower():
-                raise DuplicateSlugException(
-                    'A product with this slug already exists.'
-                )
-            raise e
-
 
 class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -106,6 +65,19 @@ class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    # # TO DECIDE
+    # def perform_update(self, serializer):
+    #     try:
+    #         serializer.save()
+    #     except ValidationError as ve:
+    #         raise serializers.ValidationError(ve.detail)
+    #     except DuplicateSlugException as dse:
+    #         raise dse
+    #     except IntegrityError as e:
+    #         if 'unique constraint' in str(e).lower():
+    #             raise DuplicateSlugException('A product with this slug already exists.')
+    #         raise e
 
 
 # Category Views
@@ -147,6 +119,18 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
+    # TO DECIDE - longer or shorter perform_update
+    def perform_update(self, serializer):
+        try:
+            serializer.save()
+        except ValidationError as ve:
+            raise serializers.ValidationError(ve.detail)
+        except DuplicateSlugException as dse:
+            raise dse
+        except IntegrityError as e:
+            if 'unique constraint' in str(e).lower():
+                raise DuplicateSlugException('Category with this slug already exists.')
+            raise e
 
 # class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 #     """
@@ -199,6 +183,19 @@ class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    # TO DECIDE - shorter or longer perform_update
+    def perform_update(self, serializer):
+        try:
+            serializer.save()
+        except ValidationError as ve:
+            raise serializers.ValidationError(ve.detail)
+        except DuplicateSlugException as dse:
+            raise dse
+        except IntegrityError as e:
+            if 'unique constraint' in str(e).lower():
+                raise DuplicateSlugException('Tag with this slug already exists.')
+            raise e
 
 
 # Product Image Upload View
