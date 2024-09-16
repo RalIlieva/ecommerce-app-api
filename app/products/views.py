@@ -76,7 +76,9 @@ class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     #         raise dse
     #     except IntegrityError as e:
     #         if 'unique constraint' in str(e).lower():
-    #             raise DuplicateSlugException('A product with this slug already exists.')
+    #             raise DuplicateSlugException(
+    #             'A product with this slug already exists.'
+    #             )
     #         raise e
 
 
@@ -129,7 +131,9 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             raise dse
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
-                raise DuplicateSlugException('Category with this slug already exists.')
+                raise DuplicateSlugException(
+                    'Category with this slug already exists.'
+                )
             raise e
 
 # class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -194,7 +198,9 @@ class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             raise dse
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
-                raise DuplicateSlugException('Tag with this slug already exists.')
+                raise DuplicateSlugException(
+                    'Tag with this slug already exists.'
+                )
             raise e
 
 
