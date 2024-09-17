@@ -8,7 +8,10 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.db import models
 
-from core.models import TimeStampedModel
+from core.models import (
+    TimeStampedModel,
+    UUIDModel
+)
 
 
 def product_image_file_path(instance, filename):
@@ -53,7 +56,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Product(TimeStampedModel):
+class Product(UUIDModel, TimeStampedModel):
     """Product model."""
     name = models.CharField(max_length=255)
     description = models.TextField()
