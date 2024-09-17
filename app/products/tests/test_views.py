@@ -32,9 +32,17 @@ TAG_URL = reverse('products:tag-list')
 TAG_CREATE_URL = reverse('products:tag-create')
 
 
-def detail_url(product_id):
-    """Create and return a product detail URL."""
-    return reverse('products:product-detail', args=[product_id])
+# def detail_url(product_id):
+#     """
+#     Create and return a product detail URL using ID.
+#     """
+#     return reverse('products:product-detail', args=[product_id])
+
+def detail_url(product_uuid):
+    """
+    Create and return a product detail URL with UUID.
+    """
+    return reverse('products:product-detail', args=[product_uuid])
 
 
 def manage_url(product_id):
@@ -273,6 +281,7 @@ class ProductCreateViewTest(TestCase):
         res = self.client.post(CREATE_PRODUCTS_URL, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         product = Product.objects.get(id=res.data['id'])
+        product = Product.objects.get(uuid=res.data['uuid'])
         self.assertEqual(product.name, "Test Product")
         self.assertEqual(product.category.slug, "new-category")
 
@@ -307,7 +316,8 @@ class ProductDetailViewTest(TestCase):
         """Test get product detail."""
         product = create_product()
 
-        url = detail_url(product.id)
+        # url = detail_url(product.id)
+        url = detail_url(product.uuid)
         res = self.client.get(url)
         serializer = ProductDetailSerializer(product)
         self.assertEqual(res.data, serializer.data)

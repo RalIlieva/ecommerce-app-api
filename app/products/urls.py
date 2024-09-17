@@ -29,7 +29,7 @@ urlpatterns = [
     #      ProductDetailView.as_view(),
     #      name='product-detail'
     #      ),
-    path('products/<str:uuid>/',
+    path('products/<uuid:uuid>/',
          ProductDetailView.as_view(),
          name='product-detail'
          ),
