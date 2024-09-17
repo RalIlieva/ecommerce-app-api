@@ -45,6 +45,8 @@ class ProductDetailView(generics.RetrieveAPIView):
     """
     queryset = get_active_products()
     serializer_class = ProductDetailSerializer
+    # Better security practice
+    lookup_field = 'uuid'
 
 
 class ProductCreateView(generics.CreateAPIView):

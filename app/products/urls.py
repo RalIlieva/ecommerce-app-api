@@ -25,7 +25,11 @@ app_name = 'products'
 urlpatterns = [
     # Product URLs
     path('products/', ProductListView.as_view(), name='product-list'),
-    path('products/<int:pk>/',
+    # path('products/<int:pk>/',
+    #      ProductDetailView.as_view(),
+    #      name='product-detail'
+    #      ),
+    path('products/<str:uuid>/',
          ProductDetailView.as_view(),
          name='product-detail'
          ),
