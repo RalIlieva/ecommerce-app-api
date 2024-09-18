@@ -33,7 +33,10 @@ class Category(TimeStampedModel):
         null=True, blank=True,
         related_name='children'
     )
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(
+        unique=True,
+        db_index=True
+    )
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -45,7 +48,10 @@ class Category(TimeStampedModel):
 class Tag(models.Model):
     """Tags for products."""
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(
+        unique=True,
+        db_index=True
+    )
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -69,7 +75,22 @@ class Product(UUIDModel, TimeStampedModel):
     tags = models.ManyToManyField(Tag, blank=True, related_name='products')
     stock = models.PositiveIntegerField()
     is_active = models.BooleanField(default=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(
+        unique=True,
+        db_index=True,
+        blank=True
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Product.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -89,7 +110,7 @@ class ProductImage(models.Model):
         return f'Image for {self.product.name}'
 
 
-class Review(TimeStampedModel):
+class Review(UUIDModel, TimeStampedModel):
     """Reviews for users that are customers."""
     product = models.ForeignKey(
         Product, related_name='reviews',

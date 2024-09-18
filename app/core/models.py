@@ -19,7 +19,12 @@ class UUIDModel(models.Model):
     Abstract base model that uses UUID as the primary key.
     Best practice for security.
     """
-    uuid = models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(
+        db_index=True,
+        default=uuid.uuid4,
+        editable=False,
+        unique=True
+    )
 
     class Meta:
         abstract = True
