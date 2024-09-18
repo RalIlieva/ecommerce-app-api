@@ -28,7 +28,7 @@ urlpatterns = [
          ProductCreateView.as_view(),
          name='product-create'
          ),
-    path('products/<uuid:uuid>/<slug:slug>',
+    path('products/<uuid:uuid>/<slug:slug>/',
          ProductDetailView.as_view(),
          name='product-detail'
          ),
