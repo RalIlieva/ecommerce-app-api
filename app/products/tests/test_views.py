@@ -326,6 +326,13 @@ class ProductDetailViewTest(TestCase):
         serializer = ProductDetailSerializer(product)
         self.assertEqual(res.data, serializer.data)
 
+    def test_product_detail_view_invalid_uuid(self):
+        invalid_uuid = uuid.uuid4()
+        slug = "non-existent-slug"
+        url = detail_url(invalid_uuid, slug)  # Provide a slug
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class ProductUpdateDeleteViewTest(TestCase):
     """
