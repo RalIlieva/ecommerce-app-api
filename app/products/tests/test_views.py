@@ -333,6 +333,14 @@ class ProductDetailViewTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_product_detail_view_invalid_slug(self):
+        product = create_product(name="Laptop")
+        invalid_slug = "invalid-slug"
+        # Use invalid slug
+        url = detail_url(product.uuid, invalid_slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
 
 class ProductUpdateDeleteViewTest(TestCase):
     """
