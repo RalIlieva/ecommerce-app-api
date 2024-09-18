@@ -38,16 +38,20 @@ TAG_CREATE_URL = reverse('products:tag-create')
 #     """
 #     return reverse('products:product-detail', args=[product_id])
 
-def detail_url(product_uuid):
+# def manage_url(product_id):
+#     """Manage - update, delete a product detail URL."""
+#     return reverse('products:product-manage', args=[product_id])
+
+def detail_url(product_uuid, slug):
     """
-    Create and return a product detail URL with UUID.
+    Create and return a product detail URL with UUID and slug.
     """
-    return reverse('products:product-detail', args=[product_uuid])
+    return reverse('products:product-detail', args=[product_uuid, slug])
 
 
-def manage_url(product_id):
+def manage_url(product_uuid):
     """Manage - update, delete a product detail URL."""
-    return reverse('products:product-manage', args=[product_id])
+    return reverse('products:product-manage', args=[product_uuid])
 
 
 def image_upload_url(product_id):
@@ -317,7 +321,7 @@ class ProductDetailViewTest(TestCase):
         product = create_product()
 
         # url = detail_url(product.id)
-        url = detail_url(product.uuid)
+        url = detail_url(product.uuid, product.slug)
         res = self.client.get(url)
         serializer = ProductDetailSerializer(product)
         self.assertEqual(res.data, serializer.data)
@@ -371,7 +375,8 @@ class ProductUpdateDeleteViewTest(TestCase):
         )
 
         payload = {'name': 'Updated Test Name'}
-        url = manage_url(product.id)
+        # url = manage_url(product.id)
+        url = manage_url(product.uuid)
         res = self.client.patch(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -408,7 +413,8 @@ class ProductUpdateDeleteViewTest(TestCase):
             # 'tags': [],
             'is_active': True
         }
-        url = manage_url(product.id)
+        # url = manage_url(product.id)
+        url = manage_url(product.uuid)
         res = self.client.put(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -422,7 +428,8 @@ class ProductUpdateDeleteViewTest(TestCase):
     def test_delete_product(self):
         """Test deleting a product successful."""
         product = create_product()
-        url = manage_url(product.id)
+        # url = manage_url(product.id)
+        url = manage_url(product.uuid)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)

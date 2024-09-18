@@ -14,9 +14,13 @@ from products.services import (
 )
 
 
-def manage_url(product_id):
+# def manage_url(product_id):
+#     """Manage - update, delete a product detail URL."""
+#     return reverse('products:product-manage', args=[product_id])
+
+def manage_url(product_uuid):
     """Manage - update, delete a product detail URL."""
-    return reverse('products:product-manage', args=[product_id])
+    return reverse('products:product-manage', args=[product_uuid])
 
 
 def create_admin_user(**params):
@@ -77,7 +81,8 @@ class ProductServiceTest(TestCase):
             ],
             "description": "Updated description",
         }
-        url = manage_url(product.id)
+        # url = manage_url(product.id)
+        url = manage_url(product.uuid)
         res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)

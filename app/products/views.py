@@ -3,6 +3,7 @@ Views for the products API.
 """
 
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
@@ -45,8 +46,19 @@ class ProductDetailView(generics.RetrieveAPIView):
     """
     queryset = get_active_products()
     serializer_class = ProductDetailSerializer
-    # Better security practice
-    lookup_field = 'uuid'
+    # # Better security practice
+    # lookup_field = 'uuid'
+
+    def get_object(self):
+        uuid = self.kwargs.get('uuid')
+        slug = self.kwargs.get('slug')
+        product = get_object_or_404(
+            Product,
+            uuid=uuid,
+            slug=slug,
+            is_active=True
+        )
+        return product
 
 
 class ProductCreateView(generics.CreateAPIView):
@@ -67,6 +79,11 @@ class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def get_object(self):
+        uuid = self.kwargs.get('uuid')
+        product = get_object_or_404(Product, uuid=uuid)
+        return product
 
     # # TO DECIDE
     # def perform_update(self, serializer):
