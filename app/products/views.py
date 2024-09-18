@@ -234,9 +234,13 @@ class ProductImageUploadView(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
     def perform_create(self, serializer):
-        product_id = self.kwargs.get('product_id')
+        # product_id = self.kwargs.get('product_id')
+        # try:
+        #     product = Product.objects.get(id=product_id)
+        uuid = self.kwargs.get('uuid')
+        slug = self.kwargs.get('slug')
         try:
-            product = Product.objects.get(id=product_id)
+            product = Product.objects.get(uuid=uuid, slug=slug)
         except Product.DoesNotExist:
             raise serializers.ValidationError(
                 {"product_id": "Product does not exist."}
@@ -251,7 +255,13 @@ class ProductImageDeleteView(generics.DestroyAPIView):
     lookup_field = 'id'
     lookup_url_kwarg = 'image_id'
 
+    # def get_queryset(self):
+    #     """Filter to only allow deletion of images related to the product."""
+    #     product_id = self.kwargs.get('product_id')
+    #     return self.queryset.filter(product_id=product_id)
+
     def get_queryset(self):
         """Filter to only allow deletion of images related to the product."""
-        product_id = self.kwargs.get('product_id')
-        return self.queryset.filter(product_id=product_id)
+        uuid = self.kwargs.get('uuid')
+        slug = self.kwargs.get('slug')
+        return self.queryset.filter(product__uuid=uuid, product__slug=slug)

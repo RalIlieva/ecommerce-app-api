@@ -66,13 +66,21 @@ urlpatterns = [
          ),
 
     # Product Image URL
-    path('products/<int:product_id>/upload-image/',
+    # path('products/<int:product_id>/upload-image/',
+    #      ProductImageUploadView.as_view(),
+    #      name='product-image-upload'
+    #      ),
+    # path('products/<int:product_id>/images/<int:image_id>/delete/',
+    #      ProductImageDeleteView.as_view(),
+    #      name='product-image-delete'
+    #      ),
+
+    path('products/<uuid:uuid>/<slug:slug>/upload-image/',
          ProductImageUploadView.as_view(),
          name='product-image-upload'
          ),
-    path('products/<int:product_id>/images/<int:image_id>/delete/',
+    path('products/<uuid:uuid>/<slug:slug>/images/<int:image_id>/delete/',
          ProductImageDeleteView.as_view(),
          name='product-image-delete'
          ),
-
 ]

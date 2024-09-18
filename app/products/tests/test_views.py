@@ -54,9 +54,22 @@ def manage_url(product_uuid):
     return reverse('products:product-manage', args=[product_uuid])
 
 
-def image_upload_url(product_id):
-    """Create and return an image upload URL."""
-    return reverse('products:product-image-upload', args=[product_id])
+# def image_upload_url(product_id):
+#     """Create and return an image upload URL."""
+#     return reverse('products:product-image-upload', args=[product_id])
+
+def image_upload_url(product_uuid, slug):
+    """
+    Create and return a product image upload URL with UUID and slug.
+    """
+    return reverse('products:product-image-upload', args=[product_uuid, slug])
+
+
+def image_delete_url(product_uuid, slug, image_id):
+    """
+    Create and return a product image delete URL with UUID, slug, and image_id.
+    """
+    return reverse('products:product-image-delete', args=[product_uuid, slug, image_id])
 
 
 def create_product(category=None, slug=None, **params):
@@ -1010,7 +1023,8 @@ class ImageUploadTests(TestCase):
 
     def test_upload_image(self):
         """Test uploading an image to a product."""
-        url = image_upload_url(self.product.id)
+        # url = image_upload_url(self.product.id)
+        url = image_upload_url(self.product.uuid, self.product.slug)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
             img = Image.new('RGB', (10, 10))
             img.save(image_file, format='JPEG')
@@ -1031,7 +1045,8 @@ class ImageUploadTests(TestCase):
 
     def test_upload_image_bad_request(self):
         """Test uploading invalid image."""
-        url = image_upload_url(self.product.id)
+        # url = image_upload_url(self.product.id)
+        url = image_upload_url(self.product.uuid, self.product.slug)
         payload = {'image': 'notanimage'}
         res = self.client.post(url, payload, format='multipart')
 
@@ -1043,7 +1058,8 @@ class ImageUploadTests(TestCase):
         (DELETE /products/<id>/images/<image_id>/delete/)
         """
         # Step 1: Upload an image to the product
-        url = image_upload_url(self.product.id)
+        # url = image_upload_url(self.product.id)
+        url = image_upload_url(self.product.uuid, self.product.slug)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
             img = Image.new('RGB', (10, 10))
             img.save(image_file, format='JPEG')
@@ -1067,9 +1083,14 @@ class ImageUploadTests(TestCase):
         self.assertTrue(os.path.exists(product_image.image.path))
 
         # Step 2: Delete the image
-        delete_url = reverse(
-            'products:product-image-delete',
-            args=[self.product.id, product_image.id]
+        # delete_url = reverse(
+        #     'products:product-image-delete',
+        #     args=[self.product.id, product_image.id]
+        # )
+        delete_url = image_delete_url(
+            self.product.uuid,
+            self.product.slug,
+            product_image.id
         )
         delete_response = self.client.delete(delete_url)
 
