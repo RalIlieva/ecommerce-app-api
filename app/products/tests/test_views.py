@@ -433,7 +433,8 @@ class ProductUpdateDeleteViewTest(TestCase):
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Product.objects.filter(id=product.id).exists())
+        # self.assertFalse(Product.objects.filter(id=product.id).exists())
+        self.assertFalse(Product.objects.filter(uuid=product.uuid).exists())
 
     def test_adding_tags_to_product_first(self):
         """Test adding tags to a product."""

@@ -28,13 +28,13 @@ urlpatterns = [
          ProductCreateView.as_view(),
          name='product-create'
          ),
-    path('products/<uuid:uuid>/<slug:slug>/',
-         ProductDetailView.as_view(),
-         name='product-detail'
-         ),
     path('products/<uuid:uuid>/manage/',
          ProductUpdateDeleteView.as_view(),
          name='product-manage'
+         ),
+    path('products/<uuid:uuid>/<slug:slug>/',
+         ProductDetailView.as_view(),
+         name='product-detail'
          ),
     path('products/', ProductListView.as_view(), name='product-list'),
     # path('products/<int:pk>/manage/',
