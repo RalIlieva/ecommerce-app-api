@@ -69,7 +69,10 @@ def image_delete_url(product_uuid, slug, image_id):
     """
     Create and return a product image delete URL with UUID, slug, and image_id.
     """
-    return reverse('products:product-image-delete', args=[product_uuid, slug, image_id])
+    return reverse(
+        'products:product-image-delete',
+        args=[product_uuid, slug, image_id]
+    )
 
 
 def create_product(category=None, slug=None, **params):
