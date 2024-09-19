@@ -102,7 +102,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ['id', 'name', 'slug', 'products']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'products']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
