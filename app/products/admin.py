@@ -37,4 +37,4 @@ admin.site.register(ProductImage)
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ['product', 'user', 'rating']
-    list_filter = ['rating', 'user', 'product']
+    list_filter = ['rating', 'product', 'user']
