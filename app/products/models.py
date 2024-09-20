@@ -23,7 +23,7 @@ def product_image_file_path(instance, filename):
     return os.path.join('uploads', 'product', filename)
 
 
-class Category(TimeStampedModel):
+class Category(UUIDModel, TimeStampedModel):
     """ Category for products."""
     name = models.CharField(max_length=255)
     # Prevent deletion of categories to children products.
@@ -45,7 +45,7 @@ class Category(TimeStampedModel):
         return self.name
 
 
-class Tag(models.Model):
+class Tag(UUIDModel, models.Model):
     """Tags for products."""
     name = models.CharField(max_length=255)
     slug = models.SlugField(

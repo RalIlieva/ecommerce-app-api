@@ -13,8 +13,8 @@ class CategoryListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug']
-        read_only_fields = ['id', 'slug']
+        fields = ['id', 'uuid', 'name', 'slug']
+        read_only_fields = ['id', 'uuid', 'slug']
 
 
 class CategoryDetailSerializer(serializers.ModelSerializer):
@@ -23,8 +23,8 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'products']
-        read_only_fields = ['id', 'slug', 'products']
+        fields = ['id', 'uuid', 'name', 'slug', 'products']
+        read_only_fields = ['id', 'uuid', 'slug', 'products']
 
     def get_products(self, obj):
         # Deferred import
@@ -41,8 +41,8 @@ class CategorySerializer(serializers.ModelSerializer):
     """Serializer for categories (admin-facing)."""
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'parent']
-        read_only_fields = ['id']
+        fields = ['id', 'uuid', 'name', 'slug', 'parent']
+        read_only_fields = ['id', 'uuid']
 
     def to_internal_value(self, data):
         """
