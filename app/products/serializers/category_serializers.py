@@ -8,6 +8,14 @@ from rest_framework import serializers
 from ..models import Category
 
 
+class CategoryListSerializer(serializers.ModelSerializer):
+    """Serializer for listing categories (user-facing)."""
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+
 class CategorySerializer(serializers.ModelSerializer):
     """Serializer for categories."""
     class Meta:

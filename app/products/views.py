@@ -15,6 +15,7 @@ from .serializers import (
     ProductDetailSerializer,
     ProductMiniSerializer,
     CategorySerializer,
+    CategoryListSerializer,
     TagSerializer,
     ProductImageSerializer
 )
@@ -107,7 +108,7 @@ class CategoryListView(generics.ListAPIView):
     View to list all categories to all users.
     """
     queryset = Category.objects.all().order_by('id')
-    serializer_class = CategorySerializer
+    serializer_class = CategoryListSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 

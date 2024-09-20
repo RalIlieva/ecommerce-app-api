@@ -3,7 +3,8 @@ from .product_serializers import (
     ProductDetailSerializer
 )
 from .category_serializers import (
-    CategorySerializer
+    CategorySerializer,
+    CategoryListSerializer
 )
 from .tag_serializers import (
     TagSerializer
@@ -15,6 +16,7 @@ from .image_serializers import ProductImageSerializer
 __all__ = [
     'ProductMiniSerializer',
     'ProductDetailSerializer',
+    'CategoryListSerializer',
     'CategorySerializer',
     'TagSerializer',
     'ReviewSerializer',
