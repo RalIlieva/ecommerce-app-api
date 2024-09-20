@@ -33,7 +33,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    """Serializer for categories."""
+    """Serializer for categories - for admins."""
     class Meta:
         model = Category
         fields = ['id', 'name', 'slug', 'parent']

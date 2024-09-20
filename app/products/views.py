@@ -18,6 +18,7 @@ from .serializers import (
     CategoryListSerializer,
     CategoryDetailSerializer,
     TagSerializer,
+    TagListSerializer,
     ProductImageSerializer
 )
 # from .permissions import IsAdminOrReadOnly
@@ -175,7 +176,7 @@ class TagListView(generics.ListAPIView):
     View to list all tags.
     """
     queryset = Tag.objects.all().order_by('id')
-    serializer_class = TagSerializer
+    serializer_class = TagListSerializer
 
 
 class TagCreateView(generics.CreateAPIView):
