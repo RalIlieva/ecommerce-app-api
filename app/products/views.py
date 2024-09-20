@@ -19,6 +19,7 @@ from .serializers import (
     CategoryDetailSerializer,
     TagSerializer,
     TagListSerializer,
+    TagDetailSerializer,
     ProductImageSerializer
 )
 # from .permissions import IsAdminOrReadOnly
@@ -198,6 +199,17 @@ class TagCreateView(generics.CreateAPIView):
                     'Tag with this slug already exists.'
                 )
             raise e
+
+
+class TagDetailView(generics.RetrieveAPIView):
+    """
+    Retrieve tags details (user-facing)
+    """
+    queryset = Tag.objects.all()
+    serializer_class = TagDetailSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+    # permission_classes = [permissions.AllowAny]
 
 
 class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):

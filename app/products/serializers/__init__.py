@@ -9,7 +9,8 @@ from .category_serializers import (
 )
 from .tag_serializers import (
     TagSerializer,
-    TagListSerializer
+    TagListSerializer,
+    TagDetailSerializer
 
 )
 from .review_serializers import ReviewSerializer

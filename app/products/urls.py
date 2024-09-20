@@ -15,6 +15,7 @@ from .views import (
     TagListView,
     TagCreateView,
     TagUpdateDeleteView,
+    TagDetailView,
     ProductImageUploadView,
     ProductImageDeleteView,
 )
@@ -68,6 +69,9 @@ urlpatterns = [
          TagUpdateDeleteView.as_view(),
          name='tag-manage'
          ),
+    path('tags/<slug:slug>/',
+         TagDetailView.as_view(),
+         name='tag-detail'),  # User-facing detail
 
     # Product Image URL
     # path('products/<int:product_id>/upload-image/',
