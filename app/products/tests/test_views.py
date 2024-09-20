@@ -965,7 +965,7 @@ class TagUpdateDeleteViewTest(TestCase):
             password='userpass'
         )
         self.tag = Tag.objects.create(name='Old Tag', slug='old-tag')
-        self.url = reverse('products:tag-manage', args=[self.tag.id])
+        self.url = reverse('products:tag-manage', args=[self.tag.uuid])
 
     def test_update_tag_as_admin(self):
         """Test updating a tag as an admin"""
@@ -994,7 +994,8 @@ class TagUpdateDeleteViewTest(TestCase):
     def test_update_delete_invalid_tag(self):
         """Test updating or deleting a tag with an invalid ID"""
         self.client.force_authenticate(user=self.admin_user)
-        invalid_url = reverse('products:tag-manage', args=[999])
+        invalid_uuid = uuid.uuid4()
+        invalid_url = reverse('products:tag-manage', args=[invalid_uuid])
         update_res = self.client.patch(
             invalid_url,
             {'name': 'Invalid Tag'},

@@ -65,7 +65,7 @@ urlpatterns = [
          TagCreateView.as_view(),
          name='tag-create'
          ),  # Admin-facing
-    path('tags/<int:pk>/manage/',
+    path('tags/<uuid:uuid>/manage/',
          TagUpdateDeleteView.as_view(),
          name='tag-manage'
          ),  # Admin-facing

@@ -227,6 +227,13 @@ class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    lookup_field = 'uuid'
+    lookup_url_kwarg = 'uuid'
+
+    def get_object(self):
+        uuid = self.kwargs.get('uuid')
+        tag = get_object_or_404(Tag, uuid=uuid)
+        return tag
 
     # TO DECIDE - shorter or longer perform_update
     def perform_update(self, serializer):
