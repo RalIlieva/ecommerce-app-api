@@ -162,7 +162,7 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 class CategoryDetailView(generics.RetrieveAPIView):
     """
-    Retrieve category details (user-facing)
+    Retrieve category details (user-facing).
     """
     queryset = Category.objects.all()
     serializer_class = CategoryDetailSerializer

@@ -31,7 +31,7 @@ class TagDetailSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Serializer for tags."""
+    """Serializer for tags (admin-facing)."""
 
     # Remove UniqueValidator
     slug = serializers.CharField(validators=[])
