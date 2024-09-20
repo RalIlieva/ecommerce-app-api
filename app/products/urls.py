@@ -48,7 +48,7 @@ urlpatterns = [
          CategoryCreateView.as_view(),
          name='category-create'
          ),  # Admin
-    path('categories/<int:pk>/manage/',
+    path('categories/<uuid:uuid>/manage/',
          CategoryUpdateDeleteView.as_view(),
          name='category-manage'
          ),  # Admin

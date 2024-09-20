@@ -143,6 +143,13 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    lookup_field = 'uuid'
+    lookup_url_kwarg = 'uuid'
+
+    def get_object(self):
+        uuid = self.kwargs.get('uuid')
+        category = get_object_or_404(Category, uuid=uuid)
+        return category
 
     # TO DECIDE - longer or shorter perform_update
     def perform_update(self, serializer):

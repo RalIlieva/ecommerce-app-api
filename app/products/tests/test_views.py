@@ -696,7 +696,7 @@ class CategoryUpdateDeleteViewTest(TestCase):
         )
         self.url = reverse(
             'products:category-manage',
-            args=[self.category.id]
+            args=[self.category.uuid]
         )
 
     def test_update_category_as_admin(self):
@@ -726,7 +726,9 @@ class CategoryUpdateDeleteViewTest(TestCase):
     def test_update_delete_invalid_category(self):
         """Test updating or deleting a category with an invalid ID"""
         self.client.force_authenticate(user=self.admin_user)
-        invalid_url = reverse('products:category-manage', args=[999])
+        # Generate a random UUID
+        invalid_uuid = uuid.uuid4()
+        invalid_url = reverse('products:category-manage', args=[invalid_uuid])
         update_res = self.client.patch(
             invalid_url,
             {'name': 'Invalid Category'},
