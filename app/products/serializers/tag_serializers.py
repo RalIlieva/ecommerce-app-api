@@ -11,8 +11,8 @@ class TagListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['id', 'name', 'slug']
-        read_only_fields = ['id', 'slug']
+        fields = ['id', 'uuid', 'name', 'slug']
+        read_only_fields = ['id', 'slug', 'uuid']
 
 
 class TagDetailSerializer(serializers.ModelSerializer):
@@ -21,8 +21,8 @@ class TagDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['id', 'name', 'slug', 'products']
-        read_only_fields = ['id', 'slug']
+        fields = ['id', 'uuid', 'name', 'slug', 'products']
+        read_only_fields = ['id', 'slug', 'uuid']
 
     def get_products(self, obj):
         # Deferred import to avoid circular dependency
@@ -43,5 +43,5 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ['id', 'name', 'slug', 'products']
-        read_only_fields = ['id', 'products']
+        fields = ['id', 'uuid', 'name', 'slug', 'products']
+        read_only_fields = ['id', 'uuid', 'products']
