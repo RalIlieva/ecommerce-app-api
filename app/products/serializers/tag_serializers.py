@@ -25,9 +25,14 @@ class TagDetailSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'slug']
 
     def get_products(self, obj):
-        from .product_serializers import ProductMiniSerializer  # Deferred import to avoid circular dependency
+        # Deferred import to avoid circular dependency
+        from .product_serializers import ProductMiniSerializer
         products = obj.products.all()
-        return ProductMiniSerializer(products, many=True, context=self.context).data
+        return ProductMiniSerializer(
+            products,
+            many=True,
+            context=self.context
+        ).data
 
 
 class TagSerializer(serializers.ModelSerializer):
