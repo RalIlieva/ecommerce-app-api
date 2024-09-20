@@ -13,7 +13,23 @@ class CategoryListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'slug']
+        read_only_fields = ['id', 'slug']
+
+
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    """Serializer for category detail (user-facing)."""
+    products = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'slug', 'products']
+        read_only_fields = ['id', 'slug', 'products']
+
+    def get_products(self, obj):
+        from .product_serializers import ProductMiniSerializer  # Deferred import
+        products = obj.products.all()
+        return ProductMiniSerializer(products, many=True, context=self.context).data
 
 
 class CategorySerializer(serializers.ModelSerializer):

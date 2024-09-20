@@ -11,6 +11,7 @@ from .views import (
     CategoryListView,
     CategoryCreateView,
     CategoryUpdateDeleteView,
+    CategoryDetailView,
     TagListView,
     TagCreateView,
     TagUpdateDeleteView,
@@ -56,6 +57,9 @@ urlpatterns = [
          CategoryUpdateDeleteView.as_view(),
          name='category-manage'
          ),
+    path('categories/<slug:slug>/',
+         CategoryDetailView.as_view(),
+         name='category-detail'),  # User-facing detail
 
     # Tag URLs
     path('tags/', TagListView.as_view(), name='tag-list'),

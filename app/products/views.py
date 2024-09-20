@@ -16,6 +16,7 @@ from .serializers import (
     ProductMiniSerializer,
     CategorySerializer,
     CategoryListSerializer,
+    CategoryDetailSerializer,
     TagSerializer,
     ProductImageSerializer
 )
@@ -156,17 +157,16 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
                 )
             raise e
 
-# class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-#     """
-#     View to retrieve, update, or delete a category.
-#     Only superusers and administrators can access this view.
-#     """
-#     queryset = Category.objects.all()
-#     serializer_class = CategorySerializer
-#     permission_classes = [
-#     permissions.IsAuthenticated,
-#     permissions.IsAdminUser
-#     ]
+
+class CategoryDetailView(generics.RetrieveAPIView):
+    """
+    Retrieve category details (user-facing)
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategoryDetailSerializer
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'slug'
+    # permission_classes = [permissions.AllowAny]
 
 
 # Tag Views
