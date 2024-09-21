@@ -40,7 +40,8 @@ logger = logging.getLogger(__name__)
 
 def drf_default_with_modifications_exception_handler(exc, context):
     """
-    Custom exception handler that ensures all error responses have a 'detail' key.
+    Custom exception handler that ensures -
+    all error responses have a 'detail' key.
     Handles DuplicateSlugException and Django's ValidationError.
     """
 
