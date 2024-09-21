@@ -72,7 +72,10 @@
 #     """
 #     queryset = Product.objects.all()
 #     serializer_class = ProductDetailSerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #
 #
 # class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -82,7 +85,10 @@
 #     """
 #     queryset = Product.objects.all()
 #     serializer_class = ProductDetailSerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #
 #     def get_object(self):
 #         uuid = self.kwargs.get('uuid')
@@ -122,7 +128,10 @@
 #     """
 #     queryset = Category.objects.all()
 #     serializer_class = CategorySerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #
 #     def perform_create(self, serializer):
 #         try:
@@ -142,7 +151,10 @@
 #     """
 #     queryset = Category.objects.all()
 #     serializer_class = CategorySerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #     lookup_field = 'uuid'
 #     lookup_url_kwarg = 'uuid'
 #
@@ -194,7 +206,10 @@
 #     """
 #     queryset = Tag.objects.all()
 #     serializer_class = TagSerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #
 #     def perform_create(self, serializer):
 #         try:
@@ -226,7 +241,10 @@
 #     """
 #     queryset = Tag.objects.all()
 #     serializer_class = TagSerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #     lookup_field = 'uuid'
 #     lookup_url_kwarg = 'uuid'
 #
@@ -259,7 +277,10 @@
 #     """
 #     queryset = ProductImage.objects.all()
 #     serializer_class = ProductImageSerializer
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #
 #     def perform_create(self, serializer):
 #         # product_id = self.kwargs.get('product_id')
@@ -279,12 +300,17 @@
 # class ProductImageDeleteView(generics.DestroyAPIView):
 #     """View to delete a product image."""
 #     queryset = ProductImage.objects.all()
-#     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+#     permission_classes = [
+#     permissions.IsAuthenticated,
+#     permissions.IsAdminUser
+#     ]
 #     lookup_field = 'id'
 #     lookup_url_kwarg = 'image_id'
 #
 #     # def get_queryset(self):
-#     #     """Filter to only allow deletion of images related to the product."""
+#     #     """
+#     Filter to only allow deletion of images related to the product.
+#     """
 #     #     product_id = self.kwargs.get('product_id')
 #     #     return self.queryset.filter(product_id=product_id)
 #

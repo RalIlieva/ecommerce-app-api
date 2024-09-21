@@ -6,17 +6,10 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
-from ..models import Product, Category, Tag, ProductImage
+from ..models import Product
 from ..serializers import (
     ProductDetailSerializer,
     ProductMiniSerializer,
-    CategorySerializer,
-    CategoryListSerializer,
-    CategoryDetailSerializer,
-    TagSerializer,
-    TagListSerializer,
-    TagDetailSerializer,
-    ProductImageSerializer
 )
 # from .permissions import IsAdminOrReadOnly
 from ..selectors import get_active_products

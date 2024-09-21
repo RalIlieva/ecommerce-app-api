@@ -10,17 +10,11 @@ from django.core.exceptions import ValidationError
 from rest_framework import generics, permissions
 from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
-from ..models import Product, Category, Tag, ProductImage
+from ..models import Category
 from ..serializers import (
-    ProductDetailSerializer,
-    ProductMiniSerializer,
     CategorySerializer,
     CategoryListSerializer,
     CategoryDetailSerializer,
-    TagSerializer,
-    TagListSerializer,
-    TagDetailSerializer,
-    ProductImageSerializer
 )
 
 

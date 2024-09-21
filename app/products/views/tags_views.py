@@ -5,22 +5,16 @@ Views for the products' tags API.
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+# from django_filters.rest_framework import DjangoFilterBackend
+# from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
 from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
-from ..models import Product, Category, Tag, ProductImage
+from ..models import Tag
 from ..serializers import (
-    ProductDetailSerializer,
-    ProductMiniSerializer,
-    CategorySerializer,
-    CategoryListSerializer,
-    CategoryDetailSerializer,
     TagSerializer,
     TagListSerializer,
     TagDetailSerializer,
-    ProductImageSerializer
 )
 
 

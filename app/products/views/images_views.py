@@ -4,16 +4,8 @@ Views for the products' images API.
 
 from rest_framework import generics, permissions
 from rest_framework import serializers
-from ..models import Product, Category, Tag, ProductImage
+from ..models import Product, ProductImage
 from ..serializers import (
-    ProductDetailSerializer,
-    ProductMiniSerializer,
-    CategorySerializer,
-    CategoryListSerializer,
-    CategoryDetailSerializer,
-    TagSerializer,
-    TagListSerializer,
-    TagDetailSerializer,
     ProductImageSerializer
 )
 
