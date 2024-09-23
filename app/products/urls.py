@@ -88,8 +88,9 @@ urlpatterns = [
          ProductImageDeleteView.as_view(),
          name='product-image-delete'
          ),  # Admin
+
     # Review URLs
-    path('products/<uuid:product_uuid>/reviews/',
+    path('products/<uuid:uuid>/<slug:slug>/reviews/',
          ReviewListView.as_view(),
          name='review-list'
          ),
