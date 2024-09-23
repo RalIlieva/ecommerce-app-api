@@ -4,7 +4,18 @@ Reviews serializers.
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from users.serializers import UserSerializer
+from .product_serializers import ProductDetailSerializer
 from ..models import Review
+
+
+class ReviewListSerializer(serializers.ModelSerializer):
+    """Serializer for listing reviews (user-facing)."""
+
+    class Meta:
+        model = Review
+        fields = ['id', 'uuid', 'user', 'rating', 'comment', 'created', 'modified']
+        read_only_fields = ['id', 'uuid', 'product', 'created', 'modified']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -48,3 +59,14 @@ class ReviewSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         validated_data['user'] = user
         return super().create(validated_data)
+
+
+class ReviewDetailSerializer(serializers.ModelSerializer):
+    """Serializer for retrieving review details with nested product and user."""
+    user = UserSerializer(read_only=True)
+    product = ProductDetailSerializer(read_only=True)
+
+    class Meta:
+        model = Review
+        fields = ['id', 'uuid', 'product', 'user', 'rating', 'comment', 'created', 'modified']
+        read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']

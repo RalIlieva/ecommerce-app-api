@@ -18,6 +18,9 @@ from .views import (
     TagDetailView,
     ProductImageUploadView,
     ProductImageDeleteView,
+    ReviewListView,
+    ReviewCreateView,
+    ReviewDetailView
 )
 
 
@@ -85,4 +88,16 @@ urlpatterns = [
          ProductImageDeleteView.as_view(),
          name='product-image-delete'
          ),  # Admin
+    # Review URLs
+    path('products/<uuid:product_uuid>/reviews/',
+         ReviewListView.as_view(),
+         name='review-list'
+         ),
+    path('products/<uuid:product_uuid>/reviews/create/',
+         ReviewCreateView.as_view(),
+         name='review-create'),
+    path('reviews/<uuid:uuid>/',
+         ReviewDetailView.as_view(),
+         name='review-detail'
+         ),
 ]

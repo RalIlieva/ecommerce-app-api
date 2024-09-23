@@ -12,7 +12,11 @@ from .tag_serializers import (
     TagListSerializer,
     TagDetailSerializer,
 )
-from .review_serializers import ReviewSerializer
+from .review_serializers import (
+    ReviewSerializer,
+    ReviewListSerializer,
+    ReviewDetailSerializer
+)
 from .image_serializers import ProductImageSerializer
 
 __all__ = [
@@ -25,5 +29,7 @@ __all__ = [
     'TagListSerializer',
     'TagDetailSerializer',
     'ReviewSerializer',
+    'ReviewListSerializer',
+    'ReviewDetailSerializer',
     'ProductImageSerializer',
 ]

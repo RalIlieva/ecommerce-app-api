@@ -22,6 +22,11 @@ from .images_views import (
     ProductImageUploadView,
     ProductImageDeleteView
 )
+from .reviews_views import (
+    ReviewListView,
+    ReviewCreateView,
+    ReviewDetailView
+)
 
 __all__ = [
     'ProductListView',
@@ -38,4 +43,7 @@ __all__ = [
     'TagUpdateDeleteView',
     'ProductImageUploadView',
     'ProductImageDeleteView',
+    'ReviewListView',
+    'ReviewCreateView',
+    'ReviewDetailView'
 ]
