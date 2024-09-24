@@ -57,7 +57,12 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     PUT/PATCH: Update a review.
     DELETE: Delete a review.
     """
-    queryset = Review.objects.all()
+    # queryset = Review.objects.all()
+    queryset = Review.objects.select_related(
+        'user', 'product__category'
+    ).prefetch_related(
+        'product__tags', 'product__images'
+    )
     serializer_class = ReviewDetailSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'uuid'

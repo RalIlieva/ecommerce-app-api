@@ -37,7 +37,8 @@ class ProductDetailView(generics.RetrieveAPIView):
     View to retrieve a single product.
     All users can access this view.
     """
-    queryset = get_active_products()
+    # queryset = get_active_products()
+    queryset = get_active_products().select_related('category').prefetch_related('tags', 'images', 'reviews__user')
     serializer_class = ProductDetailSerializer
     # # Better security practice
     # lookup_field = 'uuid'
