@@ -77,7 +77,7 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'uuid', 'product', 'user', 'rating', 'comment', 'created', 'modified']
         read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
 
-    def get_products(self, obj):
+    def get_product(self, obj):
         # Deferred import to avoid circular dependency
         from .product_serializers import ProductDetailSerializer
         return ProductDetailSerializer(obj.product, context=self.context).data
