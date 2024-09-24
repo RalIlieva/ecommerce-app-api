@@ -51,3 +51,26 @@ class ProductDetailSerializer(ProductMiniSerializer):
     def update(self, instance, validated_data):
         """Delegate update logic to service layer."""
         return update_product_with_related_data(instance, validated_data)
+
+
+class ProductNestedSerializer(serializers.ModelSerializer):
+    """Serializer for nested product representation without reviews."""
+    tags = TagSerializer(many=True, required=False)
+    category = CategorySerializer(read_only=True)
+    images = ProductImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = [
+            'id',
+            'uuid',
+            'name',
+            'price',
+            'slug',
+            'tags',
+            'category',
+            'description',
+            'stock',
+            'images'
+        ]
+        read_only_fields = ['id', 'uuid', 'slug']
