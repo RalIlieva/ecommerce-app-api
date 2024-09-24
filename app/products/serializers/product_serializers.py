@@ -6,7 +6,7 @@ Product serializers.
 from rest_framework import serializers
 from .category_serializers import CategorySerializer
 from .tag_serializers import TagSerializer
-from .review_serializers import ReviewSerializer
+# from .review_serializers import ReviewSerializer
 from .image_serializers import ProductImageSerializer
 from ..models import Product
 from ..services import (
@@ -29,7 +29,8 @@ class ProductMiniSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(ProductMiniSerializer):
     """Serializer for product detail view."""
     images = ProductImageSerializer(many=True, read_only=True)
-    reviews = ReviewSerializer(many=True, read_only=True)
+    # reviews = ReviewSerializer(many=True, read_only=True)
+    reviews = serializers.SerializerMethodField()
     tags = TagSerializer(many=True, required=False)
     category = CategorySerializer()
 
@@ -43,6 +44,12 @@ class ProductDetailSerializer(ProductMiniSerializer):
             'reviews'
         ]
         read_only_fields = ['id']
+
+    def get_reviews(self, obj):
+        from .review_serializers import ReviewListSerializer  # Local import to avoid circularity
+        reviews = obj.reviews.all()
+        serializer = ReviewListSerializer(reviews, many=True, context=self.context)
+        return serializer.data
 
     def create(self, validated_data):
         """Delegate creation logic to service layer."""

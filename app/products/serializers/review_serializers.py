@@ -5,7 +5,7 @@ Reviews serializers.
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from users.serializers import UserSerializer
-# from .product_serializers import ProductDetailSerializer
+from .product_serializers import ProductNestedSerializer
 from ..models import Review
 
 
@@ -52,14 +52,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
         return data
 
-    # def create(self, validated_data):
-    #     """
-    #     Assign the user to the review during creation.
-    #     """
-    #     user = self.context['request'].user
-    #     validated_data['user'] = user
-    #     return super().create(validated_data)
-
     def create(self, validated_data):
         """Assign the user and product to the review during creation."""
         user = self.context['request'].user
@@ -67,18 +59,37 @@ class ReviewSerializer(serializers.ModelSerializer):
         return Review.objects.create(user=user, product=product, **validated_data)
 
 
+# class ReviewDetailSerializer(serializers.ModelSerializer):
+#     """Serializer for retrieving review details with nested product and user."""
+#     user = UserSerializer(read_only=True)
+#     product = serializers.SerializerMethodField()
+#
+#     class Meta:
+#         model = Review
+#         fields = ['id', 'uuid', 'product', 'user', 'rating', 'comment', 'created', 'modified']
+#         read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
+#
+#     def get_product(self, obj):
+#         # Deferred import to avoid circular dependency
+#         from .product_serializers import ProductDetailSerializer
+#         return ProductDetailSerializer(obj.product, context=self.context).data
+
+
 class ReviewDetailSerializer(serializers.ModelSerializer):
     """Serializer for retrieving review details with nested product and user."""
     user = UserSerializer(read_only=True)
-    product = serializers.SerializerMethodField()
+    product = ProductNestedSerializer(read_only=True)
 
     class Meta:
         model = Review
-        fields = ['id', 'uuid', 'product', 'user', 'rating', 'comment', 'created', 'modified']
+        fields = [
+            'id',
+            'uuid',
+            'product',
+            'user',
+            'rating',
+            'comment',
+            'created',
+            'modified'
+        ]
         read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
-
-    def get_product(self, obj):
-        # Deferred import to avoid circular dependency
-        from .product_serializers import ProductDetailSerializer
-        return ProductDetailSerializer(obj.product, context=self.context).data
-
