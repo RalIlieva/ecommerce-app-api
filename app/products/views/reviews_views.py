@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
+from ..permissions import IsOwnerOrReadOnly
 from ..models import Product, Review
 from ..serializers import (
     ReviewSerializer,
@@ -64,17 +65,19 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         'product__tags', 'product__images'
     )
     serializer_class = ReviewDetailSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'uuid'
 
     def perform_update(self, serializer):
-        review = self.get_object()
-        if review.user != self.request.user:
-            raise PermissionDenied("You can only update your own reviews.")
+        # IsOwnerOrReadonly takes care of the check
+        # review = self.get_object()
+        # if review.user != self.request.user:
+        #     raise PermissionDenied("You can only update your own reviews.")
         serializer.save()
 
     def perform_destroy(self, instance):
-        if instance.user != self.request.user:
-            raise PermissionDenied("You can only delete your own reviews.")
+        # IsOwnerOrReadonly takes care of the check
+        # if instance.user != self.request.user:
+        #     raise PermissionDenied("You can only delete your own reviews.")
         instance.delete()
