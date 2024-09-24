@@ -90,15 +90,16 @@ urlpatterns = [
          ),  # Admin
 
     # Review URLs
-    path('products/<uuid:uuid>/<slug:slug>/reviews/',
+    path('products/<uuid:product_uuid>/<slug:slug>/reviews/',
          ReviewListView.as_view(),
          name='review-list'
          ),
-    path('products/<uuid:product_uuid>/reviews/create/',
+    path('products/<uuid:product_uuid>/<slug:slug>/reviews/create/',
          ReviewCreateView.as_view(),
          name='review-create'),
-    path('reviews/<uuid:uuid>/',
-         ReviewDetailView.as_view(),
-         name='review-detail'
-         ),
+    path(
+        'products/<uuid:product_uuid>/<slug:slug>/reviews/<uuid:uuid>/',
+        ReviewDetailView.as_view(),
+        name='product-review-detail'
+    ),
 ]

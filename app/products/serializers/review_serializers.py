@@ -39,7 +39,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         """
         request = self.context.get('request')
         user = request.user
-        product = data.get('product')
+        product = self.context.get('product')
 
         if self.instance:
             # Allow updating the existing review
@@ -52,24 +52,30 @@ class ReviewSerializer(serializers.ModelSerializer):
 
         return data
 
+    # def create(self, validated_data):
+    #     """
+    #     Assign the user to the review during creation.
+    #     """
+    #     user = self.context['request'].user
+    #     validated_data['user'] = user
+    #     return super().create(validated_data)
+
     def create(self, validated_data):
-        """
-        Assign the user to the review during creation.
-        """
+        """Assign the user and product to the review during creation."""
         user = self.context['request'].user
-        validated_data['user'] = user
-        return super().create(validated_data)
+        product = self.context.get('product')  # Fetch from context
+        return Review.objects.create(user=user, product=product, **validated_data)
 
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
     """Serializer for retrieving review details with nested product and user."""
     user = UserSerializer(read_only=True)
-    products = serializers.SerializerMethodField()
+    product = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = ['id', 'uuid', 'products', 'user', 'rating', 'comment', 'created', 'modified']
-        read_only_fields = ['id', 'uuid', 'user', 'products', 'created', 'modified']
+        fields = ['id', 'uuid', 'product', 'user', 'rating', 'comment', 'created', 'modified']
+        read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
 
     def get_products(self, obj):
         # Deferred import to avoid circular dependency

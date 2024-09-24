@@ -34,9 +34,20 @@ class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def perform_create(self, serializer):
+    # def perform_create(self, serializer):
+    #     product_uuid = self.kwargs.get('product_uuid')
+    #     product = get_object_or_404(Product, uuid=product_uuid)
+    #     serializer.save(product=product)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
         product_uuid = self.kwargs.get('product_uuid')
         product = get_object_or_404(Product, uuid=product_uuid)
+        context['product'] = product
+        return context
+
+    def perform_create(self, serializer):
+        product = self.context['product']
         serializer.save(product=product)
 
 
