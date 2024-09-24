@@ -2,7 +2,7 @@
 Reviews serializers.
 """
 
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from users.serializers import UserSerializer
 from .product_serializers import ProductNestedSerializer
@@ -14,7 +14,15 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'uuid', 'user', 'rating', 'comment', 'created', 'modified']
+        fields = [
+            'id',
+            'uuid',
+            'user',
+            'rating',
+            'comment',
+            'created',
+            'modified'
+        ]
         read_only_fields = ['id', 'uuid', 'product', 'created', 'modified']
 
 
@@ -22,7 +30,15 @@ class ReviewSerializer(serializers.ModelSerializer):
     """Serializer for product reviews."""
     class Meta:
         model = Review
-        fields = ['id', 'uuid',  'user', 'rating', 'comment', 'created', 'modified']
+        fields = [
+            'id',
+            'uuid',
+            'user',
+            'rating',
+            'comment',
+            'created',
+            'modified'
+        ]
         read_only_fields = ['id', 'uuid', 'product', 'created', 'modified']
 
     def validate_rating(self, value):
@@ -30,7 +46,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         Ensure the rating is between 1 and 5.
         """
         if not 1 <= value <= 5:
-            raise serializers.ValidationError("Rating must be between 1 and 5.")
+            raise serializers.ValidationError(
+                "Rating must be between 1 and 5."
+            )
         return value
 
     def validate(self, data):
@@ -44,11 +62,15 @@ class ReviewSerializer(serializers.ModelSerializer):
         if self.instance:
             # Allow updating the existing review
             if self.instance.user != user:
-                raise serializers.ValidationError("You can only update your own reviews.")
+                raise serializers.ValidationError(
+                    "You can only update your own reviews."
+                )
         else:
             # Creating a new review
             if Review.objects.filter(user=user, product=product).exists():
-                raise serializers.ValidationError("You have already reviewed this product.")
+                raise serializers.ValidationError(
+                    "You have already reviewed this product."
+                )
 
         return data
 
@@ -56,27 +78,53 @@ class ReviewSerializer(serializers.ModelSerializer):
         """Assign the user and product to the review during creation."""
         user = self.context['request'].user
         product = self.context.get('product')  # Fetch from context
-        return Review.objects.create(user=user, product=product, **validated_data)
+        return Review.objects.create(
+            user=user,
+            product=product,
+            **validated_data
+        )
 
 
 # class ReviewDetailSerializer(serializers.ModelSerializer):
-#     """Serializer for retrieving review details with nested product and user."""
+#     """
+#     Serializer for retrieving review details with nested product and user.
+#     """
 #     user = UserSerializer(read_only=True)
 #     product = serializers.SerializerMethodField()
 #
 #     class Meta:
 #         model = Review
-#         fields = ['id', 'uuid', 'product', 'user', 'rating', 'comment', 'created', 'modified']
-#         read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
+#         fields = [
+#         'id',
+#         'uuid',
+#         'product',
+#         'user',
+#         'rating',
+#         'comment',
+#         'created',
+#         'modified'
+#         ]
+#         read_only_fields = [
+#         'id',
+#         'uuid',
+#         'user',
+#         'product',
+#         'created',
+#         'modified'
+#         ]
 #
 #     def get_product(self, obj):
 #         # Deferred import to avoid circular dependency
 #         from .product_serializers import ProductDetailSerializer
-#         return ProductDetailSerializer(obj.product, context=self.context).data
+#         return ProductDetailSerializer(
+#         obj.product, context=self.context
+#         ).data
 
 
 class ReviewDetailSerializer(serializers.ModelSerializer):
-    """Serializer for retrieving review details with nested product and user."""
+    """
+    Serializer for retrieving review details with nested product and user.
+    """
     user = UserSerializer(read_only=True)
     product = ProductNestedSerializer(read_only=True)
 
@@ -92,4 +140,11 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
             'created',
             'modified'
         ]
-        read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
+        read_only_fields = [
+            'id',
+            'uuid',
+            'user',
+            'product',
+            'created',
+            'modified'
+        ]
