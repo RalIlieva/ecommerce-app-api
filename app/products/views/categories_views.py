@@ -21,7 +21,7 @@ from ..serializers import (
 # Category Views
 class CategoryListView(generics.ListAPIView):
     """
-    View to list all categories to all users.
+    GET: View to list all categories to all users.
     """
     queryset = Category.objects.all().order_by('id')
     serializer_class = CategoryListSerializer
@@ -30,7 +30,7 @@ class CategoryListView(generics.ListAPIView):
 
 class CategoryCreateView(generics.CreateAPIView):
     """
-    View to create a new category.
+    POST: View to create a new category.
     Only superusers and administrators can create categories.
     """
     queryset = Category.objects.all()
@@ -50,7 +50,8 @@ class CategoryCreateView(generics.CreateAPIView):
 
 class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
-    View to retrieve, update, or delete a new category.
+    PUT/PATCH: View to retrieve, update, or
+    DELETE: delete a new category.
     Only superusers and administrators can create categories.
     """
     queryset = Category.objects.all()
@@ -82,7 +83,7 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
 class CategoryDetailView(generics.RetrieveAPIView):
     """
-    Retrieve category details (user-facing).
+    GET: Retrieve category details (user-facing).
     """
     queryset = Category.objects.all()
     serializer_class = CategoryDetailSerializer

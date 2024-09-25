@@ -21,7 +21,7 @@ from ..serializers import (
 # Tag Views
 class TagListView(generics.ListAPIView):
     """
-    View to list all tags.
+    GET: View to list all tags.
     """
     queryset = Tag.objects.all().order_by('id')
     serializer_class = TagListSerializer
@@ -29,7 +29,7 @@ class TagListView(generics.ListAPIView):
 
 class TagCreateView(generics.CreateAPIView):
     """
-    View to create a tag.
+    POST: View to create a tag.
     Only superusers and administrators can access this view.
     """
     queryset = Tag.objects.all()
@@ -50,7 +50,7 @@ class TagCreateView(generics.CreateAPIView):
 
 class TagDetailView(generics.RetrieveAPIView):
     """
-    Retrieve tags details (user-facing)
+    GET: Retrieve tags details (user-facing)
     """
     queryset = Tag.objects.all()
     serializer_class = TagDetailSerializer
@@ -61,7 +61,8 @@ class TagDetailView(generics.RetrieveAPIView):
 
 class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
-    View to retrieve, update, or delete a tag.
+    PUT/PATCH: View to retrieve, update, or
+    DELETE: delete a tag.
     Only superusers and administrators can access this view.
     """
     queryset = Tag.objects.all()

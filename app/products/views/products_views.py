@@ -20,7 +20,7 @@ from ..pagination import CustomPagination
 # Product Views
 class ProductListView(generics.ListAPIView):
     """
-    View to list all products.
+    GET: View to list all products.
     All users can access this view.
     """
     queryset = get_active_products().prefetch_related('tags', 'category').\
@@ -34,7 +34,7 @@ class ProductListView(generics.ListAPIView):
 
 class ProductDetailView(generics.RetrieveAPIView):
     """
-    View to retrieve a single product.
+    GET: View to retrieve a single product.
     All users can access this view.
     """
     # queryset = get_active_products()
@@ -57,7 +57,7 @@ class ProductDetailView(generics.RetrieveAPIView):
 
 class ProductCreateView(generics.CreateAPIView):
     """
-    View to create a product.
+    POST: View to create a product.
     Only superusers and administrators can access this view.
     """
     queryset = Product.objects.all()
@@ -67,7 +67,8 @@ class ProductCreateView(generics.CreateAPIView):
 
 class ProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
-    View to update, or delete a product.
+    PUT/PATCH: View to update, or
+    DELETE: delete a product.
     Only superusers and administrators can access this view.
     """
     queryset = Product.objects.all()

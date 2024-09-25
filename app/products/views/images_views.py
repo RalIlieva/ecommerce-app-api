@@ -13,7 +13,7 @@ from ..serializers import (
 # Product Image Upload View
 class ProductImageUploadView(generics.CreateAPIView):
     """
-    View to upload an image to a product.
+    POST: View to upload an image to a product.
     Only superusers and administrators can access this view.
     """
     queryset = ProductImage.objects.all()
@@ -33,7 +33,9 @@ class ProductImageUploadView(generics.CreateAPIView):
 
 
 class ProductImageDeleteView(generics.DestroyAPIView):
-    """View to delete a product image."""
+    """
+    DELETE: View to delete a product image.
+    """
     queryset = ProductImage.objects.all()
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     lookup_field = 'id'
