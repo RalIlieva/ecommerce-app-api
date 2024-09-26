@@ -6,7 +6,8 @@ import django_filters
 from .models import (
     Product,
     Tag,
-    # Category,
+    Category,
+    Review
 )
 
 
@@ -40,3 +41,39 @@ class ProductFilter(django_filters.FilterSet):
     class Meta:
         model = Product
         fields = ['name', 'tags', 'category', 'min_price', 'max_price']
+
+
+class CategoryFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(
+        field_name='name', lookup_expr='icontains', label='Search by Name'
+    )
+
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
+class TagFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(
+        field_name='name', lookup_expr='icontains', label='Search by Name'
+    )
+
+    class Meta:
+        model = Tag
+        fields = ['name']
+
+
+class ReviewFilter(django_filters.FilterSet):
+    rating = django_filters.NumberFilter(
+        field_name='rating', lookup_expr='exact', label='Rating'
+    )
+    min_rating = django_filters.NumberFilter(
+        field_name='rating', lookup_expr='gte', label='Min Rating'
+    )
+    max_rating = django_filters.NumberFilter(
+        field_name='rating', lookup_expr='lte', label='Max Price'
+    )
+
+    class Meta:
+        model = Review
+        fields = ['rating', 'min_rating', 'max_rating']

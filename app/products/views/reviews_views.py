@@ -19,7 +19,6 @@ class ReviewListView(generics.ListAPIView):
     GET: List all reviews for a specific product. (user-facing)
     """
     serializer_class = ReviewListSerializer
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
@@ -35,7 +34,6 @@ class ReviewCreateView(generics.CreateAPIView):
     """
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -72,14 +70,7 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'uuid'
 
     def perform_update(self, serializer):
-        # IsOwnerOrReadonly takes care of the check
-        # review = self.get_object()
-        # if review.user != self.request.user:
-        #     raise PermissionDenied("You can only update your own reviews.")
         serializer.save()
 
     def perform_destroy(self, instance):
-        # IsOwnerOrReadonly takes care of the check
-        # if instance.user != self.request.user:
-        #     raise PermissionDenied("You can only delete your own reviews.")
         instance.delete()
