@@ -1,5 +1,5 @@
 """
-Test API views for products.
+Test API views for products categories.
 """
 import uuid
 from random import randint
@@ -17,7 +17,6 @@ from products.models import (
     Review,
     ProductImage,
 )
-from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
 
 PRODUCTS_URL = reverse('products:product-list')

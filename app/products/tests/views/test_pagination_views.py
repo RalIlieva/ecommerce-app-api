@@ -1,5 +1,5 @@
 """
-Test API views for products.
+Test API views for products pagination.
 """
 
 from random import randint

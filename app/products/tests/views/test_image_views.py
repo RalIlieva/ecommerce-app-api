@@ -1,7 +1,7 @@
 """
-Test API views for products.
+Test API views for products images.
 """
-import uuid
+
 from random import randint
 
 import tempfile
@@ -21,7 +21,6 @@ from products.models import (
     Review,
     ProductImage,
 )
-from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
 
 PRODUCTS_URL = reverse('products:product-list')
@@ -30,7 +29,6 @@ CATEGORY_URL = reverse('products:category-list')
 CREATE_CATEGORY_URL = reverse('products:category-create')
 TAG_URL = reverse('products:tag-list')
 TAG_CREATE_URL = reverse('products:tag-create')
-
 
 
 def detail_url(product_uuid, slug):

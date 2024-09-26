@@ -1,5 +1,5 @@
 """
-Test API views for products.
+Test API views for products tags.
 """
 import uuid
 from random import randint
@@ -24,6 +24,7 @@ CATEGORY_URL = reverse('products:category-list')
 CREATE_CATEGORY_URL = reverse('products:category-create')
 TAG_URL = reverse('products:tag-list')
 TAG_CREATE_URL = reverse('products:tag-create')
+
 
 def detail_url(product_uuid, slug):
     """
