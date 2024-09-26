@@ -63,7 +63,10 @@
 #         # Print the errors for debugging
 #         if not serializer.is_valid():
 #             print("Serializer Errors:", serializer.errors)
-#         self.assertTrue(serializer.is_valid(), "Serializer validation failed.")
+#         self.assertTrue(
+#         serializer.is_valid(),
+#         "Serializer validation failed."
+#         )
 #
 #     def test_invalid_category(self):
 #         """Test invalid category raises an error in serialization."""
@@ -103,7 +106,9 @@
 #             "slug": "existing-slug",
 #             "tags": [],
 #             "category": {"name": "Electronics", "slug": "electronics"},
-#             "description": "Description of a new product with duplicate slug.",
+#             "description": "
+#             Description of a new product with duplicate slug.
+#             ",
 #             "stock": 5
 #         }
 #         serializer = ProductDetailSerializer(data=data)
@@ -134,7 +139,9 @@
 #         )
 #
 #     # def test_duplicate_slug_category(self):
-#     #     """Test creating a category with an existing slug raises an error."""
+#     #     """
+#     Test creating a category with an existing slug raises an error.
+#     """
 #     #     Category.objects.create(
 #     #         name="Existing Category",
 #     #         slug="existing-slug"

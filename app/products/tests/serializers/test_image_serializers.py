@@ -15,8 +15,6 @@ from products.serializers import (
 from products.models import (
     Category,
     Product,
-    # Tag,
-    # ProductImage
 )
 
 

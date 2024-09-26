@@ -8,15 +8,11 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from products.serializers import (
     ProductDetailSerializer,
-    CategorySerializer,
-    TagSerializer,
-    ProductImageSerializer
+    CategorySerializer
 )
 from products.models import (
     Category,
-    Product,
-    # Tag,
-    # ProductImage
+    Product
 )
 
 
