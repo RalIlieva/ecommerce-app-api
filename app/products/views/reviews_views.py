@@ -30,8 +30,10 @@ class ReviewListView(generics.ListAPIView):
 
     def get_queryset(self):
         product_uuid = self.kwargs.get('product_uuid')
-        product = get_object_or_404(Product, uuid=product_uuid)
-        return Review.objects.filter(product=product)
+        slug = self.kwargs.get('slug')
+        product = get_object_or_404(Product, uuid=product_uuid, slug=slug)
+        # return Review.objects.filter(product=product)
+        return Review.objects.filter(product__uuid=product_uuid)
 
 
 class ReviewCreateView(generics.CreateAPIView):
