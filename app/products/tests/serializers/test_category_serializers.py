@@ -4,9 +4,7 @@ Test API product serializers.
 
 from django.test import TestCase
 from products.serializers import (
-    CategorySerializer,
-    TagSerializer,
-    ProductImageSerializer
+    CategorySerializer
 )
 
 

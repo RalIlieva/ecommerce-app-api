@@ -2,13 +2,9 @@
 Test API product serializers.
 """
 
-from PIL import Image
-from io import BytesIO
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from products.serializers import (
-    ProductDetailSerializer,
-    CategorySerializer
+    ProductDetailSerializer
 )
 from products.models import (
     Category,
