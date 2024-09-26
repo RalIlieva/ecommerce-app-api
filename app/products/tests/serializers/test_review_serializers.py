@@ -23,8 +23,6 @@ class ReviewSerializerTestCase(TestCase):
             stock=5
         )
 
-        # self.client.force_authenticate(self.user)
-
     def test_review_creation(self):
         data = {
             'rating': 5,
@@ -75,3 +73,24 @@ class ReviewSerializerTestCase(TestCase):
         with self.assertRaises(ValidationError) as context_manager:
             serializer.is_valid(raise_exception=True)
         self.assertIn('You have already reviewed this product.', str(context_manager.exception))
+
+    def test_invalid_rating(self):
+        data = {
+            'rating': 6,
+            'comment': 'Invalid rating.'
+        }
+
+        # Simulate a request using APIRequestFactory
+        factory = APIRequestFactory()
+        request = factory.post('/reviews/', data, format='json')
+
+        request.user = self.user
+
+        context = {
+            'request': request,
+            'product': self.product
+        }
+        serializer = ReviewSerializer(data=data, context=context)
+        with self.assertRaises(ValidationError) as context_manager:
+            serializer.is_valid(raise_exception=True)
+        self.assertIn('Rating must be between 1 and 5.', str(context_manager.exception))

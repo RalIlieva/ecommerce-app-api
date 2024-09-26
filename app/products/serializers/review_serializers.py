@@ -28,6 +28,12 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     """Serializer for product reviews."""
+
+    rating = serializers.ChoiceField(
+        choices=[1, 2, 3, 4, 5],
+        error_messages={'invalid_choice': 'Rating must be between 1 and 5.'}
+    )
+
     class Meta:
         model = Review
         fields = [
