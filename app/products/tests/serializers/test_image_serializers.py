@@ -1,5 +1,5 @@
 """
-Test API product serializers.
+Test API image serializers.
 """
 
 from PIL import Image

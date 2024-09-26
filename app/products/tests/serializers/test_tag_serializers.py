@@ -1,5 +1,5 @@
 """
-Test API product serializers.
+Test API tag serializers.
 """
 
 from django.test import TestCase
