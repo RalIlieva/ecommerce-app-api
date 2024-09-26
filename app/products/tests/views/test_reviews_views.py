@@ -40,9 +40,10 @@ class ReviewViewTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
+        self.assertEqual(response.data['results'][0]['uuid'], str(self.review.uuid))
         self.assertEqual(response.data['results'][0]['comment'], 'Great product!')
-        # self.assertEqual(response.data['results']['rating'], 5)
-        # self.assertEqual(response.data['results']['user'], self.user.id)
+        self.assertEqual(response.data['results'][0]['rating'], 5)
+        self.assertEqual(response.data['results'][0]['user'], self.user.id)
 
     def test_create_review_authenticated(self):
         url = reverse('products:review-create', kwargs={
