@@ -22,10 +22,11 @@ from ..serializers import (
 class CategoryListView(generics.ListAPIView):
     """
     GET: View to list all categories to all users.
+    (user-facing)
     """
     queryset = Category.objects.all().order_by('id')
     serializer_class = CategoryListSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 
 class CategoryCreateView(generics.CreateAPIView):
@@ -89,4 +90,4 @@ class CategoryDetailView(generics.RetrieveAPIView):
     serializer_class = CategoryDetailSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
-    # permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]

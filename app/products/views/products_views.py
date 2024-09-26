@@ -21,7 +21,7 @@ from ..pagination import CustomPagination
 class ProductListView(generics.ListAPIView):
     """
     GET: View to list all products.
-    All users can access this view.
+    All users can access this view. (user-facing)
     """
     queryset = get_active_products().prefetch_related('tags', 'category').\
         order_by('id')
@@ -30,12 +30,13 @@ class ProductListView(generics.ListAPIView):
     filterset_class = ProductFilter
     search_fields = ['name', 'description']  # Fields to search by
     pagination_class = CustomPagination
+    permission_classes = [permissions.AllowAny]
 
 
 class ProductDetailView(generics.RetrieveAPIView):
     """
     GET: View to retrieve a single product.
-    All users can access this view.
+    All users can access this view. (user-facing)
     """
     # queryset = get_active_products()
     queryset = get_active_products().select_related(

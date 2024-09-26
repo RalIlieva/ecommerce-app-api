@@ -21,10 +21,11 @@ from ..serializers import (
 # Tag Views
 class TagListView(generics.ListAPIView):
     """
-    GET: View to list all tags.
+    GET: View to list all tags. (user-facing)
     """
     queryset = Tag.objects.all().order_by('id')
     serializer_class = TagListSerializer
+    permission_classes = [permissions.AllowAny]
 
 
 class TagCreateView(generics.CreateAPIView):
@@ -56,7 +57,7 @@ class TagDetailView(generics.RetrieveAPIView):
     serializer_class = TagDetailSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
-    # permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]
 
 
 class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):

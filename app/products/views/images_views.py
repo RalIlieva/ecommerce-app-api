@@ -35,6 +35,7 @@ class ProductImageUploadView(generics.CreateAPIView):
 class ProductImageDeleteView(generics.DestroyAPIView):
     """
     DELETE: View to delete a product image.
+    Only superusers and administrators can access the view.
     """
     queryset = ProductImage.objects.all()
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
