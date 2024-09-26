@@ -65,7 +65,10 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         'product__tags', 'product__images'
     )
     serializer_class = ReviewDetailSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly
+    ]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'uuid'
 

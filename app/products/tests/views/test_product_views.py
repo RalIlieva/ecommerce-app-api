@@ -19,7 +19,7 @@ from products.models import (
     Category,
     Tag,
     Review,
-    ProductImage,
+    # ProductImage,
 )
 from products.serializers import ProductMiniSerializer, ProductDetailSerializer
 
@@ -728,7 +728,10 @@ class ProductUpdateDeleteViewTest(TestCase):
 #         self.client.force_authenticate(user=self.admin_user)
 #         # Generate a random UUID
 #         invalid_uuid = uuid.uuid4()
-#         invalid_url = reverse('products:category-manage', args=[invalid_uuid])
+#         invalid_url = reverse(
+#         'products:category-manage',
+#         args=[invalid_uuid]
+#         )
 #         update_res = self.client.patch(
 #             invalid_url,
 #             {'name': 'Invalid Category'},
@@ -1078,7 +1081,10 @@ class ProductUpdateDeleteViewTest(TestCase):
 #
 #         # Ensure the image upload was successful
 #         self.product.refresh_from_db()
-#         self.assertEqual(upload_response.status_code, status.HTTP_201_CREATED)
+#         self.assertEqual(
+#         upload_response.status_code,
+#         status.HTTP_201_CREATED
+#         )
 #         self.assertIn('image', upload_response.data)
 #
 #         # Verify the image object in the database

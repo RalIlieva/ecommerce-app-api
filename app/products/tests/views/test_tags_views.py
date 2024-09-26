@@ -13,8 +13,6 @@ from products.models import (
     Product,
     Category,
     Tag,
-    Review,
-    ProductImage,
 )
 
 
