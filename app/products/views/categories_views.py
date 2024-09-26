@@ -5,8 +5,8 @@ Views for the products' categories API.
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
-# from django_filters.rest_framework import DjangoFilterBackend
-# from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
 from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
@@ -16,6 +16,8 @@ from ..serializers import (
     CategoryListSerializer,
     CategoryDetailSerializer,
 )
+from ..filters import CategoryFilter
+from ..pagination import CustomPagination
 
 
 # Category Views
@@ -26,6 +28,10 @@ class CategoryListView(generics.ListAPIView):
     """
     queryset = Category.objects.all().order_by('id')
     serializer_class = CategoryListSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = CategoryFilter
+    search_fields = ['name']  # Fields to search by
+    pagination_class = CustomPagination
     permission_classes = [permissions.AllowAny]
 
 
