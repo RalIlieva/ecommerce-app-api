@@ -3,7 +3,8 @@ Views for the products' reviews API.
 """
 
 from django.shortcuts import get_object_or_404
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
 from ..permissions import IsOwnerOrReadOnly
 from ..models import Product, Review
@@ -12,6 +13,8 @@ from ..serializers import (
     ReviewListSerializer,
     ReviewDetailSerializer
 )
+from ..filters import ReviewFilter
+from ..pagination import CustomPagination
 
 
 class ReviewListView(generics.ListAPIView):
@@ -19,6 +22,10 @@ class ReviewListView(generics.ListAPIView):
     GET: List all reviews for a specific product. (user-facing)
     """
     serializer_class = ReviewListSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ReviewFilter
+    search_fields = ['rating']  # Fields to search by
+    pagination_class = CustomPagination
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
