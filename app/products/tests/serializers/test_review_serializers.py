@@ -48,3 +48,30 @@ class ReviewSerializerTestCase(TestCase):
         self.assertEqual(review.comment, 'Great product!')
         self.assertEqual(review.user, self.user)
         self.assertEqual(review.product, self.product)
+
+    def test_duplicate_review(self):
+        Review.objects.create(
+            user=self.user,
+            product=self.product,
+            rating=5,
+            comment='First review.'
+        )
+        data = {
+            'rating': 4,
+            'comment': 'Second review attempt.'
+        }
+
+        # Simulate a request using APIRequestFactory
+        factory = APIRequestFactory()
+        request = factory.post('/reviews/', data, format='json')
+
+        request.user = self.user
+
+        context = {
+            'request': request,
+            'product': self.product
+        }
+        serializer = ReviewSerializer(data=data, context=context)
+        with self.assertRaises(ValidationError) as context_manager:
+            serializer.is_valid(raise_exception=True)
+        self.assertIn('You have already reviewed this product.', str(context_manager.exception))
