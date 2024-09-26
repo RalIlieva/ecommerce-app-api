@@ -12,7 +12,10 @@ from products.models import Product, Category, Review
 
 class ReviewViewTestCase(APITestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(email='user@example.com', password='password')
+        self.user = get_user_model().objects.create_user(
+            email='user@example.com',
+            password='password'
+        )
         self.category = Category.objects.create(
             name="Electronics",
             slug="electronics"
@@ -38,12 +41,21 @@ class ReviewViewTestCase(APITestCase):
             'slug': self.product.slug
         })
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
         self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['uuid'], str(self.review.uuid))
-        self.assertEqual(response.data['results'][0]['comment'], 'Great product!')
-        self.assertEqual(response.data['results'][0]['rating'], 5)
-        self.assertEqual(response.data['results'][0]['user'], self.user.id)
+        self.assertEqual(
+            response.data['results'][0]['uuid'],
+            str(self.review.uuid)
+        )
+        self.assertEqual(response.data['results'][0]['comment'],
+                         'Great product!')
+        self.assertEqual(response.data['results'][0]['rating'],
+                         5)
+        self.assertEqual(response.data['results'][0]['user'],
+                         self.user.id)
 
     def test_create_review_authenticated(self):
         url = reverse('products:review-create', kwargs={
@@ -56,7 +68,8 @@ class ReviewViewTestCase(APITestCase):
             'comment': 'Another review.'
         }
         response = self.client.post(url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)  # Duplicate review
+        # Duplicate review
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_review_unauthenticated(self):
         url = reverse('products:review-create', kwargs={
@@ -103,7 +116,10 @@ class ReviewViewTestCase(APITestCase):
             'slug': self.product.slug,
             'uuid': self.review.uuid
         })
-        other_user = get_user_model().objects.create_user(email='other@example.com', password='password')
+        other_user = get_user_model().objects.create_user(
+            email='other@example.com',
+            password='password'
+        )
         self.client.force_authenticate(user=other_user)
         data = {
             'rating': 2,
@@ -129,7 +145,10 @@ class ReviewViewTestCase(APITestCase):
             'slug': self.product.slug,
             'uuid': self.review.uuid
         })
-        other_user = get_user_model().objects.create_user(email='other@example.com', password='password')
+        other_user = get_user_model().objects.create_user(
+            email='other@example.com',
+            password='password'
+        )
         self.client.force_authenticate(user=other_user)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

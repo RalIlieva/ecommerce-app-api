@@ -23,7 +23,11 @@ class ReviewListSerializer(serializers.ModelSerializer):
             'created',
             'modified'
         ]
-        read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
+        read_only_fields = [
+            'id', 'uuid',
+            'user', 'product',
+            'created', 'modified'
+        ]
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -45,7 +49,11 @@ class ReviewSerializer(serializers.ModelSerializer):
             'created',
             'modified'
         ]
-        read_only_fields = ['id', 'uuid', 'user', 'product', 'created', 'modified']
+        read_only_fields = [
+            'id', 'uuid',
+            'user', 'product',
+            'created', 'modified'
+        ]
 
     def validate_rating(self, value):
         """

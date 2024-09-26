@@ -9,7 +9,10 @@ from products.serializers import ReviewSerializer
 class ReviewSerializerTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = get_user_model().objects.create_user(email='user@example.com', password='password')
+        self.user = get_user_model().objects.create_user(
+            email='user@example.com',
+            password='password'
+        )
         self.category = Category.objects.create(
             name="Electronics",
             slug="electronics"
@@ -72,7 +75,10 @@ class ReviewSerializerTestCase(TestCase):
         serializer = ReviewSerializer(data=data, context=context)
         with self.assertRaises(ValidationError) as context_manager:
             serializer.is_valid(raise_exception=True)
-        self.assertIn('You have already reviewed this product.', str(context_manager.exception))
+        self.assertIn(
+            'You have already reviewed this product.',
+            str(context_manager.exception)
+        )
 
     def test_invalid_rating(self):
         data = {
@@ -93,4 +99,7 @@ class ReviewSerializerTestCase(TestCase):
         serializer = ReviewSerializer(data=data, context=context)
         with self.assertRaises(ValidationError) as context_manager:
             serializer.is_valid(raise_exception=True)
-        self.assertIn('Rating must be between 1 and 5.', str(context_manager.exception))
+        self.assertIn(
+            'Rating must be between 1 and 5.',
+            str(context_manager.exception)
+        )
