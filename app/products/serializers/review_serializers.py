@@ -10,6 +10,7 @@ from ..models import Review
 
 class ReviewListSerializer(serializers.ModelSerializer):
     """Serializer for listing reviews (user-facing)."""
+    # Security - not to display the users' id, email and personal info
     user = UserReviewSerializer(read_only=True)
 
     class Meta:
@@ -103,6 +104,7 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
     """
     Serializer for retrieving review details with nested product and user.
     """
+    # Security - not to display the users' id, email and personal info
     user = UserReviewSerializer(read_only=True)
     product = ProductNestedSerializer(read_only=True)
 
