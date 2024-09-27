@@ -7,16 +7,11 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-# from products.models import Product, Category, Tag
 from products.services import (
     create_product_with_related_data,
     update_product_with_related_data
 )
 
-
-# def manage_url(product_id):
-#     """Manage - update, delete a product detail URL."""
-#     return reverse('products:product-manage', args=[product_id])
 
 def manage_url(product_uuid):
     """Manage - update, delete a product detail URL."""
@@ -81,16 +76,11 @@ class ProductServiceTest(TestCase):
             ],
             "description": "Updated description",
         }
-        # url = manage_url(product.id)
         url = manage_url(product.uuid)
         res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         product.refresh_from_db()
-
-        # # Debugging output to check tags
-        # print("Product Tags after update:", product.tags.all())
-
         self.assertEqual(product.name, payload['name'])
         self.assertEqual(product.name, "Updated Product 3")
         self.assertEqual(product.category.name, "Electronics")

@@ -6,7 +6,6 @@ Product serializers.
 from rest_framework import serializers
 from .category_serializers import CategorySerializer
 from .tag_serializers import TagSerializer
-# from .review_serializers import ReviewSerializer
 from .image_serializers import ProductImageSerializer
 from ..models import Product
 from ..services import (

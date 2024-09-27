@@ -152,7 +152,6 @@ class ImageUploadTests(TestCase):
         (DELETE /products/<id>/images/<image_id>/delete/)
         """
         # Step 1: Upload an image to the product
-        # url = image_upload_url(self.product.id)
         url = image_upload_url(self.product.uuid, self.product.slug)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
             img = Image.new('RGB', (10, 10))
@@ -177,10 +176,6 @@ class ImageUploadTests(TestCase):
         self.assertTrue(os.path.exists(product_image.image.path))
 
         # Step 2: Delete the image
-        # delete_url = reverse(
-        #     'products:product-image-delete',
-        #     args=[self.product.id, product_image.id]
-        # )
         delete_url = image_delete_url(
             self.product.uuid,
             self.product.slug,

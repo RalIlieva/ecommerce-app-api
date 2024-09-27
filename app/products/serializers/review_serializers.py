@@ -2,7 +2,6 @@
 Reviews serializers.
 """
 
-# from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from users.serializers import UserSerializer
 from .product_serializers import ProductNestedSerializer
@@ -97,42 +96,6 @@ class ReviewSerializer(serializers.ModelSerializer):
             product=product,
             **validated_data
         )
-
-
-# class ReviewDetailSerializer(serializers.ModelSerializer):
-#     """
-#     Serializer for retrieving review details with nested product and user.
-#     """
-#     user = UserSerializer(read_only=True)
-#     product = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Review
-#         fields = [
-#         'id',
-#         'uuid',
-#         'product',
-#         'user',
-#         'rating',
-#         'comment',
-#         'created',
-#         'modified'
-#         ]
-#         read_only_fields = [
-#         'id',
-#         'uuid',
-#         'user',
-#         'product',
-#         'created',
-#         'modified'
-#         ]
-#
-#     def get_product(self, obj):
-#         # Deferred import to avoid circular dependency
-#         from .product_serializers import ProductDetailSerializer
-#         return ProductDetailSerializer(
-#         obj.product, context=self.context
-#         ).data
 
 
 class ReviewDetailSerializer(serializers.ModelSerializer):

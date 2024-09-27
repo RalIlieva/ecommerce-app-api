@@ -123,7 +123,6 @@ class CategoryCreateViewTest(TestCase):
         payload = {
             'name': 'Testing Creating New Category',
             'slug': 'testing-creating-new-category',
-            # 'parent': None
         }
         res = self.client.post(CREATE_CATEGORY_URL, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)

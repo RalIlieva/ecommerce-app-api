@@ -12,6 +12,7 @@ from products.models import Product, Category, Review
 
 class ReviewViewTestCase(APITestCase):
     def setUp(self):
+
         self.user = get_user_model().objects.create_user(
             email='user@example.com',
             password='password'
