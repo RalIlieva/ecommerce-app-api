@@ -101,10 +101,8 @@ def update_product_with_related_data(instance, validated_data):
     # Handle tags update
     tags_data = validated_data.pop('tags', None)
     if tags_data is not None:
-        print("Updating tags...")  # Debug output
         instance.tags.clear()
         for tag_data in tags_data:
-            print(f"Processing tag: {tag_data}")  # Debug output
             tag, created = Tag.objects.get_or_create(**tag_data)
             instance.tags.add(tag)
 
