@@ -70,7 +70,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
         model = CustomerProfile
         fields = [
             'id',
-            'uuid'
+            'uuid',
             'user',
             'gender',
             'phone_number',
