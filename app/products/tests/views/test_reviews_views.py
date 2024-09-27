@@ -61,6 +61,41 @@ class ReviewViewTestCase(APITestCase):
         self.assertEqual(response.data['results'][0]['user']['name'],
                          self.user.name)
 
+    def test_list_reviews_without_user_name(self):
+        """Test listing reviews where username is not set."""
+        # Create a user without a name
+        user_without_name = get_user_model().objects.create_user(
+            email='noname@example.com',
+            password='userpass',
+            name=''  # Empty name
+        )
+
+        # Create a review for this user
+        review_without_name = Review.objects.create(
+            user=user_without_name,
+            product=self.product,
+            rating=4,
+            comment='Good product!'
+        )
+
+        # List reviews
+        url = reverse('products:review-list', kwargs={
+            'product_uuid': self.product.uuid,
+            'slug': self.product.slug
+        })
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 2)
+
+        # Verify review content for the user without a name
+        review_data = response.data['results'][1]
+        self.assertEqual(review_data['uuid'], str(review_without_name.uuid))
+        self.assertEqual(review_data['comment'], review_without_name.comment)
+        self.assertIn('uuid', review_data['user'])
+        self.assertIn('name', review_data['user'])
+        # Derived name from email
+        self.assertEqual(review_data['user']['name'], 'noname')
+
     def test_create_review_authenticated(self):
         url = reverse('products:review-create', kwargs={
             'product_uuid': self.product.uuid,
@@ -156,38 +191,3 @@ class ReviewViewTestCase(APITestCase):
         self.client.force_authenticate(user=other_user)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_list_reviews_without_user_name(self):
-        """Test listing reviews where username is not set."""
-        # Create a user without a name
-        user_without_name = get_user_model().objects.create_user(
-            email='noname@example.com',
-            password='userpass',
-            name=''  # Empty name
-        )
-
-        # Create a review for this user
-        review_without_name = Review.objects.create(
-            user=user_without_name,
-            product=self.product,
-            rating=4,
-            comment='Good product!'
-        )
-
-        # List reviews
-        url = reverse('products:review-list', kwargs={
-            'product_uuid': self.product.uuid,
-            'slug': self.product.slug
-        })
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 2)
-
-        # Verify review content for the user without a name
-        review_data = response.data['results'][1]
-        self.assertEqual(review_data['uuid'], str(review_without_name.uuid))
-        self.assertEqual(review_data['comment'], review_without_name.comment)
-        self.assertIn('uuid', review_data['user'])
-        self.assertIn('name', review_data['user'])
-        # Derived name from email
-        self.assertEqual(review_data['user']['name'], 'noname')
