@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
 from products.models import Product, Category, Review
+from users.models import CustomerProfile
 
 
 class ReviewViewTestCase(APITestCase):
@@ -15,8 +16,10 @@ class ReviewViewTestCase(APITestCase):
 
         self.user = get_user_model().objects.create_user(
             email='user@example.com',
-            password='password'
+            password='password',
+            name='User'
         )
+        self.customer_profile = CustomerProfile.objects.get(user=self.user)
         self.category = Category.objects.create(
             name="Electronics",
             slug="electronics"
@@ -55,8 +58,8 @@ class ReviewViewTestCase(APITestCase):
                          'Great product!')
         self.assertEqual(response.data['results'][0]['rating'],
                          5)
-        self.assertEqual(response.data['results'][0]['user'],
-                         self.user.id)
+        self.assertEqual(response.data['results'][0]['user']['name'],
+                         self.user.name)
 
     def test_create_review_authenticated(self):
         url = reverse('products:review-create', kwargs={
