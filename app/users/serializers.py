@@ -70,6 +70,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
         model = CustomerProfile
         fields = [
             'id',
+            'uuid'
             'user',
             'gender',
             'phone_number',
@@ -77,4 +78,21 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'about'
         ]
-        read_only_fields = ['user', 'id']
+        read_only_fields = ['id', 'uuid', 'user']
+
+
+class UserReviewSerializer(serializers.ModelSerializer):
+    """Serializer for embedding user data in reviews."""
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomerProfile
+        fields = ['uuid', 'name']
+        read_only_fields = ['uuid', 'name']
+
+    def get_name(self, obj):
+        """Return the user's name, or email prefix if name is missing."""
+        name = obj.name
+        if not name:
+            name = obj.email.split('@')[0]
+        return name

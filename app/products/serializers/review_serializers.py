@@ -3,13 +3,14 @@ Reviews serializers.
 """
 
 from rest_framework import serializers
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, UserReviewSerializer
 from .product_serializers import ProductNestedSerializer
 from ..models import Review
 
 
 class ReviewListSerializer(serializers.ModelSerializer):
     """Serializer for listing reviews (user-facing)."""
+    user = UserReviewSerializer(read_only=True)
 
     class Meta:
         model = Review
@@ -102,7 +103,7 @@ class ReviewDetailSerializer(serializers.ModelSerializer):
     """
     Serializer for retrieving review details with nested product and user.
     """
-    user = UserSerializer(read_only=True)
+    user = UserReviewSerializer(read_only=True)
     product = ProductNestedSerializer(read_only=True)
 
     class Meta:
