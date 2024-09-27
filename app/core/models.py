@@ -23,7 +23,7 @@ class UUIDModel(models.Model):
         db_index=True,
         default=uuid.uuid4,
         editable=False,
-        unique=True
+        unique=True,
     )
 
     class Meta:

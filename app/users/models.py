@@ -9,7 +9,10 @@ from django.contrib.auth.models import (
     BaseUserManager,
     PermissionsMixin,
 )
-from core.models import TimeStampedModel
+from core.models import (
+    TimeStampedModel,
+    UUIDModel
+)
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -53,7 +56,7 @@ class User(AbstractUser, PermissionsMixin):
         return self.email
 
 
-class CustomerProfile(TimeStampedModel):
+class CustomerProfile(UUIDModel, TimeStampedModel):
     """Customer profile for users that are buyers."""
 
     GENDER_MALE = "m"
