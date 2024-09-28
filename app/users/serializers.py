@@ -83,7 +83,10 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
 
 class UserReviewSerializer(serializers.ModelSerializer):
     """Serializer for embedding user data in reviews."""
-    uuid = serializers.UUIDField(source='customer_profile.uuid', read_only=True)
+    uuid = serializers.UUIDField(
+        source='customer_profile.uuid',
+        read_only=True
+    )
     name = serializers.SerializerMethodField()
 
     class Meta:

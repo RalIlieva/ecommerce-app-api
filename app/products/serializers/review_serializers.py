@@ -3,7 +3,7 @@ Reviews serializers.
 """
 
 from rest_framework import serializers
-from users.serializers import UserSerializer, UserReviewSerializer
+from users.serializers import UserReviewSerializer
 from .product_serializers import ProductNestedSerializer
 from ..models import Review
 
