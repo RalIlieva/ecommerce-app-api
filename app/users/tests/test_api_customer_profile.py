@@ -68,3 +68,26 @@ class PrivateCustomerProfileApiTests(TestCase):
         res = self.client.get(PROFILE_URL)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class AutomaticCustomerProfileCreationTest(TestCase):
+    """Test that a CustomerProfile is created automatically with a new User."""
+
+    def test_customer_profile_created(self):
+        """Test that creating a user also creates a CustomerProfile."""
+        user = create_user(
+            email='profiletest@example.com',
+            password='testpass123',
+            name='Profile Tester'
+        )
+        profile_exists = CustomerProfile.objects.filter(user=user).exists()
+        self.assertTrue(profile_exists)
+
+    def test_customer_profile_attributes(self):
+        """Test that the CustomerProfile has default attributes."""
+        user = create_user(email='profileattr@example.com', password='testpass123', name='Profile Attr')
+        profile = CustomerProfile.objects.get(user=user)
+        self.assertEqual(profile.gender, '')  # Assuming default is empty string
+        self.assertEqual(profile.phone_number, '')
+        self.assertIsNone(profile.date_of_birth)
+        self.assertIsNone(profile.about)
