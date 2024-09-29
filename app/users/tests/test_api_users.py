@@ -124,6 +124,32 @@ class AuthenticationTests(APITestCase):
         self.assertNotIn('refresh', response.data)
 
 
+class TokenPayloadTest(APITestCase):
+    """Test the payload of JWT tokens."""
+
+    def setUp(self):
+        self.user = create_user(email='tokenuser@example.com', password='testpass123', name='Token User')
+        self.url_login = reverse('token_obtain_pair')
+
+    def test_token_contains_uuid(self):
+        """Test that the JWT token includes the user's UUID."""
+        res = self.client.post(
+            self.url_login,
+            {'email': 'tokenuser@example.com', 'password': 'testpass123'}
+        )
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('access', res.data)
+
+        # Decode the JWT token to verify its payload
+        import jwt
+        from django.conf import settings
+        access_token = res.data['access']
+        payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+
+        self.assertIn('uuid', payload)
+        self.assertEqual(payload['uuid'], str(self.user.uuid))
+
+
 class PrivateUserApiTests(TestCase):
     """Test API that require authentication."""
 
@@ -201,7 +227,7 @@ class UserSerializerValidationTest(TestCase):
             'password': 'validpass123',
             'name': 'Invalid Email User'
         }
-        from users.serializers import UserSerializer
+        from ..serializers import UserSerializer
         serializer = UserSerializer(data=payload)
         self.assertFalse(serializer.is_valid())
         self.assertIn('email', serializer.errors)
@@ -213,7 +239,7 @@ class UserSerializerValidationTest(TestCase):
             'password': '123',
             'name': 'Short Pass User'
         }
-        from users.serializers import UserSerializer
+        from ..serializers import UserSerializer
         serializer = UserSerializer(data=payload)
         self.assertFalse(serializer.is_valid())
         self.assertIn('password', serializer.errors)
@@ -225,10 +251,11 @@ class UserSerializerValidationTest(TestCase):
             'password': 'anotherpass123',
             'name': 'Duplicate Email User'
         }
-        from users.serializers import UserSerializer
+        from ..serializers import UserSerializer
         serializer = UserSerializer(data=payload)
         self.assertFalse(serializer.is_valid())
         self.assertIn('email', serializer.errors)
+
 
 class NestedSerializerTest(APITestCase):
     """Test nested serialization between User and CustomerProfile."""
@@ -245,4 +272,32 @@ class NestedSerializerTest(APITestCase):
         self.assertIn('user', res.data)
         self.assertEqual(res.data['user']['email'], self.user.email)
         self.assertEqual(res.data['user']['name'], self.user.name)
-        # self.assertEqual(res.data['uuid'], str(self.user.uuid))
+        self.assertEqual(res.data['uuid'], str(self.user.customer_profile.uuid))
+
+
+class SensitiveDataExposureTest(APITestCase):
+    """Test that sensitive data is not exposed via API responses."""
+
+    def setUp(self):
+        self.user = create_user(
+            email='sensitivedata@example.com',
+            password='testpass123',
+            name='Sensitive Data User'
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_password_not_in_response(self):
+        """Test that the password is not included in the user serialization."""
+        res = self.client.get(ME_URL)
+        self.assertNotIn('password', res.data)
+
+    def test_create_user_response_no_password(self):
+        """Test that creating a user does not return the password."""
+        payload = {
+            'email': 'newuser@example.com',
+            'password': 'newpass123',
+            'name': 'New User',
+        }
+        res = self.client.post(CREATE_USER_URL, payload)
+        self.assertNotIn('password', res.data)
