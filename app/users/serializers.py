@@ -19,7 +19,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         data['email'] = self.user.email
         data['name'] = self.user.name
-        data['uuid'] = self.user.uuid
+        data['uuid'] = str(self.user.uuid)
 
         return data
 
