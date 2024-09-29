@@ -91,29 +91,3 @@ class AutomaticCustomerProfileCreationTest(TestCase):
         self.assertEqual(profile.phone_number, '')
         self.assertIsNone(profile.date_of_birth)
         self.assertIsNone(profile.about)
-
-
-# class CustomerProfileAccessControlTest(APITestCase):
-#     """Test access controls for CustomerProfile API."""
-#
-#     def setUp(self):
-#         self.user1 = create_user(email='user1@example.com', password='pass1234', name='User One')
-#         self.user2 = create_user(email='user2@example.com', password='pass1234', name='User Two')
-#         self.client = APIClient()
-#         self.client.force_authenticate(user=self.user1)
-#
-#     def test_user_cannot_access_another_users_profile(self):
-#         """Test that a user cannot access another user's CustomerProfile."""
-#         profile_uuid = self.user2.customer_profile.uuid
-#         # url = reverse('users:customer_profile', kwargs={'uuid': profile_uuid})
-#         self.client.force_authenticate(user=self.user2)
-#         res = self.client.get(PROFILE_URL)
-#         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
-#
-#     def test_user_can_access_own_profile(self):
-#         """Test that a user can access their own CustomerProfile."""
-#         profile_uuid = self.user1.customer_profile.uuid
-#         # url = reverse('users:customer_profile', kwargs={'uuid': profile_uuid})
-#         res = self.client.get(PROFILE_URL)
-#         self.assertEqual(res.status_code, status.HTTP_200_OK)
-#         self.assertEqual(res.data['user']['email'], self.user1.email)
