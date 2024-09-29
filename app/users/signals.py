@@ -8,11 +8,22 @@ from .models import CustomerProfile
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_customer_profile(sender, instance, created, **kwargs):
+def create_or_update_customer_profile(sender, instance, created, **kwargs):
     if created:
+        # Create CustomerProfile if User is newly created
         CustomerProfile.objects.create(user=instance)
+    else:
+        # Ensure CustomerProfile exists and save it
+        profile, _ = CustomerProfile.objects.get_or_create(user=instance)
+        profile.save()
 
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_customer_profile(sender, instance, **kwargs):
-    instance.customer_profile.save()
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def create_customer_profile(sender, instance, created, **kwargs):
+#     if created:
+#         CustomerProfile.objects.create(user=instance)
+#
+#
+# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+# def save_customer_profile(sender, instance, **kwargs):
+#     instance.customer_profile.save()
