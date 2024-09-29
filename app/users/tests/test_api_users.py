@@ -161,3 +161,28 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(self.user.name, payload['name'])
         self.assertTrue(self.user.check_password(payload['password']))
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+
+class UserUUIDImmutabilityTest(APITestCase):
+    """Test that UUID cannot be modified via the API."""
+
+    def setUp(self):
+        self.user = create_user(
+            email='immutable@example.com',
+            password='testpass123',
+            name='Immutable User',
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_uuid_cannot_be_updated(self):
+        """Test that updating the UUID via API is not allowed."""
+        payload = {'uuid': '12345678-1234-5678-1234-567812345678'}
+        res = self.client.patch(ME_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+        # Refresh from DB to ensure UUID hasn't changed
+        self.user.refresh_from_db()
+        self.assertNotEqual(str(self.user.uuid), payload['uuid'])
+        self.assertEqual(str(self.user.uuid), res.data['uuid'])
+
