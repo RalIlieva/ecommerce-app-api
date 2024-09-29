@@ -19,6 +19,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         data['email'] = self.user.email
         data['name'] = self.user.name
+        data['uuid'] = self.user.uuid
 
         return data
 
@@ -26,10 +27,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the user object."""
     id = serializers.ReadOnlyField()
+    uuid = serializers.UUIDField(read_only=True)
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'email', 'password', 'name']
+        fields = ['id', 'uuid', 'email', 'password', 'name']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
     def create(self, validated_data):
@@ -54,8 +56,8 @@ class UserSerializerWithToken(UserSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'email', 'password', 'name', 'token']
-        read_only_fields = ['id', 'token']
+        fields = ['id', 'uuid', 'email', 'password', 'name', 'token']
+        read_only_fields = ['id', 'uuid', 'token']
 
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
