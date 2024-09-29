@@ -12,6 +12,7 @@ from rest_framework import status
 
 CREATE_USER_URL = reverse('users:register')
 ME_URL = reverse('users:me')
+PROFILE_URL = reverse('users:customer_profile')
 
 
 def create_user(**params):
@@ -186,3 +187,62 @@ class UserUUIDImmutabilityTest(APITestCase):
         self.assertNotEqual(str(self.user.uuid), payload['uuid'])
         self.assertEqual(str(self.user.uuid), res.data['uuid'])
 
+
+class UserSerializerValidationTest(TestCase):
+    """Test serializer validations for UserSerializer."""
+
+    def setUp(self):
+        self.user = create_user(email='validuser@example.com', password='validpass123', name='Valid User')
+
+    def test_invalid_email_format(self):
+        """Test that an invalid email format is rejected."""
+        payload = {
+            'email': 'invalidemail',
+            'password': 'validpass123',
+            'name': 'Invalid Email User'
+        }
+        from users.serializers import UserSerializer
+        serializer = UserSerializer(data=payload)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('email', serializer.errors)
+
+    def test_password_too_short(self):
+        """Test that a short password is rejected."""
+        payload = {
+            'email': 'shortpass@example.com',
+            'password': '123',
+            'name': 'Short Pass User'
+        }
+        from users.serializers import UserSerializer
+        serializer = UserSerializer(data=payload)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('password', serializer.errors)
+
+    def test_duplicate_email(self):
+        """Test that a duplicate email is rejected."""
+        payload = {
+            'email': 'validuser@example.com',  # Duplicate email
+            'password': 'anotherpass123',
+            'name': 'Duplicate Email User'
+        }
+        from users.serializers import UserSerializer
+        serializer = UserSerializer(data=payload)
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('email', serializer.errors)
+
+class NestedSerializerTest(APITestCase):
+    """Test nested serialization between User and CustomerProfile."""
+
+    def setUp(self):
+        self.user = create_user(email='nesteduser@example.com', password='testpass123', name='Nested User')
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_customer_profile_serialization(self):
+        """Test that CustomerProfile includes nested User data."""
+        res = self.client.get(PROFILE_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn('user', res.data)
+        self.assertEqual(res.data['user']['email'], self.user.email)
+        self.assertEqual(res.data['user']['name'], self.user.name)
+        # self.assertEqual(res.data['uuid'], str(self.user.uuid))

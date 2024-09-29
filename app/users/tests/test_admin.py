@@ -7,6 +7,11 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 
+def create_user(**params):
+    """Helper function."""
+    return get_user_model().objects.create_user(**params)
+
+
 class AdminSiteTests(TestCase):
     """Tests for Django Admin"""
 
@@ -45,3 +50,44 @@ class AdminSiteTests(TestCase):
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, 200)
+
+
+class SuperuserPermissionTest(TestCase):
+    """Test permissions for superusers in the Django admin."""
+
+    def setUp(self):
+        self.client = Client()
+        self.admin_user = get_user_model().objects.create_superuser(
+            email='admin2@example.com',
+            password='adminpass123'
+        )
+        self.client.force_login(self.admin_user)
+        self.user = create_user(
+            email='regularuser@example.com',
+            password='testpass123',
+            name='Regular User'
+        )
+
+    def test_superuser_can_access_admin(self):
+        """Test that a superuser can access the admin site."""
+        url = reverse('admin:index')
+        res = self.client.get(url)
+        self.assertEqual(res.status_code, 200)
+
+    def test_superuser_can_add_user(self):
+        """Test that a superuser can add a new user via admin."""
+        url = reverse('admin:users_user_add')
+        data = {
+            'email': 'newadmin@example.com',
+            'password1': 'newadminpass123',
+            'password2': 'newadminpass123',
+            'name': 'New Admin',
+            'is_staff': True,
+            'is_superuser': True,
+        }
+        res = self.client.post(url, data)
+        self.assertEqual(res.status_code, 302)  # Redirect after successful creation
+        new_user = get_user_model().objects.get(email='newadmin@example.com')
+        self.assertTrue(new_user.is_superuser)
+        self.assertTrue(new_user.is_staff)
+
