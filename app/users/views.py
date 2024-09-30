@@ -43,6 +43,7 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     """Manage the authenticated user."""
     serializer_class = UserSerializer
     authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_object(self):
         """Retrieve and return the authenticated user"""
@@ -52,6 +53,7 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
     """Manage the profile of the authenticated customer."""
     serializer_class = CustomerProfileSerializer
+    authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_object(self):
