@@ -40,7 +40,9 @@ class RegisterUserView(generics.CreateAPIView):
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
-    """Manage the authenticated user."""
+    """
+    GET, PUT, PATCH: Manage the authenticated user. (user-facing)
+    """
     serializer_class = UserSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsOwner]
@@ -51,7 +53,9 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
 
 class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
-    """Manage the profile of the authenticated customer."""
+    """
+    GET, PUT, PATCH: Manage the own profile of the authenticated customer.(user-facing)
+    """
     serializer_class = CustomerProfileSerializer
     authentication_classes = [JWTAuthentication]
     permission_classes = [permissions.IsAuthenticated, IsOwner]
