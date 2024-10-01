@@ -41,11 +41,14 @@ class RegisterUserView(generics.CreateAPIView):
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
     """
-    GET, PUT, PATCH: Manage the authenticated user. (user-facing)
+    GET, PUT, PATCH:
+    Manage the authenticated user. (user-facing)
     """
     serializer_class = UserSerializer
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    # No need of IsOwner permission / obj permission /
+    # already pointing to the owner's own user.
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         """Retrieve and return the authenticated user"""
