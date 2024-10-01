@@ -1,5 +1,5 @@
 """
-The custom api administrtor views.
+The custom api administrator views.
 """
 
 from django.contrib.auth import get_user_model

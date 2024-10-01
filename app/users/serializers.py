@@ -58,7 +58,7 @@ class UserSerializerWithToken(UserSerializer):
     class Meta:
         model = get_user_model()
         fields = ['id', 'uuid', 'email', 'password', 'name', 'token']
-        read_only_fields = ['id', 'user_uuid', 'token']
+        read_only_fields = ['id', 'uuid', 'token']
 
     def get_token(self, obj):
         token = RefreshToken.for_user(obj)
@@ -81,7 +81,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'about'
         ]
-        read_only_fields = ['id', 'profile_uuid', 'user']
+        read_only_fields = ['id', 'uuid', 'user']
 
 
 class UserReviewSerializer(serializers.ModelSerializer):
