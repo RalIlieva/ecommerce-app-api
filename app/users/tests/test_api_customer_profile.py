@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 
 from users.models import CustomerProfile
@@ -85,9 +85,13 @@ class AutomaticCustomerProfileCreationTest(TestCase):
 
     def test_customer_profile_attributes(self):
         """Test that the CustomerProfile has default attributes."""
-        user = create_user(email='profileattr@example.com', password='testpass123', name='Profile Attr')
+        user = create_user(
+            email='profileattr@example.com',
+            password='testpass123',
+            name='Profile Attr'
+        )
         profile = CustomerProfile.objects.get(user=user)
-        self.assertEqual(profile.gender, '')  # Assuming default is empty string
+        self.assertEqual(profile.gender, '')
         self.assertEqual(profile.phone_number, '')
         self.assertIsNone(profile.date_of_birth)
         self.assertIsNone(profile.about)

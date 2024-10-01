@@ -128,7 +128,11 @@ class AuthenticationTests(APITestCase):
 #     """Test the payload of JWT tokens."""
 #
 #     def setUp(self):
-#         self.user = create_user(email='tokenuser@example.com', password='testpass123', name='Token User')
+#         self.user = create_user(
+#         email='tokenuser@example.com',
+#         password='testpass123',
+#         name='Token User'
+#         )
 #         self.url_login = reverse('token_obtain_pair')
 #
 #     def test_token_contains_uuid(self):
@@ -144,7 +148,11 @@ class AuthenticationTests(APITestCase):
 #         import jwt
 #         from django.conf import settings
 #         access_token = res.data['access']
-#         payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+#         payload = jwt.decode(
+#         access_token,
+#         settings.SECRET_KEY,
+#         algorithms=["HS256"]
+#         )
 #
 #         self.assertIn('uuid', payload)
         # self.assertEqual(payload['uuid'], str(self.user.uuid))
@@ -218,7 +226,11 @@ class UserSerializerValidationTest(TestCase):
     """Test serializer validations for UserSerializer."""
 
     def setUp(self):
-        self.user = create_user(email='validuser@example.com', password='validpass123', name='Valid User')
+        self.user = create_user(
+            email='validuser@example.com',
+            password='validpass123',
+            name='Valid User'
+        )
 
     def test_invalid_email_format(self):
         """Test that an invalid email format is rejected."""
@@ -261,7 +273,11 @@ class NestedSerializerTest(APITestCase):
     """Test nested serialization between User and CustomerProfile."""
 
     def setUp(self):
-        self.user = create_user(email='nesteduser@example.com', password='testpass123', name='Nested User')
+        self.user = create_user(
+            email='nesteduser@example.com',
+            password='testpass123',
+            name='Nested User'
+        )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
@@ -272,7 +288,10 @@ class NestedSerializerTest(APITestCase):
         self.assertIn('user', res.data)
         self.assertEqual(res.data['user']['email'], self.user.email)
         self.assertEqual(res.data['user']['name'], self.user.name)
-        self.assertEqual(res.data['profile_uuid'], str(self.user.customer_profile.uuid))
+        self.assertEqual(
+            res.data['profile_uuid'],
+            str(self.user.customer_profile.uuid)
+        )
 
 
 class SensitiveDataExposureTest(APITestCase):

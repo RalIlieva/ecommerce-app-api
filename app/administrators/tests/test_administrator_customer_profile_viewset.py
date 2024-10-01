@@ -64,7 +64,10 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['id'], self.user.customer_profile.id)
-        self.assertEqual(res.data['profile_uuid'], str(self.user.customer_profile.uuid))
+        self.assertEqual(
+            res.data['profile_uuid'],
+            str(self.user.customer_profile.uuid)
+        )
         self.assertEqual(
             res.data['address'],
             self.user.customer_profile.address

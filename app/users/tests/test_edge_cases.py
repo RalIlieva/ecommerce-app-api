@@ -25,7 +25,9 @@ class UserDeletionTest(TestCase):
         """Test that CustomerProfile is deleted when the User is deleted."""
         profile_uuid = self.user.customer_profile.uuid
         self.user.delete()
-        profile_exists = CustomerProfile.objects.filter(uuid=profile_uuid).exists()
+        profile_exists = CustomerProfile.objects.filter(
+            uuid=profile_uuid
+        ).exists()
         self.assertFalse(profile_exists)
 
     def test_user_deleted_profile_no_error(self):

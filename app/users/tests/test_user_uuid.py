@@ -25,5 +25,8 @@ class UserUUIDTest(TestCase):
         user = create_user(email='user3@example.com', password='testpass123')
         import re
         uuid_regex = re.compile(
-            r'^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}\Z', re.I)
+            r'^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-'
+            r'[89ab][a-f0-9]{3}-[a-f0-9]{12}\Z',
+            re.I
+        )
         self.assertTrue(uuid_regex.match(str(user.uuid)))

@@ -59,7 +59,8 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
 class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
     """
-    GET, PUT, PATCH: Manage the own profile of the authenticated customer.(user-facing)
+    GET, PUT, PATCH:
+    Manage the own profile of the authenticated customer.(user-facing)
     """
     serializer_class = CustomerProfileSerializer
     authentication_classes = [JWTAuthentication]

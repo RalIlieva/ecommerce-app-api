@@ -86,8 +86,8 @@ class SuperuserPermissionTest(TestCase):
             'is_superuser': True,
         }
         res = self.client.post(url, data)
-        self.assertEqual(res.status_code, 302)  # Redirect after successful creation
+        # Redirect after successful creation
+        self.assertEqual(res.status_code, 302)
         new_user = get_user_model().objects.get(email='newadmin@example.com')
         self.assertTrue(new_user.is_superuser)
         self.assertTrue(new_user.is_staff)
-

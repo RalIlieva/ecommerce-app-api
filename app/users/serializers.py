@@ -83,7 +83,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'about'
         ]
-        read_only_fields = ['id','profile_uuid', 'user']
+        read_only_fields = ['id', 'profile_uuid', 'user']
 
 
 class UserReviewSerializer(serializers.ModelSerializer):
