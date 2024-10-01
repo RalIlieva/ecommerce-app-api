@@ -15,4 +15,5 @@ urlpatterns = [
     path('profile/',
          views.ManageCustomerProfileView.as_view(),
          name='customer_profile'),
+path('profile/<uuid:profile_uuid>/', views.ManageCustomerProfileByUUIDView.as_view(), name='customer_profile_uuid'),  # New endpoint
 ]

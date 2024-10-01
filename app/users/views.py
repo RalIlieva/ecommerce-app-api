@@ -3,6 +3,7 @@ Views for the User API.
 """
 
 from rest_framework import generics, permissions
+from rest_framework.exceptions import NotFound
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -16,6 +17,7 @@ from .serializers import (
 )
 
 from .permissions import IsOwner
+from .models import CustomerProfile
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -66,3 +68,20 @@ class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         """Retrieve and return the authenticated customer."""
         return self.request.user.customer_profile
+
+
+class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
+    """
+    GET, PUT, PATCH: Manage the customer profile by UUID.
+    """
+    serializer_class = CustomerProfileSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get_object(self):
+        """Retrieve and return the customer profile based on UUID."""
+        profile_uuid = self.kwargs.get('profile_uuid')
+        try:
+            return CustomerProfile.objects.get(uuid=profile_uuid)
+        except CustomerProfile.DoesNotExist:
+            raise NotFound("Customer Profile not found")
