@@ -46,7 +46,7 @@ class AdministratorUserViewSetTests(TestCase):
 
     def test_retrieve_user(self):
         """Test retrieving a single user."""
-        url = detail_url(self.user.id)
+        url = detail_url(self.user.uuid)
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -54,7 +54,7 @@ class AdministratorUserViewSetTests(TestCase):
 
     def test_update_user(self):
         """Test updating a user."""
-        url = detail_url(self.user.id)
+        url = detail_url(self.user.uuid)
         payload = {'name': 'Updated Name'}
         res = self.client.patch(url, payload)
 
@@ -64,7 +64,7 @@ class AdministratorUserViewSetTests(TestCase):
 
     def test_delete_user(self):
         """Test deleting a user."""
-        url = detail_url(self.user.id)
+        url = detail_url(self.user.uuid)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)

@@ -58,11 +58,13 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
 
     def test_retrieve_customer_profile(self):
         """Test retrieving a single customer profile."""
-        url = detail_url(self.user.id)
+
+        url = detail_url(self.user.customer_profile.uuid)
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['id'], self.user.customer_profile.id)
+        self.assertEqual(res.data['profile_uuid'], str(self.user.customer_profile.uuid))
         self.assertEqual(
             res.data['address'],
             self.user.customer_profile.address
@@ -81,7 +83,7 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
             'date_of_birth': '2000-11-27',
             'about': 'Testing'
         }
-        url = detail_url(self.user.id)
+        url = detail_url(self.user.customer_profile.uuid)
         res = self.client.patch(url, payload)
 
         self.user.customer_profile.refresh_from_db()
@@ -104,7 +106,7 @@ class AdministratorCustomerProfileViewSetTests(TestCase):
 
     def test_delete_customer_profile(self):
         """Test deleting a customer profile."""
-        url = detail_url(self.user.id)
+        url = detail_url(self.user.customer_profile.uuid)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
