@@ -68,12 +68,14 @@ class UserSerializerWithToken(UserSerializer):
 class CustomerProfileSerializer(serializers.ModelSerializer):
     """Serializer for the profile of the customer."""
     user = UserSerializer(read_only=True)
+    profile_uuid = serializers.UUIDField(source='uuid', read_only=True)
 
     class Meta:
         model = CustomerProfile
         fields = [
             'id',
-            'uuid',
+            'profile_uuid',
+            # 'uuid',
             'user',
             'gender',
             'phone_number',
@@ -81,7 +83,7 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'about'
         ]
-        read_only_fields = ['id', 'uuid', 'user']
+        read_only_fields = ['id','profile_uuid', 'user']
 
 
 class UserReviewSerializer(serializers.ModelSerializer):

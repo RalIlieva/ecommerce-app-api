@@ -272,7 +272,7 @@ class NestedSerializerTest(APITestCase):
         self.assertIn('user', res.data)
         self.assertEqual(res.data['user']['email'], self.user.email)
         self.assertEqual(res.data['user']['name'], self.user.name)
-        self.assertEqual(res.data['uuid'], str(self.user.customer_profile.uuid))
+        self.assertEqual(res.data['profile_uuid'], str(self.user.customer_profile.uuid))
 
 
 class SensitiveDataExposureTest(APITestCase):
