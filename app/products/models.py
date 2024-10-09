@@ -8,7 +8,10 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.db import models
 
-from PIL import Image
+from PIL import (
+    Image,
+    UnidentifiedImageError
+)
 
 from core.models import (
     TimeStampedModel,
@@ -115,7 +118,7 @@ class ProductImage(models.Model):
     def resize_image(self):
         img = Image.open(self.image.path)
         max_size = (800, 800)
-        img.thumbnail(max_size, Image.ANTIALIAS)
+        img.thumbnail(max_size, Image.LANCZOS)
         img.save(self.image.path)
 
     def __str__(self):
