@@ -119,3 +119,14 @@ def update_product_with_related_data(instance, validated_data):
 #     product.stock -= quantity
 #     product.save()
 #     return product
+
+
+@transaction.atomic
+def update_product_stock(product_uuid, quantity):
+    """Reduce stock for a given product by quantity."""
+    product = Product.objects.select_for_update().get(uuid=product_uuid)
+    if product.stock < quantity:
+        raise ValueError("Not enough stock available")
+    product.stock -= quantity
+    product.save()
+    return product
