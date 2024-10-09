@@ -8,6 +8,8 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.db import models
 
+from PIL import Image
+
 from core.models import (
     TimeStampedModel,
     UUIDModel
@@ -105,6 +107,16 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(upload_to=product_image_file_path)
     alt_text = models.CharField(max_length=255, blank=True)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.resize_image()
+
+    def resize_image(self):
+        img = Image.open(self.image.path)
+        max_size = (800, 800)
+        img.thumbnail(max_size, Image.ANTIALIAS)
+        img.save(self.image.path)
 
     def __str__(self):
         return f'Image for {self.product.name}'
