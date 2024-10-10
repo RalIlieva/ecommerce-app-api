@@ -28,8 +28,8 @@ class ProductMiniSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(ProductMiniSerializer):
     """Serializer for product detail view."""
     images = ProductImageSerializer(many=True, read_only=True)
-    # reviews = ReviewSerializer(many=True, read_only=True)
     reviews = serializers.SerializerMethodField()
+    average_rating = serializers.ReadOnlyField()
     tags = TagSerializer(many=True, required=False)
     category = CategorySerializer()
 
@@ -40,7 +40,8 @@ class ProductDetailSerializer(ProductMiniSerializer):
             'description',
             'stock',
             'images',
-            'reviews'
+            'reviews',
+            'average_rating',
         ]
         read_only_fields = ['id']
 
