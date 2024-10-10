@@ -50,10 +50,14 @@ class ProductFilter(django_filters.FilterSet):
         fields = ['name', 'tags', 'category', 'min_price', 'max_price']
 
     def filter_min_avg_rating(self, queryset, name, value):
-        return queryset.annotate(avg_rating=Avg('reviews__rating')).filter(avg_rating__gte=value)
+        return queryset.annotate(
+            avg_rating=Avg('reviews__rating')
+        ).filter(avg_rating__gte=value)
 
     def filter_max_avg_rating(self, queryset, name, value):
-        return queryset.annotate(avg_rating=Avg('reviews__rating')).filter(avg_rating__lte=value)
+        return queryset.annotate(
+            avg_rating=Avg('reviews__rating')
+        ).filter(avg_rating__lte=value)
 
 
 class CategoryFilter(django_filters.FilterSet):

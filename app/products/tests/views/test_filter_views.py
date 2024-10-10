@@ -24,13 +24,20 @@ class ProductFilterTest(TestCase):
         self.user2 = self.user_model.objects.create_user(
             email="user2@example.com", password="password123"
         )
-        self.category = Category.objects.create(name="Electronics", slug="electronics")
+        self.category = Category.objects.create(
+            name="Electronics",
+            slug="electronics"
+        )
         self.product1 = Product.objects.create(
-            name="Test Product 1", description="A great product", price=100.00,
+            name="Test Product 1",
+            description="A great product",
+            price=100.00,
             category=self.category, stock=10, slug="test-product-1"
         )
         self.product2 = Product.objects.create(
-            name="Test Product 2", description="Another great product", price=150.00,
+            name="Test Product 2",
+            description="Another great product",
+            price=150.00,
             category=self.category, stock=5, slug="test-product-2"
         )
         # Assign ratings
