@@ -7,6 +7,7 @@ import os
 from django.utils.text import slugify
 from django.conf import settings
 from django.db import models
+from django.db.models import Avg
 
 from PIL import (
     Image,
@@ -95,6 +96,12 @@ class Product(UUIDModel, TimeStampedModel):
                 counter += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    @property
+    def average_rating(self):
+        """Calculate the average rating of the product based on reviews."""
+        average = self.reviews.aggregate(Avg('rating')).get('rating__avg')
+        return round(average, 2) if average is not None else None
 
     def __str__(self):
         return self.name
