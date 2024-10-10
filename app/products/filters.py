@@ -2,6 +2,7 @@
 Filters for products.
 """
 
+from django.db.models import Avg
 import django_filters
 from .models import (
     Product,
@@ -37,10 +38,22 @@ class ProductFilter(django_filters.FilterSet):
         lookup_expr='lte',
         label='Max Price'
     )
+    min_avg_rating = django_filters.NumberFilter(
+        method='filter_min_avg_rating', label='Minimum Average Rating'
+    )
+    max_avg_rating = django_filters.NumberFilter(
+        method='filter_max_avg_rating', label='Maximum Average Rating'
+    )
 
     class Meta:
         model = Product
         fields = ['name', 'tags', 'category', 'min_price', 'max_price']
+
+    def filter_min_avg_rating(self, queryset, name, value):
+        return queryset.annotate(avg_rating=Avg('reviews__rating')).filter(avg_rating__gte=value)
+
+    def filter_max_avg_rating(self, queryset, name, value):
+        return queryset.annotate(avg_rating=Avg('reviews__rating')).filter(avg_rating__lte=value)
 
 
 class CategoryFilter(django_filters.FilterSet):
