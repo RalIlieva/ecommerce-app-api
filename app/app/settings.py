@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'administrators.apps.AdministratorsConfig',
     'products',
     'order',
+    'payment',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
