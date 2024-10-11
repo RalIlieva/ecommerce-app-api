@@ -40,4 +40,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(),
          name='token_refresh'),
     path('api/products/', include('products.urls', namespace='products')),
+    path('api/orders/', include('order.urls', namespace='order')),
 ]
