@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'administrators.apps.AdministratorsConfig',
     'products',
+    'order',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
