@@ -52,7 +52,6 @@ class OrderDetailView(generics.RetrieveUpdateAPIView):
         return get_user_orders(self.request.user)
 
     def update(self, request, *args, **kwargs):
-        # Custom update logic if needed
         order = self.get_object()
         new_status = request.data.get('status')
         order = update_order_status(order, new_status)
