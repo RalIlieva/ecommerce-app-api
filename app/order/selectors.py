@@ -11,7 +11,7 @@ def get_user_orders(user):
 
 def get_order_details(order_uuid):
     # Query by uuid field
-    return Order.objects.prefetch_related('items__product').get(uuid=order_uuid)
+    return Order.objects.prefetch_related('order_items__product').get(uuid=order_uuid)
 
 # def get_order_details(order_id):
 #     return Order.objects.prefetch_related('order_items__product').get(id=order_id)
