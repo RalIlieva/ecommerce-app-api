@@ -3,9 +3,12 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-from order.models import Order, OrderItem
+# from order.models import Order, OrderItem
 from products.models import Product, Category
-from order.services import create_order, update_order_status
+from order.services import (
+    create_order,
+    # update_order_status
+)
 
 
 class OrderDetailViewTests(TestCase):
@@ -20,7 +23,10 @@ class OrderDetailViewTests(TestCase):
         )
 
         # Create a category and a product
-        self.category = Category.objects.create(name='Electronics', slug='electronics')
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
         self.product = Product.objects.create(
             name='Test Product', description='A great product', price=100.00,
             category=self.category, stock=10, slug='test-product'

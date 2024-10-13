@@ -6,4 +6,6 @@
 #
 #
 # def wishlist_item_exists(wishlist, product):
-#     return WishlistItem.objects.filter(wishlist=wishlist, product=product).exists()
+#     return WishlistItem.objects.filter(
+#     wishlist=wishlist, product=product
+#     ).exists()

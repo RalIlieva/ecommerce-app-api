@@ -2,7 +2,10 @@
 #
 #
 # def process_payment(order, transaction_id):
-#     payment = Payment.objects.create(order=order, transaction_id=transaction_id)
+#     payment = Payment.objects.create(
+#     order=order,
+#     transaction_id=transaction_id
+#     )
 #     payment.status = Payment.COMPLETED
 #     payment.save()
 #     order.status = 'paid'
