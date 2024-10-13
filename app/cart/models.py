@@ -9,11 +9,17 @@
 #
 #
 # class Cart(TimeStampedModel, UUIDModel):
-#     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     user = models.OneToOneField(
+#     settings.AUTH_USER_MODEL,
+#     on_delete=models.CASCADE
+#     )
 #
 #
 # class CartItem(models.Model):
-#     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
+#     cart = models.ForeignKey(
+#     Cart, related_name='items',
+#     on_delete=models.CASCADE
+#     )
 #     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 #     quantity = models.PositiveIntegerField()
 #

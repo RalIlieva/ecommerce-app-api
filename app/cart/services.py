@@ -4,7 +4,10 @@
 #
 #
 # def add_to_cart(cart, product, quantity):
-#     item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+#     item, created = CartItem.objects.get_or_create(
+#     cart=cart,
+#     product=product
+#     )
 #     if not created:
 #         item.quantity += quantity
 #     item.save()
@@ -16,7 +19,10 @@
 #
 # @transaction.atomic
 # def convert_cart_to_order(cart):
-#     items_data = [{'product': item.product, 'quantity': item.quantity} for item in cart.items.all()]
+#     items_data = [
+#     {'product': item.product,
+#     'quantity': item.quantity} for item in cart.items.all()
+#     ]
 #     order = create_order(cart.user, items_data)
 #     cart.items.all().delete()  # Clear the cart after order creation
 #     return order

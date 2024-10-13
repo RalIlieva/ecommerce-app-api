@@ -12,9 +12,20 @@
 #         (FAILED, 'Failed'),
 #     ]
 #
-#     order = models.OneToOneField(Order, on_delete=models.CASCADE)
-#     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=PENDING)
-#     transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
+#     order = models.OneToOneField(
+#     Order, on_delete=models.CASCADE
+#     )
+#     status = models.CharField(
+#     max_length=10,
+#     choices=STATUS_CHOICES,
+#     default=PENDING
+#     )
+#     transaction_id = models.CharField(
+#     max_length=100,
+#     unique=True,
+#     null=True,
+#     blank=True
+#     )
 #     created_at = models.DateTimeField(auto_now_add=True)
 #
 #     def __str__(self):

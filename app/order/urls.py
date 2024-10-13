@@ -12,5 +12,9 @@ urlpatterns = [
     path('orders/', OrderListView.as_view(), name='order-list'),
     path('orders/create/', OrderCreateView.as_view(), name='order-create'),
     path('<uuid:order_uuid>/', OrderDetailView.as_view(), name='order-detail'),
-    # path('orders/<int:order_id>/', OrderDetailView.as_view(), name='order-detail'),
+    # path(
+    # 'orders/<int:order_id>/',
+    # OrderDetailView.as_view(),
+    # name='order-detail'
+    # ),
 ]

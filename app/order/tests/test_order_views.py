@@ -33,7 +33,9 @@ class OrderDetailViewTests(TestCase):
         )
 
         # Create an order for the user
-        self.order = create_order(self.user, [{'product': self.product, 'quantity': 2}])
+        self.order = create_order(
+            self.user, [{'product': self.product, 'quantity': 2}]
+        )
         self.client.force_authenticate(self.user)
 
     def test_retrieve_order_with_valid_uuid(self):
@@ -80,7 +82,7 @@ class OrderDetailViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_order_status_forbidden_to_other_user(self):
-        # Authenticate as a different user and attempt to update the order status
+        # Authenticate as a diff user & attempt to update the order status
         self.client.force_authenticate(self.other_user)
         url = f'/api/orders/{self.order.uuid}/'
         response = self.client.patch(url, {'status': 'shipped'})
