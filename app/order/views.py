@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .models import Order
 from .serializers import OrderSerializer
 from .selectors import (
-    get_user_orders,
+    # get_user_orders,
     get_order_details
 )
 from .services import (
