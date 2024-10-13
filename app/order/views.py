@@ -26,7 +26,8 @@ class OrderListView(generics.ListAPIView):
 
     def get_queryset(self):
         # Retrieve orders specific to the authenticated user
-        return get_user_orders(self.request.user)
+        return Order.objects.filter(user=self.request.user)
+        # return get_user_orders(self.request.user)
 
 
 class OrderCreateView(generics.CreateAPIView):

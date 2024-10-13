@@ -9,7 +9,8 @@ from .views import OrderListView, OrderCreateView, OrderDetailView
 app_name = 'order'
 
 urlpatterns = [
-    path('orders/', OrderListView.as_view(), name='order-list'),
+    # path('orders/', OrderListView.as_view(), name='order-list'),
+    path('', OrderListView.as_view(), name='order-list'),
     path('orders/create/', OrderCreateView.as_view(), name='order-create'),
     path('<uuid:order_uuid>/', OrderDetailView.as_view(), name='order-detail'),
     # path(

@@ -3,12 +3,50 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-# from order.models import Order, OrderItem
+from order.models import Order, OrderItem
 from products.models import Product, Category
 from order.services import (
     create_order,
     # update_order_status
 )
+
+
+class OrderListViewTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            email='user@example.com', password='password123'
+        )
+        self.other_user = get_user_model().objects.create_user(
+            email='otheruser@example.com', password='password123'
+        )
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
+        self.product = Product.objects.create(
+            name='Test Product', description='A great product', price=100.00,
+            category=self.category, stock=10, slug='test-product'
+        )
+        self.order1 = create_order(self.user, [{'product': self.product, 'quantity': 2}])
+        self.order2 = create_order(self.other_user, [{'product': self.product, 'quantity': 1}])
+        self.client.force_authenticate(self.user)
+
+    def test_list_orders_for_authenticated_user(self):
+        url = '/api/orders/'
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Order.objects.filter(user=self.user).count(), 1)
+        self.assertEqual(response.data['results'][0]['uuid'], str(self.order1.uuid))
+        self.assertEqual(len(response.data['results']), 1)
+
+    def test_list_orders_for_unauthenticated_user(self):
+        self.client.force_authenticate(user=None)  # Unauthenticate the client
+        url = '/api/orders/'
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class OrderDetailViewTests(TestCase):
