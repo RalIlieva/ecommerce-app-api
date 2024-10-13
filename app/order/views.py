@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .models import Order
 from .serializers import OrderSerializer
 from .selectors import (
-    # get_user_orders,
+    get_user_orders,
     get_order_details
 )
 from .services import (
@@ -26,8 +26,7 @@ class OrderListView(generics.ListAPIView):
 
     def get_queryset(self):
         # Retrieve orders specific to the authenticated user
-        return Order.objects.filter(user=self.request.user)
-        # return get_user_orders(self.request.user)
+        return get_user_orders(self.request.user)
 
 
 class OrderCreateView(generics.CreateAPIView):
