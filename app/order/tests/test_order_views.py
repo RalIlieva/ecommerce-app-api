@@ -1,17 +1,21 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
 from order.models import (
     Order,
-    # OrderItem
+    OrderItem
 )
 from products.models import Product, Category
 from order.services import (
     create_order,
-    # update_order_status
+    update_order_status
 )
+
+ORDERS_URL = reverse('order:order-list')
+ORDER_CREATE_URL = reverse('order:order-create')
 
 
 class OrderListViewTests(TestCase):
@@ -42,8 +46,8 @@ class OrderListViewTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_list_orders_for_authenticated_user(self):
-        url = '/api/orders/'
-        response = self.client.get(url)
+        # url = '/api/orders/'
+        response = self.client.get(ORDERS_URL)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Order.objects.filter(user=self.user).count(), 1)
@@ -55,10 +59,66 @@ class OrderListViewTests(TestCase):
 
     def test_list_orders_for_unauthenticated_user(self):
         self.client.force_authenticate(user=None)  # Unauthenticate the client
-        url = '/api/orders/'
-        response = self.client.get(url)
+        # url = '/api/orders/'
+        response = self.client.get(ORDERS_URL)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+# class OrderCreateViewTests(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = get_user_model().objects.create_user(
+#             email='user@example.com', password='password123'
+#         )
+#         self.category = Category.objects.create(
+#             name='Electronics',
+#             slug='electronics'
+#         )
+#         self.product = Product.objects.create(
+#             name='Test Product', description='A great product', price=100.00,
+#             category=self.category, stock=10, slug='test-product'
+#         )
+#         self.client.force_authenticate(self.user)
+#
+#     def test_create_order_with_valid_data(self):
+#         url = '/api/orders/create/'
+#         payload = {
+#             'items': [{'product': self.product.uuid, 'quantity': 2}]
+#         }
+#         response = self.client.post(url, payload, format='json')
+#         print("Response status:", response.status_code)
+#         print("Response data:", response.data)
+#
+#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+#         self.assertEqual(Order.objects.count(), 1)
+#         self.assertEqual(OrderItem.objects.count(), 1)
+#         order = Order.objects.get()
+#         self.assertEqual(order.items.first().product, self.product)
+#         self.assertEqual(order.items.first().quantity, 2)
+
+    # def test_create_order_with_insufficient_stock(self):
+    #     url = '/api/orders/create/'
+    #     payload = {
+    #         'items': [{'product': self.product.uuid, 'quantity': 20}]  # More than available stock
+    #     }
+    #     response = self.client.post(url, payload, format='json')
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertIn('Not enough stock available', response.data['results'][0]['detail'])
+    #     self.assertEqual(Order.objects.count(), 0)
+    #
+    # def test_create_order_with_invalid_product_uuid(self):
+    #     url = '/api/orders/create/'
+    #     invalid_uuid = uuid4()
+    #     payload = {
+    #         'items': [{'product': invalid_uuid, 'quantity': 1}]
+    #     }
+    #     response = self.client.post(url, payload, format='json')
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertIn('Invalid product UUID', response.data['results'][0]['detail'])
+    #     self.assertEqual(Order.objects.count(), 0)
 
 
 class OrderDetailViewTests(TestCase):
