@@ -65,37 +65,47 @@ class OrderListViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-# class OrderCreateViewTests(TestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#         self.user = get_user_model().objects.create_user(
-#             email='user@example.com', password='password123'
-#         )
-#         self.category = Category.objects.create(
-#             name='Electronics',
-#             slug='electronics'
-#         )
-#         self.product = Product.objects.create(
-#             name='Test Product', description='A great product', price=100.00,
-#             category=self.category, stock=10, slug='test-product'
-#         )
-#         self.client.force_authenticate(self.user)
-#
-#     def test_create_order_with_valid_data(self):
-#         url = '/api/orders/create/'
-#         payload = {
-#             'items': [{'product': self.product.uuid, 'quantity': 2}]
-#         }
-#         response = self.client.post(url, payload, format='json')
-#         print("Response status:", response.status_code)
-#         print("Response data:", response.data)
-#
-#         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-#         self.assertEqual(Order.objects.count(), 1)
-#         self.assertEqual(OrderItem.objects.count(), 1)
-#         order = Order.objects.get()
-#         self.assertEqual(order.items.first().product, self.product)
-#         self.assertEqual(order.items.first().quantity, 2)
+class OrderCreateViewTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            email='user@example.com', password='password123'
+        )
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
+        self.product = Product.objects.create(
+            name='Test Product', description='A great product', price=100.00,
+            category=self.category, stock=10, slug='test-product'
+        )
+        self.client.force_authenticate(self.user)
+
+    def test_authenticated_user_can_access_order_create(self):
+        # Check if authenticated user can access the view
+        response = self.client.get(ORDER_CREATE_URL)
+        self.assertNotEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    # def test_create_order_with_valid_data(self):
+    #     # url = '/api/orders/create/'
+    #     print("Resolved ORDER_CREATE_URL:", ORDER_CREATE_URL)
+    #     payload = {
+    #         'items': [{'product': self.product.uuid, 'quantity': 2}]
+    #     }
+    #     response = self.client.post(ORDER_CREATE_URL, payload, format='json')
+    #     print("Response status:", response.status_code)
+    #     if hasattr(response, 'data'):
+    #         print("Response data:", response.data)
+    #     else:
+    #         print("Response content:", response.content)
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     self.assertEqual(Order.objects.count(), 1)
+    #     self.assertEqual(OrderItem.objects.count(), 1)
+    #     order = Order.objects.get()
+    #     self.assertEqual(order.items.first().product, self.product)
+    #     self.assertEqual(order.items.first().quantity, 2)
 
     # def test_create_order_with_insufficient_stock(self):
     #     url = '/api/orders/create/'

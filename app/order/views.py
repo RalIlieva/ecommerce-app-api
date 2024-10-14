@@ -37,11 +37,15 @@ class OrderCreateView(generics.CreateAPIView):
     serializer_class = OrderSerializer
 
     def create(self, request, *args, **kwargs):
-        # Extract order data from request and pass it to the service layer
-        order_data = request.data.get('items', [])
-        order = create_order(request.user, order_data)
-        serializer = self.get_serializer(order)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            # Extract order data from request and pass it to the service layer
+            order_data = request.data.get('items', [])
+            order = create_order(request.user, order_data)
+            serializer = self.get_serializer(order)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print("Unexpected Error:", e)  # Add this line to debug
+            return Response({'detail': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class OrderDetailView(generics.RetrieveUpdateAPIView):
