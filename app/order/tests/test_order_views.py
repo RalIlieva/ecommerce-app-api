@@ -166,7 +166,6 @@ class OrderDetailViewTests(TestCase):
 
     def test_retrieve_order_with_valid_uuid(self):
         # Test retrieving the order using a valid UUID
-        # url = f'/api/orders/{self.order.uuid}/'
         url = detail_url(self.order.uuid)
         response = self.client.get(url)
 
@@ -193,7 +192,8 @@ class OrderDetailViewTests(TestCase):
 
     def test_update_order_status_with_valid_uuid(self):
         # Test updating the order status with a valid UUID
-        url = f'/api/orders/{self.order.uuid}/'
+        # url = f'/api/orders/{self.order.uuid}/'
+        url = detail_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -211,7 +211,8 @@ class OrderDetailViewTests(TestCase):
     def test_update_order_status_forbidden_to_other_user(self):
         # Authenticate as a diff user & attempt to update the order status
         self.client.force_authenticate(self.other_user)
-        url = f'/api/orders/{self.order.uuid}/'
+        # url = f'/api/orders/{self.order.uuid}/'
+        url = detail_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
