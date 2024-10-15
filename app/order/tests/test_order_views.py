@@ -18,6 +18,13 @@ ORDERS_URL = reverse('order:order-list')
 ORDER_CREATE_URL = reverse('order:order-create')
 
 
+def detail_url(order_uuid):
+    """
+    Create and return an order detail URL with UUID.
+    """
+    return reverse('order:order-detail', args=[order_uuid])
+
+
 class OrderListViewTests(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -46,7 +53,6 @@ class OrderListViewTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_list_orders_for_authenticated_user(self):
-        # url = '/api/orders/'
         response = self.client.get(ORDERS_URL)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -87,25 +93,25 @@ class OrderCreateViewTests(TestCase):
         self.assertNotEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    # def test_create_order_with_valid_data(self):
-    #     # url = '/api/orders/create/'
-    #     print("Resolved ORDER_CREATE_URL:", ORDER_CREATE_URL)
-    #     payload = {
-    #         'items': [{'product': self.product.uuid, 'quantity': 2}]
-    #     }
-    #     response = self.client.post(ORDER_CREATE_URL, payload, format='json')
-    #     print("Response status:", response.status_code)
-    #     if hasattr(response, 'data'):
-    #         print("Response data:", response.data)
-    #     else:
-    #         print("Response content:", response.content)
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #     self.assertEqual(Order.objects.count(), 1)
-    #     self.assertEqual(OrderItem.objects.count(), 1)
-    #     order = Order.objects.get()
-    #     self.assertEqual(order.items.first().product, self.product)
-    #     self.assertEqual(order.items.first().quantity, 2)
+    def test_create_order_with_valid_data(self):
+        url = '/api/orders/orders/create/'
+        print("Resolved ORDER_CREATE_URL:", ORDER_CREATE_URL)
+        payload = {
+            'items': [{'product': self.product.uuid, 'quantity': 2}]
+        }
+        response = self.client.post(url, payload, format='json')
+        print("Response status:", response.status_code)
+        if hasattr(response, 'data'):
+            print("Response data:", response.data)
+        else:
+            print("Response content:", response.content)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Order.objects.count(), 1)
+        self.assertEqual(OrderItem.objects.count(), 1)
+        order = Order.objects.get()
+        self.assertEqual(order.items.first().product, self.product)
+        self.assertEqual(order.items.first().quantity, 2)
 
     # def test_create_order_with_insufficient_stock(self):
     #     url = '/api/orders/create/'
@@ -160,7 +166,8 @@ class OrderDetailViewTests(TestCase):
 
     def test_retrieve_order_with_valid_uuid(self):
         # Test retrieving the order using a valid UUID
-        url = f'/api/orders/{self.order.uuid}/'
+        # url = f'/api/orders/{self.order.uuid}/'
+        url = detail_url(self.order.uuid)
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
