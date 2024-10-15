@@ -15,8 +15,18 @@ def create_order(user, items_data):
     order = Order.objects.create(user=user)
 
     for item_data in items_data:
-        product = item_data['product']
+        product_uuid = item_data['product']  # This should be a UUID string
+        try:
+            # Retrieve the Product object from the UUID
+            product = Product.objects.get(uuid=product_uuid)
+        except Product.DoesNotExist:
+            raise ValueError(f"Product with UUID {product_uuid} does not exist")
+
         quantity = item_data['quantity']
+
+    # for item_data in items_data:
+    #     product = item_data['product']
+    #     quantity = item_data['quantity']
         OrderItem.objects.create(
             order=order,
             product=product,
