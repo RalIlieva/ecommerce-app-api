@@ -8,6 +8,7 @@ from django.urls import reverse
 from order.models import Order
 from rest_framework.test import APIClient
 from rest_framework import status
+from uuid import uuid4
 
 
 def detail_url(order_uuid):
@@ -62,3 +63,25 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.order.refresh_from_db()
         self.assertEqual(self.order.status, 'cancelled')
+
+    def test_update_order_status_with_invalid_uuid(self):
+        """Test updating the order status with an invalid UUID."""
+        invalid_uuid = uuid4()  # Generates a new UUID
+        url = detail_url(invalid_uuid)
+        payload = {'status': 'shipped'}
+        response = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_order_status_forbidden_to_other_user(self):
+        """Test that another user cannot update someone else's order status."""
+        other_user = get_user_model().objects.create_user(
+            email='otheruser@example.com',
+            password='password123'
+        )
+        self.client.force_authenticate(other_user)
+        url = detail_url(self.order.uuid)
+        payload = {'status': 'shipped'}
+        response = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
