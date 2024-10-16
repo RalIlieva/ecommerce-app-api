@@ -38,17 +38,11 @@ class OrderCreateView(generics.CreateAPIView):
     serializer_class = OrderSerializer
 
     def create(self, request, *args, **kwargs):
-        try:
-            # Extract order data from request and pass it to the service layer
-            order_data = request.data.get('items', [])
-            order = create_order(request.user, order_data)
-            serializer = self.get_serializer(order)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except InsufficientStockError as e:
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        # except Exception as e:
-        #     print("Unexpected Error:", e)
-        #     return Response({'detail': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Extract order data from request and pass it to the service layer
+        order_data = request.data.get('items', [])
+        order = create_order(request.user, order_data)
+        serializer = self.get_serializer(order)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class OrderDetailView(generics.RetrieveUpdateAPIView):
@@ -58,19 +52,7 @@ class OrderDetailView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
 
-    # By ID
-    # def get_queryset(self):
-    #     return get_user_orders(self.request.user)
-    #
-    # def update(self, request, *args, **kwargs):
-    #     order = self.get_object()
-    #     new_status = request.data.get('status')
-    #     order = update_order_status(order, new_status)
-    #     serializer = self.get_serializer(order)
-    #     return Response(serializer.data)
-
 #  By UUID
-
     def get_queryset(self):
         # Use the UUID from URL kwargs to filter the specific order by UUID
         order_uuid = self.kwargs.get('order_uuid')
