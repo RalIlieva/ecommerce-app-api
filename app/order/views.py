@@ -15,7 +15,6 @@ from .services import (
     create_order,
     update_order_status
 )
-from core.exceptions import InsufficientStockError
 
 
 class OrderListView(generics.ListAPIView):
