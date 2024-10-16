@@ -4,9 +4,17 @@ Tests for order status.
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 from order.models import Order
 from rest_framework.test import APIClient
 from rest_framework import status
+
+
+def detail_url(order_uuid):
+    """
+    Create and return an order detail URL with UUID.
+    """
+    return reverse('order:order-detail', args=[order_uuid])
 
 
 class OrderStatusTestCase(TestCase):
@@ -21,12 +29,13 @@ class OrderStatusTestCase(TestCase):
         )
         self.client.force_authenticate(self.user)
         self.order = Order.objects.create(user=self.user)
-        self.order_status_url = f'/api/orders/{self.order.uuid}/'
+        # self.order_status_url = f'/api/orders/{self.order.uuid}/'
 
     def test_update_order_status_to_paid(self):
         """Test updating an order status to 'paid'."""
+        url = detail_url(self.order.uuid)
         payload = {'status': 'paid'}
-        response = self.client.patch(self.order_status_url, payload, format='json')
+        response = self.client.patch(url, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.order.refresh_from_db()
@@ -36,8 +45,9 @@ class OrderStatusTestCase(TestCase):
         """Test updating an order status from 'paid' to 'shipped'."""
         self.order.status = Order.PAID
         self.order.save()
+        url = detail_url(self.order.uuid)
         payload = {'status': 'shipped'}
-        response = self.client.patch(self.order_status_url, payload, format='json')
+        response = self.client.patch(url, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.order.refresh_from_db()
@@ -45,8 +55,9 @@ class OrderStatusTestCase(TestCase):
 
     def test_update_order_status_to_cancelled(self):
         """Test updating an order status to 'cancelled'."""
+        url = detail_url(self.order.uuid)
         payload = {'status': 'cancelled'}
-        response = self.client.patch(self.order_status_url, payload, format='json')
+        response = self.client.patch(url, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.order.refresh_from_db()
