@@ -129,7 +129,7 @@ class OrderCreateViewTests(TestCase):
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Invalid product UUID', response.data['detail'])
+        self.assertIn(f"Product with UUID {invalid_uuid} does not exist", response.data['detail'])
         self.assertEqual(Order.objects.count(), 0)
 
 
