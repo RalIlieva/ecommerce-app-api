@@ -10,8 +10,10 @@ from rest_framework import status
 
 
 class OrderStatusTestCase(TestCase):
+    """Test suite for updating the status of an order."""
 
     def setUp(self):
+        """Set up initial test data, including user, order, and authentication."""
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='testuser@example.com',
@@ -22,6 +24,7 @@ class OrderStatusTestCase(TestCase):
         self.order_status_url = f'/api/orders/{self.order.uuid}/'
 
     def test_update_order_status_to_paid(self):
+        """Test updating an order status to 'paid'."""
         payload = {'status': 'paid'}
         response = self.client.patch(self.order_status_url, payload, format='json')
 
@@ -30,6 +33,7 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(self.order.status, 'paid')
 
     def test_update_order_status_to_shipped(self):
+        """Test updating an order status from 'paid' to 'shipped'."""
         self.order.status = Order.PAID
         self.order.save()
         payload = {'status': 'shipped'}
@@ -40,6 +44,7 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(self.order.status, 'shipped')
 
     def test_update_order_status_to_cancelled(self):
+        """Test updating an order status to 'cancelled'."""
         payload = {'status': 'cancelled'}
         response = self.client.patch(self.order_status_url, payload, format='json')
 

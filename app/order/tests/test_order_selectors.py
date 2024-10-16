@@ -5,7 +5,10 @@ Tests for order selectors.
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from order.models import Order
-from order.selectors import get_user_orders, get_order_details
+from order.selectors import (
+    get_user_orders,
+    get_order_details
+)
 from uuid import uuid4
 
 
