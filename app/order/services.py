@@ -18,7 +18,9 @@ def create_order(user, items_data):
         try:
             product = Product.objects.get(uuid=product_uuid)
         except Product.DoesNotExist:
-            raise DRFValidationError({'detail': f"Product with UUID {product_uuid} does not exist"})
+            raise DRFValidationError(
+                {'detail': f"Product with UUID {product_uuid} does not exist"}
+            )
 
         quantity = item_data['quantity']
 

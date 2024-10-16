@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from core.exceptions import InsufficientStockError
 

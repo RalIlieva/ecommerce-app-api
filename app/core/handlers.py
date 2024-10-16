@@ -12,7 +12,6 @@ from rest_framework.views import exception_handler
 from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.serializers import as_serializer_error
-from rest_framework.exceptions import APIException, ValidationError as DRFValidationError
 
 # from rest_framework import status
 
@@ -44,18 +43,6 @@ def drf_default_with_modifications_exception_handler(exc, context):
 
     # Call DRF's default exception handler first
     response = exception_handler(exc, context)
-
-    # # If exc is a known APIException, ensure it's handled here
-    # if isinstance(exc, APIException):
-    #     # Log specific APIExceptions for debugging
-    #     if isinstance(exc, DRFValidationError):
-    #         logger.warning(f"Validation error: {exc.detail}")
-    #     elif isinstance(exc, DuplicateSlugException):
-    #         logger.warning(f"Duplicate slug error: {exc.detail}")
-    #     # If the response is None (shouldn't be for APIException), create a new one
-    #     if response is None:
-    #         response = Response({"detail": exc.detail}, status=exc.status_code)
-    #     return response
 
     if isinstance(exc, InsufficientStockError):
         logger.warning(f"Insufficient stock error: {exc.detail}")

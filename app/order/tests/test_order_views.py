@@ -11,7 +11,7 @@ from order.models import (
 from products.models import Product, Category
 from order.services import (
     create_order,
-    update_order_status
+    # update_order_status
 )
 
 ORDERS_URL = reverse('order:order-list')
@@ -110,9 +110,8 @@ class OrderCreateViewTests(TestCase):
         self.assertEqual(order.order_items.first().quantity, 2)
 
     def test_create_order_with_insufficient_stock(self):
-        # url = '/api/orders/create/'
         payload = {
-            'items': [{'product': self.product.uuid, 'quantity': 20}]  # More than available stock
+            'items': [{'product': self.product.uuid, 'quantity': 20}]
         }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
@@ -121,7 +120,6 @@ class OrderCreateViewTests(TestCase):
         self.assertEqual(Order.objects.count(), 0)
 
     def test_create_order_with_invalid_product_uuid(self):
-        # url = '/api/orders/create/'
         invalid_uuid = uuid4()
         payload = {
             'items': [{'product': invalid_uuid, 'quantity': 1}]
@@ -129,7 +127,10 @@ class OrderCreateViewTests(TestCase):
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn(f"Product with UUID {invalid_uuid} does not exist", response.data['detail'])
+        self.assertIn(
+            f"Product with UUID {invalid_uuid} does not exist",
+            response.data['detail']
+        )
         self.assertEqual(Order.objects.count(), 0)
 
 
