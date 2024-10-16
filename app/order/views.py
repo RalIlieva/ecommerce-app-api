@@ -15,6 +15,7 @@ from .services import (
     create_order,
     update_order_status
 )
+from core.exceptions import InsufficientStockError
 
 
 class OrderListView(generics.ListAPIView):
@@ -43,9 +44,11 @@ class OrderCreateView(generics.CreateAPIView):
             order = create_order(request.user, order_data)
             serializer = self.get_serializer(order)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            print("Unexpected Error:", e)  # Add this line to debug
-            return Response({'detail': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except InsufficientStockError as e:
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # except Exception as e:
+        #     print("Unexpected Error:", e)
+        #     return Response({'detail': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class OrderDetailView(generics.RetrieveUpdateAPIView):
