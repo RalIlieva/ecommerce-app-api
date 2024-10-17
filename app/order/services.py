@@ -11,6 +11,10 @@ from .models import Order, OrderItem
 
 @transaction.atomic
 def create_order(user, items_data):
+    # Ensure items_data is not empty
+    if not items_data:
+        raise DRFValidationError({'detail': "Items must not be empty"})
+
     order = Order.objects.create(user=user)
 
     for item_data in items_data:
