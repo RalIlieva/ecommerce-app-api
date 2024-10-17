@@ -30,9 +30,13 @@ def detail_url(order_uuid):
 
 
 class OrderListViewTests(TestCase):
-    """Test suite for listing orders for authenticated and unauthenticated users."""
+    """
+    Test suite for listing orders for authenticated and unauthenticated users.
+    """
     def setUp(self):
-        """Set up initial test data, including users, category, products, and orders."""
+        """
+        Set up initial test data, including users, category, products, and orders.
+        """
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='user@example.com', password='password123'
@@ -79,9 +83,13 @@ class OrderListViewTests(TestCase):
 
 
 class OrderCreateViewTests(TestCase):
-    """Test suite for creating orders using the Order Create View."""
+    """
+    Test suite for creating orders using the Order Create View.
+    """
     def setUp(self):
-        """Set up initial test data, including a user, category, and product."""
+        """
+        Set up initial test data, including a user, category, and product.
+        """
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='user@example.com', password='password123'
@@ -104,7 +112,9 @@ class OrderCreateViewTests(TestCase):
         self.assertNotEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_order_with_valid_data(self):
-        """Test that an authenticated user can create an order with valid data."""
+        """
+        Test that an authenticated user can create an order with valid data.
+        """
         # url = '/api/orders/create/'
         self.client.force_authenticate(self.user)
         print("Resolved ORDER_CREATE_URL:", ORDER_CREATE_URL)
@@ -121,7 +131,9 @@ class OrderCreateViewTests(TestCase):
         self.assertEqual(order.order_items.first().quantity, 2)
 
     def test_create_order_with_insufficient_stock(self):
-        """Test that creating an order with insufficient stock returns a 400 error."""
+        """
+        Test creating an order with insufficient stock returns a 400 error.
+        """
         payload = {
             'items': [{'product': self.product.uuid, 'quantity': 20}]
         }
@@ -132,7 +144,9 @@ class OrderCreateViewTests(TestCase):
         self.assertEqual(Order.objects.count(), 0)
 
     def test_create_order_with_invalid_product_uuid(self):
-        """Test that creating an order with an invalid product UUID returns a 400 error."""
+        """
+        Test creating an order with an invalid product UUID returns a 400 error.
+        """
         invalid_uuid = uuid4()
         payload = {
             'items': [{'product': invalid_uuid, 'quantity': 1}]
@@ -148,10 +162,14 @@ class OrderCreateViewTests(TestCase):
 
 
 class OrderDetailViewTests(TestCase):
-    """Test suite for retrieving and updating order details."""
+    """
+    Test suite for retrieving and updating order details.
+    """
 
     def setUp(self):
-        """Set up initial test data, including users, categories, products, and orders."""
+        """
+        Set up initial test data - users, categories, products, and orders.
+        """
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='user@example.com', password='password123'
@@ -177,7 +195,9 @@ class OrderDetailViewTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_retrieve_order_with_valid_uuid(self):
-        """Test retrieving the details of an order with a valid UUID."""
+        """
+        Test retrieving the details of an order with a valid UUID.
+        """
         url = detail_url(self.order.uuid)
         response = self.client.get(url)
 
@@ -187,7 +207,9 @@ class OrderDetailViewTests(TestCase):
         self.assertEqual(response.data['status'], 'pending')
 
     def test_retrieve_order_with_invalid_uuid(self):
-        """Test retrieving an order with an invalid UUID returns 404 not found."""
+        """
+        Test retrieving an order with an invalid UUID returns 404 not found.
+        """
         invalid_uuid = uuid4()  # Generates a new UUID
         url = detail_url(invalid_uuid)
         response = self.client.get(url)
@@ -212,7 +234,9 @@ class OrderDetailViewTests(TestCase):
         self.assertEqual(self.order.status, 'shipped')
 
     def test_update_order_status_with_invalid_uuid(self):
-        """Test updating the order status with an invalid UUID returns 404 not found."""
+        """
+        Test updating the order status with an invalid UUID returns 404 not found.
+        """
         invalid_uuid = uuid4()  # Generates a new UUID
         url = detail_url(invalid_uuid)
         response = self.client.patch(url, {'status': 'shipped'})

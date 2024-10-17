@@ -19,10 +19,14 @@ def detail_url(order_uuid):
 
 
 class OrderStatusTestCase(TestCase):
-    """Test suite for updating the status of an order."""
+    """
+    Test suite for updating the status of an order.
+    """
 
     def setUp(self):
-        """Set up initial test data, including user, order, and authentication."""
+        """
+        Set up initial test data - user, order, and authentication.
+        """
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='testuser@example.com',
@@ -33,7 +37,9 @@ class OrderStatusTestCase(TestCase):
         # self.order_status_url = f'/api/orders/{self.order.uuid}/'
 
     def test_update_order_status_to_paid(self):
-        """Test updating an order status to 'paid'."""
+        """
+        Test updating an order status to 'paid'.
+        """
         url = detail_url(self.order.uuid)
         payload = {'status': 'paid'}
         response = self.client.patch(url, payload, format='json')
@@ -43,7 +49,9 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(self.order.status, 'paid')
 
     def test_update_order_status_to_shipped(self):
-        """Test updating an order status from 'paid' to 'shipped'."""
+        """
+        Test updating an order status from 'paid' to 'shipped'.
+        """
         self.order.status = Order.PAID
         self.order.save()
         url = detail_url(self.order.uuid)
@@ -55,7 +63,9 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(self.order.status, 'shipped')
 
     def test_update_order_status_to_cancelled(self):
-        """Test updating an order status to 'cancelled'."""
+        """
+        Test updating an order status to 'cancelled'.
+        """
         url = detail_url(self.order.uuid)
         payload = {'status': 'cancelled'}
         response = self.client.patch(url, payload, format='json')
@@ -65,7 +75,9 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(self.order.status, 'cancelled')
 
     def test_update_order_status_with_invalid_uuid(self):
-        """Test updating the order status with an invalid UUID."""
+        """
+        Test updating the order status with an invalid UUID.
+        """
         invalid_uuid = uuid4()  # Generates a new UUID
         url = detail_url(invalid_uuid)
         payload = {'status': 'shipped'}
@@ -74,7 +86,9 @@ class OrderStatusTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_order_status_forbidden_to_other_user(self):
-        """Test that another user cannot update someone else's order status."""
+        """
+        Test that another user cannot update someone else's order status.
+        """
         other_user = get_user_model().objects.create_user(
             email='otheruser@example.com',
             password='password123'

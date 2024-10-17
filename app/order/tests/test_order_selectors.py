@@ -37,6 +37,9 @@ class OrderSelectorTestCase(TestCase):
         self.assertEqual(order.uuid, self.order1.uuid)
 
     def test_get_order_details_invalid_uuid(self):
-        """Test retrieving the details of an order using an invalid UUID, which should raise an exception."""
+        """
+        Test retrieving the details of an order using an invalid UUID,
+        which should raise an exception.
+        """
         with self.assertRaises(Order.DoesNotExist):
             get_order_details(uuid4())

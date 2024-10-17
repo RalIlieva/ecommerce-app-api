@@ -16,10 +16,14 @@ ORDER_CREATE_URL = reverse('order:order-create')
 
 
 class OrderCreationTestCase(TestCase):
-    """Test suite for creating orders with different scenarios."""
+    """
+    Test suite for creating orders with different scenarios.
+    """
 
     def setUp(self):
-        """Set up initial test data, including user, product, and authentication."""
+        """
+        Set up initial test data, including user, product, and authentication.
+        """
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='testuser@example.com',
@@ -40,7 +44,9 @@ class OrderCreationTestCase(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_create_order_with_sufficient_stock(self):
-        """Test creating an order with sufficient stock available."""
+        """
+        Test creating an order with sufficient stock available.
+        """
         payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': 2}]
         }
@@ -51,9 +57,12 @@ class OrderCreationTestCase(TestCase):
         self.assertEqual(Order.objects.first().order_items.count(), 1)
 
     def test_create_order_with_exact_stock(self):
-        """Test creating an order with a quantity exactly equal to the available stock."""
+        """
+        Test creating an order with a quantity exactly equal to the available stock.
+        """
+        # Exact available stock
         payload = {
-            'items': [{'product': str(self.product.uuid), 'quantity': 5}]  # Exact available stock
+            'items': [{'product': str(self.product.uuid), 'quantity': 5}]
         }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
@@ -64,7 +73,9 @@ class OrderCreationTestCase(TestCase):
         self.assertEqual(self.product.stock, 0)  # Stock should be zero now
 
     def test_create_order_with_invalid_product_uuid(self):
-        """Test creating an order with an invalid product UUID."""
+        """
+        Test creating an order with an invalid product UUID.
+        """
         invalid_uuid = uuid4()
         payload = {
             'items': [{'product': str(invalid_uuid), 'quantity': 1}]
@@ -76,7 +87,9 @@ class OrderCreationTestCase(TestCase):
         self.assertEqual(Order.objects.count(), 0)
 
     def test_create_order_with_multiple_items(self):
-        """Test creating an order with multiple different items."""
+        """
+        Test creating an order with multiple different items.
+        """
         product2 = Product.objects.create(
             name='Second Product',
             description='Another great product',
@@ -98,12 +111,17 @@ class OrderCreationTestCase(TestCase):
         self.assertEqual(Order.objects.first().order_items.count(), 2)
 
     def test_create_order_with_zero_quantity(self):
-        """Test creating an order with a quantity of zero, which should fail."""
+        """
+        Test creating an order with a quantity of zero, which should fail.
+        """
         payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': 0}]
         }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Quantity must be greater than zero', str(response.data['detail']))
+        self.assertIn(
+            'Quantity must be greater than zero',
+            str(response.data['detail'])
+        )
         self.assertEqual(Order.objects.count(), 0)
