@@ -141,7 +141,7 @@ class OrderCreationTestCase(TestCase):
 
     def test_create_order_with_negative_quantity(self):
         """
-        Test that creating an order with a negative quantity fails with 400 Bad Request.
+        Test that creating an order with a negative quantity fails with 400.
         """
         payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': -1}]
@@ -149,12 +149,15 @@ class OrderCreationTestCase(TestCase):
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Quantity must be greater than zero', str(response.data['detail']))
+        self.assertIn(
+            'Quantity must be greater than zero',
+            str(response.data['detail'])
+        )
         self.assertEqual(Order.objects.count(), 0)
 
     def test_create_order_with_high_quantity(self):
         """
-        Test that creating an order with a very high quantity fails if stock is insufficient.
+        Test creating an order with high quantity fails if stock insufficient.
         """
         payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': 1000}]
@@ -162,5 +165,8 @@ class OrderCreationTestCase(TestCase):
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Not enough stock available', str(response.data['detail']))
+        self.assertIn(
+            'Not enough stock available',
+            str(response.data['detail'])
+        )
         self.assertEqual(Order.objects.count(), 0)
