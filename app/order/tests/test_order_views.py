@@ -35,7 +35,7 @@ class OrderListViewTests(TestCase):
     """
     def setUp(self):
         """
-        Set up initial test data, including users, category, products, and orders.
+        Set up initial test data - users, category, products, and orders.
         """
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
@@ -145,7 +145,7 @@ class OrderCreateViewTests(TestCase):
 
     def test_create_order_with_invalid_product_uuid(self):
         """
-        Test creating an order with an invalid product UUID returns a 400 error.
+        Test creating an order with an invalid product UUID returns 400.
         """
         invalid_uuid = uuid4()
         payload = {
@@ -217,7 +217,9 @@ class OrderDetailViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_retrieve_order_forbidden_to_other_user(self):
-        """Test that another user cannot retrieve someone else's order."""
+        """
+        Test that another user cannot retrieve someone else's order.
+        """
         self.client.force_authenticate(self.other_user)
         url = detail_url(self.order.uuid)
         response = self.client.get(url)
@@ -225,7 +227,9 @@ class OrderDetailViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_order_status_with_valid_uuid(self):
-        """Test updating the order status with a valid UUID to 'shipped'."""
+        """
+        Test updating the order status with a valid UUID to 'shipped'.
+        """
         url = detail_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
@@ -235,7 +239,7 @@ class OrderDetailViewTests(TestCase):
 
     def test_update_order_status_with_invalid_uuid(self):
         """
-        Test updating the order status with an invalid UUID returns 404 not found.
+        Test updating the order status with invalid UUID returns 404.
         """
         invalid_uuid = uuid4()  # Generates a new UUID
         url = detail_url(invalid_uuid)
@@ -244,7 +248,9 @@ class OrderDetailViewTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_update_order_status_forbidden_to_other_user(self):
-        """Test that another user cannot update someone else's order status."""
+        """
+        Test that another user cannot update someone else's order status.
+        """
         self.client.force_authenticate(self.other_user)
         url = detail_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'shipped'})

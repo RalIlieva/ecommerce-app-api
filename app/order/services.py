@@ -25,7 +25,9 @@ def create_order(user, items_data):
         quantity = item_data['quantity']
         # Validate that quantity is greater than zero
         if quantity <= 0:
-            raise DRFValidationError({'detail': "Quantity must be greater than zero"})
+            raise DRFValidationError(
+                {'detail': "Quantity must be greater than zero"}
+            )
 
         # Nested transaction for each stock update and item creation
         with transaction.atomic():

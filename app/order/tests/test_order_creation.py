@@ -58,7 +58,7 @@ class OrderCreationTestCase(TestCase):
 
     def test_create_order_with_exact_stock(self):
         """
-        Test creating an order with a quantity exactly equal to the available stock.
+        Test creating an order - quantity exactly equal to the available stock.
         """
         # Exact available stock
         payload = {
