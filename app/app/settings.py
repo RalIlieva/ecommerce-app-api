@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import sys
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -96,7 +97,7 @@ DATABASES = {
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASS'),
         # Keep connections open for 600 seconds
-        'CONN_MAX_AGE': 600,
+        'CONN_MAX_AGE': 600 if 'test' not in sys.argv else 0,
     }
 }
 
