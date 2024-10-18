@@ -5,7 +5,7 @@ from django.test import TransactionTestCase
 from threading import Thread
 from django.urls import reverse
 from order.models import Order, OrderItem
-from products.models import Product, Category# Import Category
+from products.models import Product, Category
 from .test_base import OrderTestBase
 
 # URL for order creation
@@ -14,9 +14,6 @@ ORDER_CREATE_URL = reverse('order:order-create')
 
 class OrderCreationTestCase(TransactionTestCase):
     def setUp(self):
-        # Call parent setup (if any custom initialization)
-        # super().setUp()
-
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='user@example.com', password='password123'
@@ -50,7 +47,7 @@ class OrderCreationTestCase(TransactionTestCase):
     def place_order(self):
         """Simulate placing an order by a user."""
         response = self.client.post(ORDER_CREATE_URL, self.payload, format='json')
-        print(f"Response status: {response.status_code}, data: {response.data}")
+        # print(f"Response status: {response.status_code}, data: {response.data}")
         return response
 
     def test_prevent_overselling(self):
@@ -68,31 +65,24 @@ class OrderCreationTestCase(TransactionTestCase):
         thread1.join()
         thread2.join()
 
-        # Assert that two orders were created
-        self.assertEqual(Order.objects.count(), 2)
-
         # Refresh product from DB to get the latest stock data
         self.product.refresh_from_db()
 
         # Assert that two orders were created
         order_count = Order.objects.count()
-        print(f"Order count: {order_count}")
+        # print(f"Order count: {order_count}")
         self.assertEqual(order_count, 2)
 
         # Assert that the stock was correctly reduced to 0
         self.assertEqual(self.product.stock, 0)
 
-
-        # # Assert that the stock was correctly reduced and no overselling happened
-        # self.assertEqual(self.product.stock, 0)
-        #
         # # Assert that one of the requests failed due to insufficient stock
         # # (1 order should succeed, the other should fail due to the stock limit)
         # successful_orders = Order.objects.all()
         # self.assertEqual(successful_orders.count(), 2)
-        #
-        # # One of the requests should have failed due to lack of stock, let's check if that's the case
-        # self.assertGreaterEqual(self.product.stock, 0, "Product stock should not be negative")
+
+        # One of the requests should have failed due to lack of stock, let's check if that's the case
+        self.assertGreaterEqual(self.product.stock, 0, "Product stock should not be negative")
 
     def tearDown(self):
         # Call parent teardown to handle cleanup (if any)
