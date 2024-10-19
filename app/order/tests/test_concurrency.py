@@ -4,9 +4,8 @@ from rest_framework.test import APIClient
 from django.test import TransactionTestCase
 from threading import Thread
 from django.urls import reverse
-from order.models import Order, OrderItem
+from order.models import Order
 from products.models import Product, Category
-from .test_base import OrderTestBase
 
 # URL for order creation
 ORDER_CREATE_URL = reverse('order:order-create')
@@ -26,7 +25,7 @@ class OrderCreationTestCase(TransactionTestCase):
             slug="test-category"
         )
 
-        # Create a product with limited stock for the test, and assign the category
+        # Create a product with limited stock
         self.product = Product.objects.create(
             # uuid="123e4567-e89b-12d3-a456-426614174000",  # example UUID
             name="Test Product",
@@ -38,7 +37,6 @@ class OrderCreationTestCase(TransactionTestCase):
         # Short delay to ensure the product is available in the DB
         time.sleep(1)
 
-
         # Example payload for placing an order
         self.payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': 5}]
@@ -46,14 +44,21 @@ class OrderCreationTestCase(TransactionTestCase):
 
     def place_order(self):
         """Simulate placing an order by a user."""
-        response = self.client.post(ORDER_CREATE_URL, self.payload, format='json')
-        # print(f"Response status: {response.status_code}, data: {response.data}")
+        response = self.client.post(
+            ORDER_CREATE_URL, self.payload, format='json'
+        )
+        # print(
+        # f"Response status: {response.status_code}, data: {response.data}"
+        # )
         return response
 
     def test_prevent_overselling(self):
-        """Test that overselling is prevented when two users attempt to buy the same product simultaneously."""
+        """
+        Test overselling is prevented when 2 users attempt
+        to buy the same product simultaneously.
+        """
 
-        # Define two threads to simulate two users placing orders at the same time
+        # 2 threads to simulate 2 users placing orders simultaneously
         thread1 = Thread(target=self.place_order)
         thread2 = Thread(target=self.place_order)
 
@@ -77,12 +82,13 @@ class OrderCreationTestCase(TransactionTestCase):
         self.assertEqual(self.product.stock, 0)
 
         # # Assert that one of the requests failed due to insufficient stock
-        # # (1 order should succeed, the other should fail due to the stock limit)
         # successful_orders = Order.objects.all()
         # self.assertEqual(successful_orders.count(), 2)
 
-        # One of the requests should have failed due to lack of stock, let's check if that's the case
-        self.assertGreaterEqual(self.product.stock, 0, "Product stock should not be negative")
+        # One of the requests should have failed due to lack of stock
+        self.assertGreaterEqual(
+            self.product.stock, 0, "Product stock should not be negative"
+        )
 
     def tearDown(self):
         # Call parent teardown to handle cleanup (if any)
@@ -100,7 +106,10 @@ class OrderCreationTestCase(TransactionTestCase):
 #
 # class OrderCreationTestCase(TransactionTestCase):
 #     def test_prevent_overselling(self):
-#         """Test that overselling is prevented when two users attempt to buy the same product simultaneously."""
+#         """
+#         Test that overselling is prevented when two users
+#         attempt to buy the same product simultaneously.
+#         """
 #
 #         def place_order():
 #             payload = {
@@ -127,4 +136,5 @@ class OrderCreationTestCase(TransactionTestCase):
 #
 #     def tearDown(self):
 #         super().tearDown()
-#         # Don't explicitly close the connection here. Django will handle this.
+#         # Don't explicitly close the connection here.
+#         # Django will handle this.
