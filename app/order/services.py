@@ -20,8 +20,10 @@ def create_order(user, items_data):
     for item_data in items_data:
         product_uuid = item_data['product']
         try:
-            # Use select_for_update to lock the product row for this transaction
-            product = Product.objects.select_for_update().get(uuid=product_uuid)
+            # Use select_for_update to lock the product row for the transaction
+            product = Product.objects.select_for_update().get(
+                uuid=product_uuid
+            )
             # product = Product.objects.get(uuid=product_uuid)
         except Product.DoesNotExist:
             raise DRFValidationError(

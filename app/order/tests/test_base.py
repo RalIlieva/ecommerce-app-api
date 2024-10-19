@@ -40,7 +40,9 @@ class OrderTestBase(TestCase):
 
     def create_user(self, email, password):
         """Helper to create a user."""
-        return get_user_model().objects.create_user(email=email, password=password)
+        return get_user_model().objects.create_user(
+            email=email, password=password
+        )
 
 
 class OrderCreationTestCase(OrderTestBase):
