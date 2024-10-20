@@ -19,30 +19,9 @@ ORDER_CREATE_URL = reverse('order:order-create')
 class OrderCreationTestCase(OrderTestBase):
     """
     Test suite for creating orders with different scenarios.
+    Inherits common setup and helper methods from OrderTestBase.
     """
 
-    # def setUp(self):
-    #     """
-    #     Set up initial test data, including user, product, and authentication.
-    #     """
-        # self.client = APIClient()
-        # self.user = get_user_model().objects.create_user(
-        #     email='testuser@example.com',
-        #     password='password123'
-        # )
-        # self.category = Category.objects.create(
-        #     name='Electronics',
-        #     slug='electronics'
-        # )
-        # self.product = Product.objects.create(
-        #     name='Test Product',
-        #     description='A great product',
-        #     price=100.00,
-        #     category=self.category,
-        #     stock=5,
-        #     slug='test-product'
-        # )
-        # self.client.force_authenticate(self.user)
 
     def test_create_order_with_sufficient_stock(self):
         """
