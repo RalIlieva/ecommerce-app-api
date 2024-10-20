@@ -91,50 +91,5 @@ class OrderCreationTestCase(TransactionTestCase):
         )
 
     def tearDown(self):
-        # Call parent teardown to handle cleanup (if any)
+        # Call parent teardown to handle cleanup
         super().tearDown()
-
-
-# from django.test import TransactionTestCase
-# from threading import Thread
-# from django.urls import reverse
-# from order.models import Order
-# from .test_base import OrderTestBase
-#
-# ORDER_CREATE_URL = reverse('order:order-create')
-#
-#
-# class OrderCreationTestCase(TransactionTestCase):
-#     def test_prevent_overselling(self):
-#         """
-#         Test that overselling is prevented when two users
-#         attempt to buy the same product simultaneously.
-#         """
-#
-#         def place_order():
-#             payload = {
-#                 'items': [{'product': str(self.product.uuid), 'quantity': 5}]
-#             }
-#             self.client.post(ORDER_CREATE_URL, payload, format='json')
-#
-#         # Start two threads that attempt to place the orders concurrently
-#         thread1 = Thread(target=place_order)
-#         thread2 = Thread(target=place_order)
-#
-#         thread1.start()
-#         thread2.start()
-#
-#         thread1.join()
-#         thread2.join()
-#
-#         # Assert that two orders were created
-#         self.assertEqual(Order.objects.count(), 2)
-#
-#         # Assert that the stock is correctly reduced to 0
-#         self.product.refresh_from_db()
-#         self.assertEqual(self.product.stock, 0)
-#
-#     def tearDown(self):
-#         super().tearDown()
-#         # Don't explicitly close the connection here.
-#         # Django will handle this.
