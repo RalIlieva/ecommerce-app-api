@@ -2,6 +2,7 @@
 Test for creating order.
 """
 
+from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -9,39 +10,39 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from products.models import Category, Product
 from order.models import Order
-from uuid import uuid4
+from .test_base import OrderTestBase
 
 
 ORDER_CREATE_URL = reverse('order:order-create')
 
 
-class OrderCreationTestCase(TestCase):
+class OrderCreationTestCase(OrderTestBase):
     """
     Test suite for creating orders with different scenarios.
     """
 
-    def setUp(self):
-        """
-        Set up initial test data, including user, product, and authentication.
-        """
-        self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
-            email='testuser@example.com',
-            password='password123'
-        )
-        self.category = Category.objects.create(
-            name='Electronics',
-            slug='electronics'
-        )
-        self.product = Product.objects.create(
-            name='Test Product',
-            description='A great product',
-            price=100.00,
-            category=self.category,
-            stock=5,
-            slug='test-product'
-        )
-        self.client.force_authenticate(self.user)
+    # def setUp(self):
+    #     """
+    #     Set up initial test data, including user, product, and authentication.
+    #     """
+        # self.client = APIClient()
+        # self.user = get_user_model().objects.create_user(
+        #     email='testuser@example.com',
+        #     password='password123'
+        # )
+        # self.category = Category.objects.create(
+        #     name='Electronics',
+        #     slug='electronics'
+        # )
+        # self.product = Product.objects.create(
+        #     name='Test Product',
+        #     description='A great product',
+        #     price=100.00,
+        #     category=self.category,
+        #     stock=5,
+        #     slug='test-product'
+        # )
+        # self.client.force_authenticate(self.user)
 
     def test_create_order_with_sufficient_stock(self):
         """
@@ -60,15 +61,15 @@ class OrderCreationTestCase(TestCase):
         """
         Test creating an order - quantity exactly equal to the available stock.
         """
-        # Exact available stock
+        # Exact available stock - 20 pcs per test base
         payload = {
-            'items': [{'product': str(self.product.uuid), 'quantity': 5}]
+            'items': [{'product': str(self.product.uuid), 'quantity': 20}]
         }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Order.objects.count(), 1)
-        self.assertEqual(Order.objects.first().order_items.first().quantity, 5)
+        self.assertEqual(Order.objects.first().order_items.first().quantity, 20)
         self.product.refresh_from_db()
         self.assertEqual(self.product.stock, 0)  # Stock should be zero now
 
