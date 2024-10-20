@@ -22,7 +22,6 @@ class OrderCreationTestCase(OrderTestBase):
     Inherits common setup and helper methods from OrderTestBase.
     """
 
-
     def test_create_order_with_sufficient_stock(self):
         """
         Test creating an order with sufficient stock available.
