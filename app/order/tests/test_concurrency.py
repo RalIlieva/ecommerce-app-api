@@ -1,7 +1,8 @@
 import time
+from django.db import connection
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
-from django.test import TransactionTestCase
+from django.test import TransactionTestCase, LiveServerTestCase
 from threading import Thread
 from django.urls import reverse
 from order.models import Order
@@ -11,7 +12,7 @@ from products.models import Product, Category
 ORDER_CREATE_URL = reverse('order:order-create')
 
 
-class OrderCreationTestCase(TransactionTestCase):
+class OrderCreationTestCase(LiveServerTestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
@@ -44,13 +45,17 @@ class OrderCreationTestCase(TransactionTestCase):
 
     def place_order(self):
         """Simulate placing an order by a user."""
-        response = self.client.post(
-            ORDER_CREATE_URL, self.payload, format='json'
-        )
-        # print(
-        # f"Response status: {response.status_code}, data: {response.data}"
+        try:
+            response = self.client.post(ORDER_CREATE_URL, self.payload, format='json')
+            return response
+        finally:
+            # Ensure the database connection is closed after the request
+            connection.close()
+
+        # response = self.client.post(
+        #     ORDER_CREATE_URL, self.payload, format='json'
         # )
-        return response
+        # return response
 
     def test_prevent_overselling(self):
         """
@@ -80,10 +85,6 @@ class OrderCreationTestCase(TransactionTestCase):
 
         # Assert that the stock was correctly reduced to 0
         self.assertEqual(self.product.stock, 0)
-
-        # # Assert that one of the requests failed due to insufficient stock
-        # successful_orders = Order.objects.all()
-        # self.assertEqual(successful_orders.count(), 2)
 
         # One of the requests should have failed due to lack of stock
         self.assertGreaterEqual(
