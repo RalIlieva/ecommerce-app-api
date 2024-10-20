@@ -3,12 +3,9 @@ Test for creating order.
 """
 
 from uuid import uuid4
-from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.urls import reverse
-from rest_framework.test import APIClient
 from rest_framework import status
-from products.models import Category, Product
+from products.models import Product
 from order.models import Order
 from .test_base import OrderTestBase
 
@@ -47,7 +44,9 @@ class OrderCreationTestCase(OrderTestBase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Order.objects.count(), 1)
-        self.assertEqual(Order.objects.first().order_items.first().quantity, 20)
+        self.assertEqual(
+            Order.objects.first().order_items.first().quantity, 20
+        )
         self.product.refresh_from_db()
         self.assertEqual(self.product.stock, 0)  # Stock should be zero now
 
