@@ -2,7 +2,7 @@ import time
 from django.db import connection
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
-from django.test import TransactionTestCase, LiveServerTestCase
+from django.test import LiveServerTestCase
 from threading import Thread
 from django.urls import reverse
 from order.models import Order
@@ -52,11 +52,6 @@ class OrderCreationTestCase(LiveServerTestCase):
             # Ensure the database connection is closed after the request
             connection.close()
 
-        # response = self.client.post(
-        #     ORDER_CREATE_URL, self.payload, format='json'
-        # )
-        # return response
-
     def test_prevent_overselling(self):
         """
         Test overselling is prevented when 2 users attempt
@@ -90,7 +85,3 @@ class OrderCreationTestCase(LiveServerTestCase):
         self.assertGreaterEqual(
             self.product.stock, 0, "Product stock should not be negative"
         )
-
-    def tearDown(self):
-        # Call parent teardown to handle cleanup
-        super().tearDown()
