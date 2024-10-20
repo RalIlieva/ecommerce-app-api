@@ -46,7 +46,9 @@ class OrderCreationTestCase(LiveServerTestCase):
     def place_order(self):
         """Simulate placing an order by a user."""
         try:
-            response = self.client.post(ORDER_CREATE_URL, self.payload, format='json')
+            response = self.client.post(
+                ORDER_CREATE_URL, self.payload, format='json'
+            )
             return response
         finally:
             # Ensure the database connection is closed after the request
