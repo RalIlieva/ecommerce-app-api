@@ -11,8 +11,12 @@ from .models import Order, OrderItem
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'uuid', 'user_email', 'status', 'created', 'modified']
-    list_filter = ['status', 'created', 'modified']
+    list_display = [
+        'id', 'uuid', 'user_email', 'status', 'created', 'modified'
+    ]
+    list_filter = [
+        'status', 'created', 'modified'
+    ]
     search_fields = ['user__email', 'id']
     ordering = ['created']
     inlines = []
