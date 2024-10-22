@@ -38,6 +38,11 @@ class Order(UUIDModel, TimeStampedModel):
     def __str__(self):
         return f"Order {self.id} - {self.user.email} - {self.status}"
 
+    @property
+    def total_amount(self):
+        # Calculate the total amount by summing all order items for this order
+        return sum(item.quantity * item.price for item in self.order_items.all())
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(

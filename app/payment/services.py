@@ -16,11 +16,20 @@ def create_payment_intent(order_id, user):
     if order.status != Order.PENDING:
         raise ValidationError("Order is not in a payable state.")
 
+    if Payment.objects.filter(order=order).exists():
+        raise ValidationError({'error': 'Payment already exists for this order'})
+
+    # Use the order total_amount for the payment
+    total_amount = order.total_amount
+    if total_amount <= 0:
+        raise ValidationError({'error': 'Total amount must be greater than zero'})
+
     # Create a Stripe payment intent
     intent = stripe.PaymentIntent.create(
-        amount=int(order.total_amount * 100),  # Stripe uses cents
+        amount=int(total_amount * 100),  # Stripe uses cents
         currency='usd',
         metadata={'order_id': order.id},
+        payment_method_types=['card'],
     )
 
     # Create a payment object in the database
