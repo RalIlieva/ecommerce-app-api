@@ -3,12 +3,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, Http404
+from django_filters.rest_framework import DjangoFilterBackend
 import stripe
 from django.conf import settings
 from .services import create_payment_intent, update_payment_status
 from .models import Payment
 from .serializers import PaymentSerializer
-from .selectors import get_payment_by_uuid
+from .selectors import get_payment_by_uuid, get_user_payments
+from .filters import PaymentFilter
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -38,17 +40,26 @@ class PaymentDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     lookup_field = 'uuid'  # Use UUID for detail view
 
-    # def get_queryset(self):
-    #     # Only allow users to see their own payments
-    #     user = self.request.user
-    #     return Payment.objects.filter(user=user)
-
     def get_object(self):
         # Use selector to retrieve a specific payment by uuid for the user
         payment = get_payment_by_uuid(self.request.user, self.kwargs['uuid'])
         if payment is None:
             raise Http404("Payment not found.")
         return payment
+
+
+class PaymentListView(generics.ListAPIView):
+    """
+    API view to list all payments for the authenticated user.
+    """
+    serializer_class = PaymentSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PaymentFilter  # Use the PaymentFilter for filtering
+
+    def get_queryset(self):
+        # Get payments only for the authenticated user
+        return get_user_payments(self.request.user)
 
 
 @csrf_exempt
