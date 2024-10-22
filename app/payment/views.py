@@ -2,11 +2,13 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 import stripe
 from django.conf import settings
 from .services import create_payment_intent, update_payment_status
 from .models import Payment
+from .serializers import PaymentSerializer
+from .selectors import get_payment_by_uuid
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -36,10 +38,17 @@ class PaymentDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     lookup_field = 'uuid'  # Use UUID for detail view
 
-    def get_queryset(self):
-        # Only allow users to see their own payments
-        user = self.request.user
-        return Payment.objects.filter(user=user)
+    # def get_queryset(self):
+    #     # Only allow users to see their own payments
+    #     user = self.request.user
+    #     return Payment.objects.filter(user=user)
+
+    def get_object(self):
+        # Use selector to retrieve a specific payment by uuid for the user
+        payment = get_payment_by_uuid(self.request.user, self.kwargs['uuid'])
+        if payment is None:
+            raise Http404("Payment not found.")
+        return payment
 
 
 @csrf_exempt
