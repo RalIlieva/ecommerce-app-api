@@ -41,4 +41,5 @@ urlpatterns = [
          name='token_refresh'),
     path('api/products/', include('products.urls', namespace='products')),
     path('api/orders/', include('order.urls', namespace='order')),
+    path('payment/', include('payment.urls'), namespace='payment'),
 ]
