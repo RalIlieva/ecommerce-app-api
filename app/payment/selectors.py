@@ -1,3 +1,7 @@
+"""
+Business logic - fetching from db.
+"""
+
 from .models import Payment
 
 

@@ -1,3 +1,7 @@
+"""
+Business logic - functions - write to db.
+"""
+
 import stripe
 from django.conf import settings
 from rest_framework.exceptions import ValidationError

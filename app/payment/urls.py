@@ -1,3 +1,7 @@
+"""
+URL mappings for the payment app.
+"""
+
 from django.urls import path
 from .views import (
     CreatePaymentView,
