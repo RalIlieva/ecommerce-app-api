@@ -107,18 +107,18 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(payment_results), 2)
 
-    # def test_retrieve_payment_details(self):
-    #     payment = Payment.objects.create(
-    #         order=self.order,
-    #         user=self.user,
-    #         amount=100.00,
-    #         status=Payment.PENDING,
-    #         stripe_payment_intent_id='pi_123'
-    #     )
-    #
-    #     url = reverse('payment:payment-detail', kwargs={'uuid': payment.uuid})
-    #     response = self.client.get(url)
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(response.data['uuid'], str(payment.uuid))
-    #     self.assertEqual(response.data['amount'], '100.00')
+    def test_retrieve_payment_details(self):
+        payment = Payment.objects.create(
+            order=self.order,
+            user=self.user,
+            amount=100.00,
+            status=Payment.PENDING,
+            stripe_payment_intent_id='pi_123'
+        )
+
+        url = reverse('payment:payment-detail', kwargs={'uuid': payment.uuid})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['uuid'], str(payment.uuid))
+        self.assertEqual(response.data['amount'], '100.00')
