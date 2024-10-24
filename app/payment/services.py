@@ -37,7 +37,7 @@ def create_payment_intent(order_id, user):
     )
 
     # Create a payment object in the database
-    payment = Payment.objects.create(
+    Payment.objects.create(
         order=order,
         user=user,
         amount=order.total_amount,
