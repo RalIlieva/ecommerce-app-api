@@ -229,13 +229,19 @@ class PaymentTestCase(APITestCase):
         response_b = client_b.post(url, data, format='json')
 
         # Ensure only one payment is successful
-        successful_response = response_a if response_a.status_code == status.HTTP_201_CREATED else response_b
+        successful_response = (
+            response_a if response_a.status_code == status.HTTP_201_CREATED
+            else response_b
+        )
         self.assertEqual(
             successful_response.status_code, status.HTTP_201_CREATED
         )
 
         # The other response is 400 Bad Request due to payment already existing
-        failed_response = response_a if response_a != successful_response else response_b
+        failed_response = (
+            response_a if response_a != successful_response
+            else response_b)
+
         self.assertEqual(
             failed_response.status_code, status.HTTP_400_BAD_REQUEST
         )
