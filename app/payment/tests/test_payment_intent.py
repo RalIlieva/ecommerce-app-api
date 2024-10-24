@@ -1,3 +1,4 @@
+import stripe
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
@@ -197,3 +198,12 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
         self.assertIn('Order does not exist', response.data['error'])
+
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_create_payment_intent_stripe_error(self, mock_stripe_payment_intent):
+        mock_stripe_payment_intent.side_effect = stripe.error.StripeError("Something went wrong")
+        url = reverse('payment:create-payment')
+        data = {'order_id': self.order.id}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
