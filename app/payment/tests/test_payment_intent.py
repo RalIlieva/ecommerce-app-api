@@ -63,19 +63,19 @@ class PaymentTestCase(APITestCase):
         data = {'order_id': self.order.id}
 
         # Debug: Print to verify the order and request data
-        print(f"Order ID: {self.order.id}")
-        print(f"Request Data: {data}")
+        # print(f"Order ID: {self.order.id}")
+        # print(f"Request Data: {data}")
 
         # Send POST request to create payment intent
         response = self.client.post(url, data, format='json')
 
         # Debug: Print response details for analysis
-        print(f"Response Status Code: {response.status_code}")
-        print(f"Response Data: {response.data}")
+        # print(f"Response Status Code: {response.status_code}")
+        # print(f"Response Data: {response.data}")
 
         # Ensure that the response status is 200 OK &
         # contains the client secret
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('client_secret', response.data)
 
         # Check that the Payment object is created in the database
@@ -207,3 +207,61 @@ class PaymentTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
+        self.assertIn('Something went wrong', response.data['error'])
+
+    # Test concurrent payment handling (simulate race condition)
+    def test_create_concurrent_payments_for_same_order(self):
+        # Create two clients to simulate two users making requests concurrently
+        client_a = APIClient()
+        client_b = APIClient()
+        client_a.force_authenticate(user=self.user)
+        client_b.force_authenticate(user=self.user)
+
+        url = reverse('payment:create-payment')
+        data = {'order_id': self.order.id}
+
+        # Simulate concurrent requests
+        response_a = client_a.post(url, data, format='json')
+        response_b = client_b.post(url, data, format='json')
+
+        # Ensure only one payment is successful
+        successful_response = response_a if response_a.status_code == status.HTTP_201_CREATED else response_b
+        self.assertEqual(successful_response.status_code, status.HTTP_201_CREATED)
+
+        # Ensure the other response is a 400 Bad Request due to payment already existing
+        failed_response = response_a if response_a != successful_response else response_b
+        self.assertEqual(failed_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', failed_response.data)
+        self.assertIn('Payment already exists for this order', failed_response.data['error'])
+
+        # Full end-to-end payment creation and retrieval test
+
+    def test_full_payment_flow(self):
+        url = reverse('payment:create-payment')
+        data = {'order_id': self.order.id}
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        client_secret = response.data['client_secret']
+        self.assertIsNotNone(client_secret)
+
+        payment = Payment.objects.get(order=self.order)
+        detail_url = reverse('payment:payment-detail', kwargs={'uuid': payment.uuid})
+        response = self.client.get(detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['uuid'], str(payment.uuid))
+        self.assertEqual(response.data['amount'], '100.00')
+
+    # Unauthorized user access to payments
+    def test_user_cannot_access_other_user_payment(self):
+        # Create another user and payment
+        other_user = get_user_model().objects.create_user(email="otheruser@example.com", password="password123")
+        payment = Payment.objects.create(order=self.order, user=self.user, amount=100.00, status=Payment.PENDING)
+
+        # Authenticate as another user and attempt to access the payment
+        self.client.force_authenticate(user=other_user)
+        url = reverse('payment:payment-detail', kwargs={'uuid': payment.uuid})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

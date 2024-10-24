@@ -27,7 +27,7 @@ class CreatePaymentView(generics.GenericAPIView):
             # Create a payment intent for the given order
             client_secret = create_payment_intent(order_id, request.user)
             return Response(
-                {'client_secret': client_secret}, status=status.HTTP_200_OK
+                {'client_secret': client_secret}, status=status.HTTP_201_CREATED
             )
         except Exception as e:
             return Response(
