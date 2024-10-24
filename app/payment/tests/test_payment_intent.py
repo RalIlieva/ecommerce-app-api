@@ -142,3 +142,12 @@ class PaymentTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
+
+    def test_unauthenticated_create_payment(self):
+        self.client.logout()  # Make user unauthenticated
+
+        url = reverse('payment:create-payment')
+        data = {'order_id': self.order.id}
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
