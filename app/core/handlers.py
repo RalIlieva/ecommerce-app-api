@@ -17,7 +17,9 @@ from rest_framework.serializers import as_serializer_error
 
 from .exceptions import (
     DuplicateSlugException,
-    InsufficientStockError
+    InsufficientStockError,
+    PaymentFailedException,
+    OrderAlreadyPaidException,
 )
 
 
@@ -61,6 +63,22 @@ def drf_default_with_modifications_exception_handler(exc, context):
         )
         return response
 
+    if isinstance(exc, PaymentFailedException):
+        logger.warning(f"Duplicate slug error: {exc.detail}")
+        response = Response(
+            {"detail": exc.detail},
+            status=exc.status_code
+        )
+        return response
+
+    if isinstance(exc, OrderAlreadyPaidException):
+        logger.warning(f"Duplicate slug error: {exc.detail}")
+        response = Response(
+            {"detail": exc.detail},
+            status=exc.status_code
+        )
+        return response
+
     # If response is None, it's an unhandled exception
     if response is None:
         logger.error(f"Unhandled exception: {exc}", exc_info=True)
@@ -84,3 +102,59 @@ def drf_default_with_modifications_exception_handler(exc, context):
         logger.error(f"Unhandled exception type: {exc}", exc_info=True)
 
     return response
+
+
+# def log_exception(exc):
+#     """Logs exceptions based on severity and type."""
+#     if isinstance(exc, exceptions.ValidationError):
+#         logger.warning(f"Validation error: {exc.detail}")
+#     elif isinstance(exc, exceptions.PermissionDenied):
+#         logger.warning(f"Permission denied: {exc.detail}")
+#     elif isinstance(exc, exceptions.NotFound):
+#         logger.warning(f"Not found: {exc.detail}")
+#     else:
+#         logger.error(f"Unhandled exception type: {exc}", exc_info=True)
+#
+# def format_exception_response(exc):
+#     """Formats the exception into a DRF response."""
+#     return Response({"detail": exc.detail}, status=exc.status_code)
+#
+# def drf_default_with_modifications_exception_handler(exc, context):
+#     """
+#     Custom exception handler that ensures all error responses have a 'detail' key.
+#     Handles specific custom exceptions and Django's ValidationError.
+#     """
+#
+#     # Convert Django exceptions to DRF exceptions
+#     if isinstance(exc, DjangoValidationError):
+#         exc = exceptions.ValidationError(as_serializer_error(exc))
+#     elif isinstance(exc, Http404):
+#         exc = exceptions.NotFound()
+#     elif isinstance(exc, PermissionDenied):
+#         exc = exceptions.PermissionDenied()
+#
+#     # Call DRF's default exception handler first
+#     response = exception_handler(exc, context)
+#
+#     # Handle custom exceptions specifically
+#     if isinstance(exc, (DuplicateSlugException, InsufficientStockError, PaymentFailedException, OrderAlreadyPaidException)):
+#         logger.warning(f"Custom exception occurred: {exc.detail}")
+#         response = format_exception_response(exc)
+#         return response
+#
+#     # Handle unhandled exceptions
+#     if response is None:
+#         logger.error(f"Unhandled exception: {exc}", exc_info=True)
+#         return Response(
+#             {"detail": "An unexpected error occurred."},
+#             status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#         )
+#
+#     # Ensure the response data has a 'detail' key
+#     if not isinstance(response.data, dict) or 'detail' not in response.data:
+#         response.data = {"detail": response.data}
+#
+#     # Log the exception details
+#     log_exception(exc)
+#
+#     return response

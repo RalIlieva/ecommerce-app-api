@@ -184,7 +184,7 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
         self.assertIn(
-            'Order is not in a payable state',
+            'This order is already paid',
             response.data['error']
         )
 
