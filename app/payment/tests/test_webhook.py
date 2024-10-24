@@ -43,10 +43,10 @@ class WebhookTestCase(APITestCase):
             self, mock_webhook_construct_event
     ):
         """
-        Test handling of a 'payment_intent.succeeded' event from Stripe webhook.
+        Test handling of'payment_intent.succeeded' event from Stripe webhook.
 
-        Ensures that when a successful payment is received from the Stripe webhook,
-        the associated payment's status in the database is updated to 'SUCCESS'.
+        When a successful payment is received from the Stripe webhook,
+        the associated payment's status in the db is updated to 'SUCCESS'.
         """
         # Mock the webhook event
         mock_webhook_construct_event.return_value = {

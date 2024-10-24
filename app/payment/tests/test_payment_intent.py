@@ -17,7 +17,7 @@ class PaymentTestCase(APITestCase):
     def setUp(self):
         """
         Sets up the necessary data for payment tests.
-        Creates a user, authenticates them, and creates a product, order, and order item.
+        Creates user, authenticates them, creates a product, order, order item.
         """
         # Create a test user
         self.user = get_user_model().objects.create_user(
@@ -64,9 +64,8 @@ class PaymentTestCase(APITestCase):
     def test_create_payment_intent(self, mock_stripe_payment_intent):
         """
         Test creating a payment intent via Stripe.
-
-        Mocks the Stripe API to test the successful creation of a payment intent
-        and checks that a Payment object is created in the database with a 'PENDING' status.
+        Mocks the Stripe API to test the successful creation of payment intent
+        & checks a Payment object is created in the db with 'PENDING' status.
         """
         # Mock the response from Stripe PaymentIntent API
         mock_stripe_payment_intent.return_value = {
@@ -102,8 +101,8 @@ class PaymentTestCase(APITestCase):
     def test_list_payments(self):
         """
         Test listing all payments for a user.
-
-        Ensures that multiple payments are correctly listed when requested by the user.
+        Ensures that multiple payments are correctly listed
+        when requested by the user.
         """
         # Debug: Check if there are any existing payments before the test
         # print(f"Existing Payments Before Test: {Payment.objects.count()}")
@@ -144,7 +143,8 @@ class PaymentTestCase(APITestCase):
     def test_retrieve_payment_details(self):
         """
         Test retrieving details of a specific payment.
-        Ensures that the correct payment details are returned when a valid payment UUID is provided.
+        Ensures that the correct payment details are returned
+        when a valid payment UUID is provided.
         """
         payment = Payment.objects.create(
             order=self.order,
@@ -164,7 +164,8 @@ class PaymentTestCase(APITestCase):
     def test_create_payment_with_invalid_order(self):
         """
         Test creating a payment with an invalid order ID.
-        Ensures that the API returns a 400 error when trying to create a payment for a non-existent order.
+        Ensures that the API returns a 400 error
+        when trying to create a payment for a non-existent order.
         """
         url = reverse('payment:create-payment')
         data = {'order_id': 9999}  # Invalid order ID
@@ -176,8 +177,8 @@ class PaymentTestCase(APITestCase):
     def test_create_duplicate_payment(self):
         """
         Test creating a duplicate payment for the same order.
-        Ensures that attempting to create a second payment for the same order results
-        in a 400 Bad Request response.
+        Ensures that attempting to create a second payment for
+        the same order results in a 400 Bad Request response.
         """
         # Create initial payment
         Payment.objects.create(
@@ -198,7 +199,7 @@ class PaymentTestCase(APITestCase):
     def test_unauthenticated_create_payment(self):
         """
         Test creating a payment without authentication.
-        Ensures that an unauthenticated user receives a 401 Unauthorized response.
+        Ensures unauthenticated user receives 401 Unauthorized response.
         """
         self.client.logout()  # Make user unauthenticated
 
@@ -212,7 +213,7 @@ class PaymentTestCase(APITestCase):
         """
         Test creating a payment for an already paid order.
 
-        Ensures that the API returns a 400 error when trying to create a payment
+        Ensures that the API returns 400 error when trying to create a payment
         for an order that has already been marked as 'PAID'.
         """
         # Mark the order as paid
@@ -235,7 +236,8 @@ class PaymentTestCase(APITestCase):
     def test_create_payment_with_missing_order_id(self):
         """
         Test creating a payment without providing an order ID.
-        Ensures that the API returns a 400 error when the order ID is missing in the request.
+        Ensures that the API returns a 400 error
+        when the order ID is missing in the request.
         """
         # Attempt to create a payment without providing the order ID
         url = reverse('payment:create-payment')
@@ -254,7 +256,7 @@ class PaymentTestCase(APITestCase):
         """
         Test handling errors from the Stripe PaymentIntent API.
 
-        Mocks a Stripe API error and ensures that the API responds with a 400 error
+        Mocks a Stripe API error & ensures the API responds with 400 error
         and an appropriate error message.
         """
         mock_stripe_payment_intent.side_effect = stripe.error.StripeError(
@@ -315,8 +317,10 @@ class PaymentTestCase(APITestCase):
 
     def test_full_payment_flow(self):
         """
-        Test the full payment flow, from creating a payment to retrieving its details.
-        Ensures that a payment is successfully created, and its details can be retrieved.
+        Test the full payment flow,
+        from creating a payment to retrieving its details.
+        Ensures that a payment is successfully created,
+        and its details can be retrieved.
         """
         url = reverse('payment:create-payment')
         data = {'order_id': self.order.id}
