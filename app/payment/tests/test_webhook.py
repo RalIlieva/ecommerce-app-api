@@ -6,6 +6,7 @@ from payment.models import Payment
 from order.models import Order
 from django.contrib.auth import get_user_model
 
+
 class WebhookTestCase(APITestCase):
 
     def setUp(self):
@@ -31,7 +32,9 @@ class WebhookTestCase(APITestCase):
         )
 
     @patch('payment.services.stripe.Webhook.construct_event')
-    def test_stripe_webhook_payment_succeeded(self, mock_webhook_construct_event):
+    def test_stripe_webhook_payment_succeeded(
+            self, mock_webhook_construct_event
+    ):
         # Mock the webhook event
         mock_webhook_construct_event.return_value = {
             'type': 'payment_intent.succeeded',
@@ -43,11 +46,13 @@ class WebhookTestCase(APITestCase):
         }
 
         url = reverse('payment:stripe-webhook')
-        response = self.client.post(url, {}, format='json', HTTP_STRIPE_SIGNATURE='test_signature')
+        response = self.client.post(
+            url, {}, format='json', HTTP_STRIPE_SIGNATURE='test_signature'
+        )
 
         # The response should be HTTP 200 OK
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        # Refresh payment from the database and ensure the status has changed to SUCCESS
+        # Refresh payment from db & ensure the status changed to SUCCESS
         self.payment.refresh_from_db()
         self.assertEqual(self.payment.status, Payment.SUCCESS)

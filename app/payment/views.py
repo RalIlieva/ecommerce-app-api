@@ -26,9 +26,13 @@ class CreatePaymentView(generics.GenericAPIView):
         try:
             # Create a payment intent for the given order
             client_secret = create_payment_intent(order_id, request.user)
-            return Response({'client_secret': client_secret}, status=status.HTTP_200_OK)
+            return Response(
+                {'client_secret': client_secret}, status=status.HTTP_200_OK
+            )
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': str(e)}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class PaymentDetailView(generics.RetrieveAPIView):
@@ -72,7 +76,9 @@ def stripe_webhook(request):
     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
     try:
-        event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
     except ValueError as e:
         return JsonResponse({'error': str(e)}, status=400)
     except stripe.error.SignatureVerificationError as e:

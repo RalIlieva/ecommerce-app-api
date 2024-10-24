@@ -72,7 +72,8 @@ class PaymentTestCase(APITestCase):
         print(f"Response Status Code: {response.status_code}")
         print(f"Response Data: {response.data}")
 
-        # Ensure that the response status is 200 OK and contains the client secret
+        # Ensure that the response status is 200 OK &
+        # contains the client secret
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('client_secret', response.data)
 
@@ -89,13 +90,24 @@ class PaymentTestCase(APITestCase):
         order2 = Order.objects.create(user=self.user, status=Order.PENDING)
 
         # Create multiple payments for the user, each with a different order
-        Payment.objects.create(order=self.order, user=self.user, amount=50.00, status=Payment.SUCCESS)
-        Payment.objects.create(order=order2, user=self.user, amount=75.00, status=Payment.FAILED)
+        Payment.objects.create(
+            order=self.order,
+            user=self.user,
+            amount=50.00,
+            status=Payment.SUCCESS
+        )
+        Payment.objects.create(
+            order=order2,
+            user=self.user,
+            amount=75.00,
+            status=Payment.FAILED
+        )
 
         url = reverse('payment:payment-list')
         response = self.client.get(url)
 
-        # Access the 'results' key in response.data to get the actual list of payments
+        # Access the 'results' key in response.data
+        # to get the actual list of payments
         payment_results = response.data['results']
 
         # Debug: Check the response data
@@ -133,7 +145,12 @@ class PaymentTestCase(APITestCase):
 
     def test_create_duplicate_payment(self):
         # Create initial payment
-        Payment.objects.create(order=self.order, user=self.user, amount=100.00, stripe_payment_intent_id='pi_123')
+        Payment.objects.create(
+            order=self.order,
+            user=self.user,
+            amount=100.00,
+            stripe_payment_intent_id='pi_123'
+        )
 
         # Attempt to create a second payment
         url = reverse('payment:create-payment')
@@ -165,7 +182,10 @@ class PaymentTestCase(APITestCase):
         # Expect a 400 Bad Request since the order is already paid
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
-        self.assertIn('Order is not in a payable state', response.data['error'])
+        self.assertIn(
+            'Order is not in a payable state',
+            response.data['error']
+        )
 
     def test_create_payment_with_missing_order_id(self):
         # Attempt to create a payment without providing the order ID
@@ -177,4 +197,3 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
         self.assertIn('Order does not exist', response.data['error'])
-
