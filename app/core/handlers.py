@@ -121,7 +121,7 @@ def drf_default_with_modifications_exception_handler(exc, context):
 #
 # def drf_default_with_modifications_exception_handler(exc, context):
 #     """
-#     Custom exception handler that ensures all error responses have a 'detail' key.
+#     Custom exception handler - all error responses have a 'detail' key.
 #     Handles specific custom exceptions and Django's ValidationError.
 #     """
 #
@@ -137,7 +137,12 @@ def drf_default_with_modifications_exception_handler(exc, context):
 #     response = exception_handler(exc, context)
 #
 #     # Handle custom exceptions specifically
-#     if isinstance(exc, (DuplicateSlugException, InsufficientStockError, PaymentFailedException, OrderAlreadyPaidException)):
+#     if isinstance(exc, (
+#     DuplicateSlugException,
+#     InsufficientStockError,
+#     PaymentFailedException,
+#     OrderAlreadyPaidException)
+#     ):
 #         logger.warning(f"Custom exception occurred: {exc.detail}")
 #         response = format_exception_response(exc)
 #         return response

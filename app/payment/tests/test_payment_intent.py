@@ -200,8 +200,12 @@ class PaymentTestCase(APITestCase):
         self.assertIn('Order does not exist', response.data['error'])
 
     @patch('payment.services.stripe.PaymentIntent.create')
-    def test_create_payment_intent_stripe_error(self, mock_stripe_payment_intent):
-        mock_stripe_payment_intent.side_effect = stripe.error.StripeError("Something went wrong")
+    def test_create_payment_intent_stripe_error(
+            self, mock_stripe_payment_intent
+    ):
+        mock_stripe_payment_intent.side_effect = stripe.error.StripeError(
+            "Something went wrong"
+        )
         url = reverse('payment:create-payment')
         data = {'order_id': self.order.id}
         response = self.client.post(url, data, format='json')
@@ -226,13 +230,20 @@ class PaymentTestCase(APITestCase):
 
         # Ensure only one payment is successful
         successful_response = response_a if response_a.status_code == status.HTTP_201_CREATED else response_b
-        self.assertEqual(successful_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            successful_response.status_code, status.HTTP_201_CREATED
+        )
 
-        # Ensure the other response is a 400 Bad Request due to payment already existing
+        # The other response is 400 Bad Request due to payment already existing
         failed_response = response_a if response_a != successful_response else response_b
-        self.assertEqual(failed_response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            failed_response.status_code, status.HTTP_400_BAD_REQUEST
+        )
         self.assertIn('error', failed_response.data)
-        self.assertIn('Payment already exists for this order', failed_response.data['error'])
+        self.assertIn(
+            'Payment already exists for this order',
+            failed_response.data['error']
+        )
 
         # Full end-to-end payment creation and retrieval test
 
@@ -246,7 +257,10 @@ class PaymentTestCase(APITestCase):
         self.assertIsNotNone(client_secret)
 
         payment = Payment.objects.get(order=self.order)
-        detail_url = reverse('payment:payment-detail', kwargs={'uuid': payment.uuid})
+        detail_url = reverse(
+            'payment:payment-detail',
+            kwargs={'uuid': payment.uuid}
+        )
         response = self.client.get(detail_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -256,8 +270,16 @@ class PaymentTestCase(APITestCase):
     # Unauthorized user access to payments
     def test_user_cannot_access_other_user_payment(self):
         # Create another user and payment
-        other_user = get_user_model().objects.create_user(email="otheruser@example.com", password="password123")
-        payment = Payment.objects.create(order=self.order, user=self.user, amount=100.00, status=Payment.PENDING)
+        other_user = get_user_model().objects.create_user(
+            email="otheruser@example.com",
+            password="password123"
+        )
+        payment = Payment.objects.create(
+            order=self.order,
+            user=self.user,
+            amount=100.00,
+            status=Payment.PENDING
+        )
 
         # Authenticate as another user and attempt to access the payment
         self.client.force_authenticate(user=other_user)
