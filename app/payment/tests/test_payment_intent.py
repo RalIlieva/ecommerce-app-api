@@ -122,3 +122,11 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['uuid'], str(payment.uuid))
         self.assertEqual(response.data['amount'], '100.00')
+
+    def test_create_payment_with_invalid_order(self):
+        url = reverse('payment:create-payment')
+        data = {'order_id': 9999}  # Invalid order ID
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
