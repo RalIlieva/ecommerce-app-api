@@ -152,27 +152,29 @@ class PaymentTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    # def test_create_payment_for_already_paid_order(self):
-    #     # Mark the order as paid
-    #     self.order.status = Order.PAID
-    #     self.order.save()
-    #
-    #     # Attempt to create a payment for an already paid order
-    #     url = reverse('payment:create-payment')
-    #     data = {'order_id': self.order.id}
-    #     response = self.client.post(url, data, format='json')
-    #
-    #     # The response should be 400 Bad Request since the order is already paid
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #     self.assertIn('error', response.data)
-    #     self.assertEqual(response.data['error'], "Order is already paid.")
-    #
-    # def test_create_payment_with_missing_order_id(self):
-    #     # Attempt to create a payment without providing the order ID
-    #     url = reverse('payment:create-payment')
-    #     data = {}  # No order_id provided
-    #     response = self.client.post(url, data, format='json')
-    #
-    #     # The response should be 400 Bad Request since the order_id is required
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #     self.assertIn('order_id', response.data)
+    def test_create_payment_for_already_paid_order(self):
+        # Mark the order as paid
+        self.order.status = Order.PAID
+        self.order.save()
+
+        # Attempt to create a payment for an already paid order
+        url = reverse('payment:create-payment')
+        data = {'order_id': self.order.id}
+        response = self.client.post(url, data, format='json')
+
+        # Expect a 400 Bad Request since the order is already paid
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+        self.assertIn('Order is not in a payable state', response.data['error'])
+
+    def test_create_payment_with_missing_order_id(self):
+        # Attempt to create a payment without providing the order ID
+        url = reverse('payment:create-payment')
+        data = {}  # No order_id provided
+        response = self.client.post(url, data, format='json')
+
+        # The response should be 400 Bad Request since the order_id is required
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+        self.assertIn('Order does not exist', response.data['error'])
+
