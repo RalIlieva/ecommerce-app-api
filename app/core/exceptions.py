@@ -16,3 +16,15 @@ class InsufficientStockError(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Not enough stock available"
     default_code = 'insufficient_stock'
+
+
+class PaymentFailedException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "Payment could not be processed"
+    default_code = 'payment_failed'
+
+
+class OrderAlreadyPaidException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "This order is already paid"
+    default_code = 'order_already_paid'
