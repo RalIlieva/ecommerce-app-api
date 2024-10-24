@@ -130,3 +130,15 @@ class PaymentTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
+
+    def test_create_duplicate_payment(self):
+        # Create initial payment
+        Payment.objects.create(order=self.order, user=self.user, amount=100.00, stripe_payment_intent_id='pi_123')
+
+        # Attempt to create a second payment
+        url = reverse('payment:create-payment')
+        data = {'order_id': self.order.id}
+
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
