@@ -8,8 +8,15 @@ from django.contrib.auth import get_user_model
 
 
 class WebhookTestCase(APITestCase):
+    """
+    Test case for handling Stripe webhook events related to payments.
+    """
 
     def setUp(self):
+        """
+        Sets up the necessary data for testing webhook events.
+        Creates a user, authenticates them, and creates an order and payment.
+        """
         # Create a test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com",
@@ -35,6 +42,12 @@ class WebhookTestCase(APITestCase):
     def test_stripe_webhook_payment_succeeded(
             self, mock_webhook_construct_event
     ):
+        """
+        Test handling of a 'payment_intent.succeeded' event from Stripe webhook.
+
+        Ensures that when a successful payment is received from the Stripe webhook,
+        the associated payment's status in the database is updated to 'SUCCESS'.
+        """
         # Mock the webhook event
         mock_webhook_construct_event.return_value = {
             'type': 'payment_intent.succeeded',

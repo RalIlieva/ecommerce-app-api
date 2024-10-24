@@ -10,8 +10,15 @@ from unittest.mock import patch
 
 
 class PaymentTestCase(APITestCase):
+    """
+    Test case for testing the payment-related functionality.
+    """
 
     def setUp(self):
+        """
+        Sets up the necessary data for payment tests.
+        Creates a user, authenticates them, and creates a product, order, and order item.
+        """
         # Create a test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com",
@@ -46,12 +53,21 @@ class PaymentTestCase(APITestCase):
         )
 
     def tearDown(self):
+        """
+        Cleans up by deleting any created objects after each test.
+        """
         Payment.objects.all().delete()
         Order.objects.all().delete()
         get_user_model().objects.all().delete()
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_create_payment_intent(self, mock_stripe_payment_intent):
+        """
+        Test creating a payment intent via Stripe.
+
+        Mocks the Stripe API to test the successful creation of a payment intent
+        and checks that a Payment object is created in the database with a 'PENDING' status.
+        """
         # Mock the response from Stripe PaymentIntent API
         mock_stripe_payment_intent.return_value = {
             'id': 'pi_123',
@@ -84,8 +100,13 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(payment.status, Payment.PENDING)
 
     def test_list_payments(self):
+        """
+        Test listing all payments for a user.
+
+        Ensures that multiple payments are correctly listed when requested by the user.
+        """
         # Debug: Check if there are any existing payments before the test
-        print(f"Existing Payments Before Test: {Payment.objects.count()}")
+        # print(f"Existing Payments Before Test: {Payment.objects.count()}")
 
         # Create different orders to test multiple payments
         order2 = Order.objects.create(user=self.user, status=Order.PENDING)
@@ -112,15 +133,19 @@ class PaymentTestCase(APITestCase):
         payment_results = response.data['results']
 
         # Debug: Check the response data
-        print(f"Response Data: {response.data}")
+        # print(f"Response Data: {response.data}")
 
         # Debug: Print the actual response to understand the output
-        print(f"Payment Results: {payment_results}")
+        # print(f"Payment Results: {payment_results}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(payment_results), 2)
 
     def test_retrieve_payment_details(self):
+        """
+        Test retrieving details of a specific payment.
+        Ensures that the correct payment details are returned when a valid payment UUID is provided.
+        """
         payment = Payment.objects.create(
             order=self.order,
             user=self.user,
@@ -137,6 +162,10 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.data['amount'], '100.00')
 
     def test_create_payment_with_invalid_order(self):
+        """
+        Test creating a payment with an invalid order ID.
+        Ensures that the API returns a 400 error when trying to create a payment for a non-existent order.
+        """
         url = reverse('payment:create-payment')
         data = {'order_id': 9999}  # Invalid order ID
 
@@ -145,6 +174,11 @@ class PaymentTestCase(APITestCase):
         self.assertIn('error', response.data)
 
     def test_create_duplicate_payment(self):
+        """
+        Test creating a duplicate payment for the same order.
+        Ensures that attempting to create a second payment for the same order results
+        in a 400 Bad Request response.
+        """
         # Create initial payment
         Payment.objects.create(
             order=self.order,
@@ -162,6 +196,10 @@ class PaymentTestCase(APITestCase):
         self.assertIn('error', response.data)
 
     def test_unauthenticated_create_payment(self):
+        """
+        Test creating a payment without authentication.
+        Ensures that an unauthenticated user receives a 401 Unauthorized response.
+        """
         self.client.logout()  # Make user unauthenticated
 
         url = reverse('payment:create-payment')
@@ -171,6 +209,12 @@ class PaymentTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_create_payment_for_already_paid_order(self):
+        """
+        Test creating a payment for an already paid order.
+
+        Ensures that the API returns a 400 error when trying to create a payment
+        for an order that has already been marked as 'PAID'.
+        """
         # Mark the order as paid
         self.order.status = Order.PAID
         self.order.save()
@@ -189,6 +233,10 @@ class PaymentTestCase(APITestCase):
         )
 
     def test_create_payment_with_missing_order_id(self):
+        """
+        Test creating a payment without providing an order ID.
+        Ensures that the API returns a 400 error when the order ID is missing in the request.
+        """
         # Attempt to create a payment without providing the order ID
         url = reverse('payment:create-payment')
         data = {}  # No order_id provided
@@ -203,6 +251,12 @@ class PaymentTestCase(APITestCase):
     def test_create_payment_intent_stripe_error(
             self, mock_stripe_payment_intent
     ):
+        """
+        Test handling errors from the Stripe PaymentIntent API.
+
+        Mocks a Stripe API error and ensures that the API responds with a 400 error
+        and an appropriate error message.
+        """
         mock_stripe_payment_intent.side_effect = stripe.error.StripeError(
             "Something went wrong"
         )
@@ -215,6 +269,12 @@ class PaymentTestCase(APITestCase):
 
     # Test concurrent payment handling (simulate race condition)
     def test_create_concurrent_payments_for_same_order(self):
+        """
+        Test handling concurrent payment requests for the same order.
+
+        Simulates two clients attempting to create payments for the same order
+        at the same time and ensures that only one succeeds.
+        """
         # Create two clients to simulate two users making requests concurrently
         client_a = APIClient()
         client_b = APIClient()
@@ -254,6 +314,10 @@ class PaymentTestCase(APITestCase):
         # Full end-to-end payment creation and retrieval test
 
     def test_full_payment_flow(self):
+        """
+        Test the full payment flow, from creating a payment to retrieving its details.
+        Ensures that a payment is successfully created, and its details can be retrieved.
+        """
         url = reverse('payment:create-payment')
         data = {'order_id': self.order.id}
         response = self.client.post(url, data, format='json')
@@ -275,6 +339,12 @@ class PaymentTestCase(APITestCase):
 
     # Unauthorized user access to payments
     def test_user_cannot_access_other_user_payment(self):
+        """
+        Test that a user cannot access another user's payment details.
+
+        Ensures that attempting to access another user's payment results
+        in a 404 Not Found response.
+        """
         # Create another user and payment
         other_user = get_user_model().objects.create_user(
             email="otheruser@example.com",
