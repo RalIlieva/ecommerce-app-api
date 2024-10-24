@@ -6,7 +6,10 @@ class PaymentFilter(filters.FilterSet):
     """
     Filter class for Payment model.
     """
-    status = filters.CharFilter(field_name='status', lookup_expr='iexact')  # Allows filtering payments by status
+    # Allows filtering payments by status
+    status = filters.CharFilter(
+        field_name='status', lookup_expr='iexact'
+    )
 
     class Meta:
         model = Payment

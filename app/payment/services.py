@@ -17,12 +17,16 @@ def create_payment_intent(order_id, user):
         raise ValidationError("Order is not in a payable state.")
 
     if Payment.objects.filter(order=order).exists():
-        raise ValidationError({'error': 'Payment already exists for this order'})
+        raise ValidationError(
+            {'error': 'Payment already exists for this order'}
+        )
 
     # Use the order total_amount for the payment
     total_amount = order.total_amount
     if total_amount <= 0:
-        raise ValidationError({'error': 'Total amount must be greater than zero'})
+        raise ValidationError(
+            {'error': 'Total amount must be greater than zero'}
+        )
 
     # Create a Stripe payment intent
     intent = stripe.PaymentIntent.create(
@@ -46,9 +50,13 @@ def create_payment_intent(order_id, user):
 
 def update_payment_status(payment_intent_id, status):
     try:
-        payment = Payment.objects.get(stripe_payment_intent_id=payment_intent_id)
+        payment = Payment.objects.get(
+            stripe_payment_intent_id=payment_intent_id
+        )
     except Payment.DoesNotExist:
-        raise ValidationError("Payment with the given Payment Intent ID does not exist.")
+        raise ValidationError(
+            "Payment with the given Payment Intent ID does not exist."
+        )
 
     payment.status = status
     payment.save()

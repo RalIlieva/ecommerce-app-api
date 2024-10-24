@@ -7,16 +7,20 @@ class PaymentSerializer(serializers.ModelSerializer):
     """
     Serializer for Payment model.
     """
-    uuid = serializers.UUIDField(read_only=True)  # UUID for external references
+    # UUID for external references
+    uuid = serializers.UUIDField(read_only=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
 
     class Meta:
         model = Payment
         fields = [
-            'uuid', 'user', 'order', 'amount', 'status', 'stripe_payment_intent_id', 'created', 'modified'
+            'uuid', 'user', 'order', 'amount', 'status',
+            'stripe_payment_intent_id', 'created', 'modified'
         ]
-        read_only_fields = ['uuid', 'user', 'stripe_payment_intent_id', 'created', 'modified']
+        read_only_fields = [
+            'uuid', 'user', 'stripe_payment_intent_id', 'created', 'modified'
+        ]
 
 
 class CreatePaymentSerializer(serializers.Serializer):

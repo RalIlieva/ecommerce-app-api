@@ -41,7 +41,9 @@ class Order(UUIDModel, TimeStampedModel):
     @property
     def total_amount(self):
         # Calculate the total amount by summing all order items for this order
-        return sum(item.quantity * item.price for item in self.order_items.all())
+        return sum(
+            item.quantity * item.price for item in self.order_items.all()
+        )
 
 
 class OrderItem(models.Model):
