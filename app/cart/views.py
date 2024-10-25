@@ -1,3 +1,4 @@
+from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -53,4 +54,13 @@ class RemoveCartItemView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         cart_item_uuid = kwargs['uuid']  # Update to use UUID
         remove_item_from_cart(request.user, cart_item_uuid)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ClearCartView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        cart = get_or_create_cart(request.user)
+        cart.items.all().delete()  # Clear all items from the user's cart
         return Response(status=status.HTTP_204_NO_CONTENT)
