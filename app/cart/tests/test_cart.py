@@ -198,3 +198,9 @@ class CartTestCase(APITestCase):
         url = reverse('cart:cart-detail')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_view_empty_cart(self):
+        url = reverse('cart:cart-detail')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['items'], [])  # Cart items should be an empty list
