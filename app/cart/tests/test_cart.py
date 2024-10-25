@@ -166,3 +166,35 @@ class CartTestCase(APITestCase):
         response = self.client.patch(url, {'quantity': 5}, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)  # Should not allow access
+
+    # def test_product_removal_updates_cart(self):
+    #     # Add an item to the cart
+    #     cart_item = CartItem.objects.create(cart=self.cart, product=self.product, quantity=2)
+    #     self.assertEqual(CartItem.objects.count(), 1)
+    #
+    #     # Delete the product
+    #     self.product.delete()
+    #
+    #     # Confirm the cart item was removed
+    #     self.assertEqual(CartItem.objects.count(), 0)
+
+    # def test_set_excessive_quantity(self):
+    #     # Create a cart item with quantity within stock
+    #     cart_item = CartItem.objects.create(cart=self.cart, product=self.product, quantity=1)
+    #
+    #     # Attempt to set quantity too high
+    #     url = reverse('cart:update-cart-item', kwargs={'uuid': cart_item.uuid})
+    #     data = {'quantity': 1000}  # Exceeds typical stock limit
+    #     response = self.client.patch(url, data, format='json')
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertIn("Quantity exceeds allowable limit.", response.data['detail'])
+
+    def test_unauthorized_access_to_cart(self):
+        # Log out the user to make them unauthenticated
+        self.client.logout()
+
+        # Attempt to access the cart detail view
+        url = reverse('cart:cart-detail')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
