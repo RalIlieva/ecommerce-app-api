@@ -96,3 +96,17 @@ class CartTestCase(APITestCase):
         response = self.client.get(url)
         print(f"Unauthorized Cart Access Response Status Code: {response.status_code}")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_add_item_with_zero_quantity(self):
+        url = reverse('cart:add-cart-item')
+        data = {'product_id': self.product.id, 'quantity': 0}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Quantity must be greater than zero.", response.data['detail'])
+
+    def test_add_item_with_negative_quantity(self):
+        url = reverse('cart:add-cart-item')
+        data = {'product_id': self.product.id, 'quantity': -1}
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Quantity must be greater than zero.", response.data['detail'])
