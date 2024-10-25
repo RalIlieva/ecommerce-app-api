@@ -116,7 +116,7 @@ class CartTestCase(APITestCase):
         data = {'product_id': self.product.id, 'quantity': 101}  # Stock is 100
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("Exceeds available stock.", response.data['detail'])
+        self.assertIn("Not enough stock available for this product", str(response.data['detail']))
 
     def test_add_duplicate_item_updates_quantity(self):
         url = reverse('cart:add-cart-item')
@@ -186,7 +186,7 @@ class CartTestCase(APITestCase):
         response = self.client.patch(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("Quantity exceeds allowable limit.", response.data['detail'])
+        self.assertIn("Quantity exceeds available stock.", response.data['detail'])
 
     def test_unauthorized_access_to_cart(self):
         # Log out the user to make them unauthenticated
