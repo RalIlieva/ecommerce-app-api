@@ -1,7 +1,8 @@
+import uuid
+from rest_framework.exceptions import ValidationError, NotFound
 from django.shortcuts import get_object_or_404
 from .models import Cart, CartItem
 from products.models import Product
-from rest_framework.exceptions import ValidationError
 
 
 def get_or_create_cart(user):
@@ -28,9 +29,13 @@ def add_item_to_cart(user, product_id, quantity=1):
     return cart_item
 
 
-def update_cart_item(user, cart_item_id, quantity):
+def update_cart_item(user, cart_item_uuid, quantity):
     cart = get_or_create_cart(user)
-    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart=cart)
+    # Retrieve cart item by its UUID (passed as a string)
+    try:
+        cart_item = CartItem.objects.get(uuid=cart_item_uuid, cart=cart)
+    except CartItem.DoesNotExist:
+        raise NotFound("Cart item not found.")
 
     if quantity <= 0:
         cart_item.delete()  # Remove item if quantity is zero or less
@@ -41,9 +46,13 @@ def update_cart_item(user, cart_item_id, quantity):
     return cart_item
 
 
-def remove_item_from_cart(user, cart_item_id):
+def remove_item_from_cart(user, cart_item_uuid):
     cart = get_or_create_cart(user)
-    cart_item = get_object_or_404(CartItem, id=cart_item_id, cart=cart)
+    # Retrieve cart item by its UUID (passed as a string)
+    try:
+        cart_item = CartItem.objects.get(uuid=cart_item_uuid, cart=cart)
+    except CartItem.DoesNotExist:
+        raise NotFound("Cart item not found.")
     cart_item.delete()
 
 
