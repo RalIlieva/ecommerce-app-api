@@ -131,3 +131,25 @@ class CartTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(CartItem.objects.first().quantity, 4)  # Quantity should be updated
+
+    # def test_clear_cart(self):
+    #     # Add items to the cart
+    #     CartItem.objects.create(cart=self.cart, product=self.product, quantity=2)
+    #     another_product = Product.objects.create(name="Another Product", price=20.00, stock=50, category=self.category)
+    #     CartItem.objects.create(cart=self.cart, product=another_product, quantity=3)
+    #
+    #     # Confirm items exist
+    #     self.assertEqual(CartItem.objects.count(), 2)
+    #
+    #     # Clear the cart
+    #     url = reverse('cart:clear-cart')
+    #     response = self.client.delete(url)
+    #     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+    #     self.assertEqual(CartItem.objects.count(), 0)  # Cart should be empty
+
+    def test_remove_non_existent_item(self):
+        fake_uuid = uuid4()
+        url = reverse('cart:remove-cart-item', kwargs={'uuid': fake_uuid})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn("Cart item not found.", response.data['detail'])
