@@ -1,3 +1,7 @@
+"""
+Views for cart app.
+"""
+
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
