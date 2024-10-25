@@ -110,3 +110,24 @@ class CartTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Quantity must be greater than zero.", response.data['detail'])
+
+    # def test_add_item_exceeding_stock(self):
+    #     url = reverse('cart:add-cart-item')
+    #     data = {'product_id': self.product.id, 'quantity': 101}  # Stock is 100
+    #     response = self.client.post(url, data, format='json')
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertIn("Exceeds available stock.", response.data['detail'])
+
+    def test_add_duplicate_item_updates_quantity(self):
+        url = reverse('cart:add-cart-item')
+        data = {'product_id': self.product.id, 'quantity': 2}
+
+        # Add item to cart
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(CartItem.objects.first().quantity, 2)
+
+        # Add the same item again
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(CartItem.objects.first().quantity, 4)  # Quantity should be updated
