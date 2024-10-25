@@ -1,9 +1,16 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import CartItem
 from .serializers import CartSerializer, CartItemSerializer
-from .services import add_item_to_cart, update_cart_item, remove_item_from_cart
+from .services import (
+    add_item_to_cart,
+    update_cart_item,
+    remove_item_from_cart,
+    get_or_create_cart
+)
+from .models import (
+    CartItem
+)
 
 
 class CartDetailView(generics.RetrieveAPIView):
@@ -29,19 +36,21 @@ class AddCartItemView(generics.CreateAPIView):
 class UpdateCartItemView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CartItemSerializer
+    lookup_field = 'uuid'  # Use UUID for detail view lookup
 
     def patch(self, request, *args, **kwargs):
-        cart_item_id = kwargs['cart_item_id']
+        cart_item_uuid = kwargs['uuid']  # Update to use UUID
         quantity = request.data.get('quantity')
-        cart_item = update_cart_item(request.user, cart_item_id, quantity)
+        cart_item = update_cart_item(request.user, cart_item_uuid, quantity)
         serializer = self.get_serializer(cart_item)
         return Response(serializer.data)
 
 
 class RemoveCartItemView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
+    lookup_field = 'uuid'  # Use UUID for detail view lookup
 
     def delete(self, request, *args, **kwargs):
-        cart_item_id = kwargs['cart_item_id']
-        remove_item_from_cart(request.user, cart_item_id)
+        cart_item_uuid = kwargs['uuid']  # Update to use UUID
+        remove_item_from_cart(request.user, cart_item_uuid)
         return Response(status=status.HTTP_204_NO_CONTENT)

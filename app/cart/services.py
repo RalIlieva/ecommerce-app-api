@@ -47,8 +47,6 @@ def remove_item_from_cart(user, cart_item_id):
     cart_item.delete()
 
 
-
-
 # from django.db import transaction
 # from .models import Cart, CartItem
 # from order.services import create_order
