@@ -153,3 +153,16 @@ class CartTestCase(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertIn("Cart item not found.", response.data['detail'])
+
+    def test_access_other_users_cart(self):
+        # Create a second user and their cart
+        other_user = get_user_model().objects.create_user(email="otheruser@example.com", password="password123")
+        other_cart = Cart.objects.create(user=other_user)
+        CartItem.objects.create(cart=other_cart, product=self.product, quantity=2)
+
+        # Attempt to access other user's cart item
+        cart_item_uuid = CartItem.objects.get(cart=other_cart).uuid
+        url = reverse('cart:update-cart-item', kwargs={'uuid': cart_item_uuid})
+        response = self.client.patch(url, {'quantity': 5}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)  # Should not allow access
