@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from .models import CheckoutSession
 from cart.services import get_or_create_cart
 from .serializers import CheckoutSessionSerializer
-from order.services import create_order_from_cart
+from order.services import create_order
 from payment.services import (
     create_payment_intent,
     update_payment_status
@@ -68,7 +68,7 @@ class CompleteCheckoutView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Create an order from the cart after successful payment
-        order = create_order_from_cart(checkout_session.cart, request.user)
+        order = create_order(checkout_session.cart, request.user)
         if order:
             checkout_session.status = 'COMPLETED'
             checkout_session.save()
