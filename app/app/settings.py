@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'order',
     'payment',
     'cart',
+    'checkout',
     'wishlist',
     'rest_framework',
     'drf_spectacular',
