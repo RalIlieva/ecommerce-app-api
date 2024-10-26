@@ -13,20 +13,13 @@ from .services import (
     remove_item_from_cart,
     get_or_create_cart
 )
-from .models import (
-    CartItem
-)
 
 
 class CartDetailView(generics.RetrieveAPIView):
     """
     Retrieve the details of the authenticated user's cart.
     This view returns the cart and all associated items for the authenticated user.
-        If the user does not already have a cart, a new one is created.
-    Permissions:
-            - Requires authentication.
-    Serializer:
-            - CartSerializer: Serializes the cart and its items.
+    If the user does not already have a cart, a new one is created.
     """
     permission_classes = [IsAuthenticated]
     serializer_class = CartSerializer
@@ -45,11 +38,8 @@ class AddCartItemView(generics.CreateAPIView):
     Add a product to the authenticated user's cart.
 
     This view allows users to add a product to their cart by providing
-    the product ID and an optional quantity. If the item already exists in the cart,
-    the quantity will be updated.
-
-    Permissions:
-    - Requires authentication.
+    the product ID and an optional quantity. If the item already exists
+    in the cart,the quantity will be updated.
     Serializer:
         - CartItemSerializer: Serializes the added cart item.
     """
@@ -104,9 +94,8 @@ class UpdateCartItemView(generics.UpdateAPIView):
 class RemoveCartItemView(generics.DestroyAPIView):
     """
     Remove a specific item from the authenticated user's cart.
-    This view allows users to remove an item from their cart by providing the item UUID.
-    Permissions:
-    - Requires authentication.
+    This view allows users to remove an item from
+    their cart by providing the item UUID.
     """
     permission_classes = [IsAuthenticated]
     lookup_field = 'uuid'  # Use UUID for detail view lookup
@@ -116,7 +105,7 @@ class RemoveCartItemView(generics.DestroyAPIView):
         Delete a cart item from the user's cart.
         Args:
             request: HTTP request.
-            kwargs: URL parameters containing `uuid` of the cart item to be removed.
+            kwargs: URL params with `uuid` of the cart item to be removed.
         Returns:
             HTTP 204 NO CONTENT on successful deletion.
         """
