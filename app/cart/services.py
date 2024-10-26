@@ -13,7 +13,8 @@ def get_or_create_cart(user):
        Retrieve or create a cart for the specified user.
        If a cart does not exist for the user, a new one will be created.
        Args:
-           user: The user instance for whom the cart is being retrieved or created.
+           user: The user instance for whom the cart is being retrieved
+           or created.
        Returns:
            Cart: The cart instance associated with the specified user.
        """
@@ -50,7 +51,9 @@ def add_item_to_cart(user, product_id, quantity=1):
     if quantity <= 0:
         raise ValidationError("Quantity must be greater than zero.")
 
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart, product=product
+    )
 
     if not created:
         cart_item.quantity += quantity
@@ -75,7 +78,8 @@ def update_cart_item(user, cart_item_uuid, quantity):
 
     Raises:
         ValidationError: If quantity exceeds stock or is zero or less.
-        NotFound: If the cart item with the specified UUID does not exist in the user's cart.
+        NotFound: If the cart item with the specified UUID
+        does not exist in the user's cart.
 
     Returns:
         CartItem: The updated cart item instance or None if removed.
@@ -99,12 +103,14 @@ def update_cart_item(user, cart_item_uuid, quantity):
 def remove_item_from_cart(user, cart_item_uuid):
     """
     Remove an item from the user's cart by its UUID.
-    If the specified item does not exist in the user's cart, a NotFound error is raised.
+    If the specified item does not exist in the user's cart,
+    a NotFound error is raised.
     Args:
         user: The user removing the item from their cart.
         cart_item_uuid: UUID of the cart item to remove.
     Raises:
-        NotFound: If the cart item with the specified UUID does not exist in the user's cart.
+        NotFound: If the cart item with the specified UUID
+        does not exist in the user's cart.
     Returns: None
     """
     cart = get_or_create_cart(user)

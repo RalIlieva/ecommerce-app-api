@@ -18,7 +18,7 @@ from .services import (
 class CartDetailView(generics.RetrieveAPIView):
     """
     Retrieve the details of the authenticated user's cart.
-    This view returns the cart and all associated items for the authenticated user.
+    Returns the cart & all associated items for the authenticated user.
     If the user does not already have a cart, a new one is created.
     """
     permission_classes = [IsAuthenticated]

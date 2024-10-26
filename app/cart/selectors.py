@@ -8,9 +8,9 @@ from .models import Cart
 def get_user_cart(user):
     """
     Retrieve the cart for the specified user.
-    This function fetches the user's cart and prefetches related items and products
-    for efficient access to cart details. If the user does not have a cart, an exception
-    will be raised.
+    This function fetches the user's cart and prefetches
+    related items and products for efficient access to cart details.
+    If the user does not have a cart, an exception will be raised.
     Args:
     user: The user instance whose cart is being retrieved
     Returns:
@@ -30,5 +30,7 @@ def get_cart_total(user):
         Decimal: The total price of all items in the user's cart.
     """
     cart = get_user_cart(user)
-    total = sum(item.product.price * item.quantity for item in cart.items.all())
+    total = sum(
+        item.product.price * item.quantity for item in cart.items.all()
+    )
     return total

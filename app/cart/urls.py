@@ -15,16 +15,20 @@ app_name = 'cart'
 
 urlpatterns = [
     path(
-        '', CartDetailView.as_view(), name='cart-detail'
+        '', CartDetailView.as_view(),
+        name='cart-detail'
     ),
     path(
-        'add/', AddCartItemView.as_view(), name='add-cart-item'
+        'add/', AddCartItemView.as_view(),
+        name='add-cart-item'
     ),
     path(
-        'update/<uuid:uuid>/', UpdateCartItemView.as_view(), name='update-cart-item'
+        'update/<uuid:uuid>/', UpdateCartItemView.as_view(),
+        name='update-cart-item'
     ),
     path(
-        'remove/<uuid:uuid>/', RemoveCartItemView.as_view(), name='remove-cart-item'
+        'remove/<uuid:uuid>/', RemoveCartItemView.as_view(),
+        name='remove-cart-item'
     ),
     path(
         'clear/', ClearCartView.as_view(), name='clear-cart'

@@ -82,7 +82,10 @@ class CartTestCase(APITestCase):
         data = {'quantity': 5}
         response = self.client.patch(url, data, format='json')
         # print(f"Update Cart Item URL: {url}")
-        # print(f"Update Cart Item Response Status Code: {response.status_code}")
+        # print(
+        # f"Update Cart Item Response Status Code:
+        # {response.status_code}"
+        # )
         # print(f"Update Cart Item Response Data: {response.data}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         cart_item.refresh_from_db()
@@ -103,7 +106,10 @@ class CartTestCase(APITestCase):
         url = reverse('cart:remove-cart-item', kwargs={'uuid': cart_item.uuid})
         response = self.client.delete(url)
         # print(f"Remove Cart Item URL: {url}")
-        # print(f"Remove Cart Item Response Status Code: {response.status_code}")
+        # print(
+        # f"Remove Cart Item Response Status Code:
+        # {response.status_code}"
+        # )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(CartItem.objects.count(), 0)
 

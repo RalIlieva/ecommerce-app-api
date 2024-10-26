@@ -36,4 +36,5 @@ class CartItem(UUIDModel, TimeStampedModel):
         return f"{self.quantity} x {self.product.name} in cart {self.cart.id}"
 
     class Meta:
-        unique_together = ('cart', 'product')  # Each product should be unique per cart
+        # Each product should be unique per cart
+        unique_together = ('cart', 'product')
