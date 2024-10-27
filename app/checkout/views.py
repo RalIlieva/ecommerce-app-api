@@ -57,13 +57,14 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         # Create a payment intent for the checkout and attach it to a payment object
         try:
             payment_secret = create_payment_intent(order_id=order.id, user=request.user)
-            payment = Payment.objects.create(
-                order=order,
-                user=request.user,
-                amount=total_amount,
-                stripe_payment_intent_id=payment_secret,
-                status=Payment.PENDING
-            )
+            payment = Payment.objects.get(order=order)
+            # payment = Payment.objects.create(
+            #     order=order,
+            #     user=request.user,
+            #     amount=total_amount,
+            #     stripe_payment_intent_id=payment_secret,
+            #     status=Payment.PENDING
+            # )
             checkout_session.payment = payment
             checkout_session.save()
         except Exception as e:
