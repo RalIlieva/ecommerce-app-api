@@ -78,6 +78,10 @@ class CheckoutTestCase(APITestCase):
         self.assertEqual(checkout_session.payment, payment)
         self.assertEqual(checkout_session.status, 'IN_PROGRESS')
 
+        # Verify that 'payment_secret' is included in the response
+        self.assertIn('payment_secret', response.data)
+        self.assertEqual(response.data['payment_secret'], 'test_client_secret')
+
 
 # from unittest.mock import patch, ANY
 # from rest_framework import status

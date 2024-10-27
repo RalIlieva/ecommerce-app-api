@@ -66,6 +66,8 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             #     status=Payment.PENDING
             # )
             checkout_session.payment = payment
+            # Attach 'payment_secret' dynamically to the checkout_session instance
+            setattr(checkout_session, 'payment_secret', payment_secret)
             checkout_session.save()
         except Exception as e:
             print(f"Failed to create payment intent: {str(e)}")  # Debug statement
