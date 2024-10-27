@@ -4,8 +4,9 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from products.models import Product, Category
-from order.models import Order
 from cart.models import Cart, CartItem
+from order.models import Order
+from checkout.models import CheckoutSession
 
 
 class CheckoutTestCase(APITestCase):
@@ -31,30 +32,73 @@ class CheckoutTestCase(APITestCase):
             cart=self.cart, product=self.product, quantity=2
         )
 
-    @patch('checkout.services.create_payment_intent')
+    @patch('payment.services.create_payment_intent')
     def test_successful_checkout(self, mock_create_payment_intent):
         # Mock the payment intent creation
         mock_create_payment_intent.return_value = "test_client_secret"
 
         # Endpoint for initiating the checkout process
-        url = reverse('checkout:checkout')
+        url = reverse('checkout:start-checkout')  # Updated to match URL name
 
-        # Make a POST request to checkout
-        response = self.client.post(url, format='json')
+        # Make a POST request to start checkout
+        response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
 
         # Check if response is successful
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Verify that a CheckoutSession was created
+        checkout_session_data = response.data
+        self.assertIn('uuid', checkout_session_data)
+        self.assertEqual(checkout_session_data['shipping_address'], '123 Main St')
+
+        # Verify that an order was not created yet
+        order = Order.objects.filter(user=self.user).first()
+        self.assertIsNone(order)
+
+        # Verify that the payment intent was created
+        mock_create_payment_intent.assert_called_once_with(
+            order_id=None,
+            user=self.user,
+            total_amount=self.cart.get_total()
+        )
+
+    @patch('payment.services.update_payment_status')
+    def test_complete_checkout(self, mock_update_payment_status):
+        # Mock a payment secret
+        payment_secret = 'test_client_secret'
+
+        # Create a checkout session manually to be completed later
+        checkout_session = CheckoutSession.objects.create(
+            user=self.user,
+            cart=self.cart,
+            shipping_address='123 Main St',
+            payment_secret=payment_secret,
+            status='IN_PROGRESS'
+        )
+
+        # Endpoint for completing the checkout
+        url = reverse('checkout:complete-checkout', kwargs={'checkout_session_uuid': checkout_session.uuid})
+
+        # Simulate successful payment from frontend
+        data = {'payment_status': 'SUCCESS'}
+        response = self.client.post(url, data, format='json')
+
+        # Check if response is successful
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Verify that an order was created
         order = Order.objects.filter(user=self.user).first()
         self.assertIsNotNone(order)
         self.assertEqual(order.status, Order.PENDING)
 
-        # Check if payment intent was created
-        mock_create_payment_intent.assert_called_once_with(order_id=order.id, user=self.user)
+        # Verify that payment status was updated
+        mock_update_payment_status.assert_called_once_with(
+            checkout_session.payment.stripe_payment_intent_id, 'COMPLETED'
+        )
 
-        # Verify that cart is emptied after checkout
+        # Verify that the cart is emptied after checkout
         self.assertEqual(CartItem.objects.filter(cart=self.cart).count(), 0)
+
 
     # def test_checkout_with_empty_cart(self):
     #     # Empty the cart first
