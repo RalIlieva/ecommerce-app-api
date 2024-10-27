@@ -10,6 +10,7 @@ from payment.services import (
     create_payment_intent,
     update_payment_status
 )
+from payment.models import Payment
 from django.db import transaction
 
 
@@ -21,6 +22,15 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         # Get the user's cart
         cart = get_or_create_cart(request.user)
 
+        # Validate cart - it shouldn't be empty
+        if not cart.items.exists():
+            return Response({'detail': "Cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Debug statement: Checking cart items
+        print(f"Cart Items Count: {cart.items.count()}")
+        total_amount = cart.get_total()
+        print(f"Cart Total Amount: {total_amount}")
+
         # Create the checkout session
         checkout_session = CheckoutSession.objects.create(
             user=request.user,
@@ -28,17 +38,38 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             shipping_address=request.data.get('shipping_address', '')
         )
 
-        # Create a payment intent for the checkout
+        # Prepare items data to pass to create_order function
+        items_data = [
+            {
+                'product': item.product.uuid,
+                'quantity': item.quantity
+            }
+            for item in cart.items.all()
+        ]
+
+        # Create an order from the cart
         try:
-            # Order is not created yet, we use cart's total
-            payment_secret = create_payment_intent(order_id=None, user=request.user,
-                                                   total_amount=cart.get_total())
-            checkout_session.payment_secret = payment_secret
+            order = create_order(user=request.user, items_data=items_data)
         except Exception as e:
+            print(f"Failed to create order: {str(e)}")  # Debug statement
+            return Response({'detail': f"Failed to create order: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a payment intent for the checkout and attach it to a payment object
+        try:
+            payment_secret = create_payment_intent(order_id=order.id, user=request.user)
+            payment = Payment.objects.create(
+                order=order,
+                user=request.user,
+                amount=total_amount,
+                stripe_payment_intent_id=payment_secret,
+                status=Payment.PENDING
+            )
+            checkout_session.payment = payment
+            checkout_session.save()
+        except Exception as e:
+            print(f"Failed to create payment intent: {str(e)}")  # Debug statement
             return Response({'detail': f"Failed to create payment intent: {str(e)}"},
                             status=status.HTTP_400_BAD_REQUEST)
-
-        checkout_session.save()
 
         serializer = self.get_serializer(checkout_session)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -67,20 +98,19 @@ class CompleteCheckoutView(APIView):
             return Response({"detail": "Payment failed. Checkout could not be completed."},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        # Create an order from the cart after successful payment
-        order = create_order(checkout_session.cart, request.user)
-        if order:
-            checkout_session.status = 'COMPLETED'
-            checkout_session.save()
+        # Update the payment status
+        try:
+            update_payment_status(checkout_session.payment.stripe_payment_intent_id, 'COMPLETED')
+        except Exception as e:
+            print(f"Failed to update payment status: {str(e)}")  # Debug statement
+            return Response({"detail": f"Failed to update payment status: {str(e)}"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-            # Update payment status
-            try:
-                update_payment_status(checkout_session.payment.stripe_payment_intent_id, 'COMPLETED')
-            except Exception as e:
-                return Response({"detail": f"Failed to update payment status: {str(e)}"},
-                                status=status.HTTP_400_BAD_REQUEST)
+        # Update the checkout session and order status
+        checkout_session.status = 'COMPLETED'
+        checkout_session.save()
+        checkout_session.payment.status = Payment.SUCCESS
+        checkout_session.payment.save()
 
-            return Response({"detail": "Checkout completed successfully.", "order_id": order.uuid},
-                            status=status.HTTP_200_OK)
-
-        return Response({"detail": "Failed to complete checkout."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Checkout completed successfully.", "order_id": checkout_session.payment.order.uuid},
+                        status=status.HTTP_200_OK)

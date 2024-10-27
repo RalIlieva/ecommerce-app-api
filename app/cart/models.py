@@ -18,6 +18,9 @@ class Cart(UUIDModel, TimeStampedModel):
     def __str__(self):
         return f"Cart for {self.user.email}"
 
+    def get_total(self):
+        return sum(item.get_subtotal() for item in self.items.all())
+
 
 class CartItem(UUIDModel, TimeStampedModel):
     cart = models.ForeignKey(
@@ -34,6 +37,9 @@ class CartItem(UUIDModel, TimeStampedModel):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} in cart {self.cart.id}"
+
+    def get_subtotal(self):
+        return self.product.price * self.quantity
 
     class Meta:
         # Each product should be unique per cart
