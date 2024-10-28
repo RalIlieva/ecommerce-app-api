@@ -208,3 +208,26 @@ class CheckoutTestCase(APITestCase):
 
         # Assert that the stock has been updated correctly
         self.assertEqual(self.product.stock, expected_stock)
+
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_checkout_requires_authentication(self, mock_payment_intent_create):
+        # Configure the mock to return a fake PaymentIntent
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Logout the user to simulate an unauthenticated request
+        self.client.logout()
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Make a POST request to start checkout
+        response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+
+        # Assert that the response status is 401 UNAUTHORIZED
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # Optionally, assert the error message
+        self.assertEqual(response.data['detail'], "Authentication credentials were not provided.")
