@@ -181,3 +181,44 @@ class CompleteCheckoutViewTestCase(APITestCase):
     #
     #     # Assert that PaymentIntent.retrieve was called with correct PaymentIntent ID
     #     mock_payment_intent_retrieve.assert_called_once_with('pi_test')
+
+    # @patch('payment.services.stripe.PaymentIntent.create')
+    # @patch('payment.services.stripe.PaymentIntent.retrieve')
+    # def test_order_creation_after_checkout(self, mock_payment_intent_retrieve, mock_payment_intent_create):
+    #     # Configure the mocks
+    #     mock_payment_intent_create.return_value = {
+    #         'id': 'pi_order_creation',
+    #         'client_secret': 'order_creation_secret'
+    #     }
+    #     mock_payment_intent_retrieve.return_value = {
+    #         'id': 'pi_order_creation',
+    #         'status': 'succeeded'
+    #     }
+    #
+    #     # Endpoint for initiating the checkout process
+    #     start_checkout_url = reverse('checkout:start-checkout')
+    #     start_response = self.client.post(start_checkout_url, format='json', data={'shipping_address': '321 Pine St'})
+    #
+    #     self.assertEqual(start_response.status_code, status.HTTP_201_CREATED)
+    #
+    #     # Retrieve the CheckoutSession
+    #     checkout_session_uuid = start_response.data['uuid']
+    #     checkout_session = CheckoutSession.objects.get(uuid=checkout_session_uuid)
+    #
+    #     # Endpoint for completing the checkout
+    #     complete_checkout_url = reverse('checkout:complete-checkout',
+    #                                     kwargs={'checkout_session_uuid': checkout_session.uuid})
+    #     complete_response = self.client.post(complete_checkout_url, format='json', data={'payment_status': 'SUCCESS'})
+    #
+    #     self.assertEqual(complete_response.status_code, status.HTTP_200_OK)
+    #
+    #     # Verify that an Order object exists
+    #     order = Order.objects.get(user=self.user)
+    #     self.assertIsNotNone(order)
+    #     self.assertEqual(order.status, 'COMPLETED')  # Adjust based on your Order model's status field
+    #
+    #     # Verify that OrderItems are correctly associated
+    #     order_items = order.orderitem_set.all()
+    #     self.assertEqual(order_items.count(), 1)
+    #     self.assertEqual(order_items[0].product, self.product)
+    #     self.assertEqual(order_items[0].quantity, 2)
