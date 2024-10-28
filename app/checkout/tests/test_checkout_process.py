@@ -154,3 +154,57 @@ class CheckoutTestCase(APITestCase):
         for order in orders:
             payment_exists = Payment.objects.filter(order=order).exists()
             self.assertFalse(payment_exists)
+
+    # @patch('payment.services.stripe.PaymentIntent.create')
+    # def test_duplicate_checkout_attempts(self, mock_payment_intent_create):
+    #     # Configure the mock to return a fake PaymentIntent
+    #     mock_payment_intent_create.return_value = {
+    #         'id': 'pi_test',
+    #         'client_secret': 'test_client_secret'
+    #     }
+    #
+    #     # Endpoint for initiating the checkout process
+    #     url = reverse('checkout:start-checkout')
+    #
+    #     # First checkout attempt
+    #     response_first = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+    #     self.assertEqual(response_first.status_code, status.HTTP_201_CREATED)
+    #
+    #     # Second checkout attempt with the same order
+    #     response_second = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+    #
+    #     # Assert that the second attempt fails due to existing payment
+    #     self.assertEqual(response_second.status_code, status.HTTP_400_BAD_REQUEST)
+    #     self.assertEqual(response_second.data['detail'], "Payment already exists for this order.")
+    #
+    #     # Assert that PaymentIntent.create was called only once
+    #     mock_payment_intent_create.assert_called_once()
+
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_stock_updates_after_checkout(self, mock_payment_intent_create):
+        # Configure the mock to return a fake PaymentIntent
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Retrieve initial stock
+        initial_stock = self.product.stock
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Make a POST request to start checkout
+        response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+
+        # Assert that the response is successful
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Refresh the product instance from the database
+        self.product.refresh_from_db()
+
+        # Calculate expected stock after purchase (quantity=2)
+        expected_stock = initial_stock - 2
+
+        # Assert that the stock has been updated correctly
+        self.assertEqual(self.product.stock, expected_stock)
