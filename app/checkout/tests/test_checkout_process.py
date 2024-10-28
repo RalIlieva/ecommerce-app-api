@@ -1,5 +1,6 @@
 # checkout/tests/test_checkout_process.py
 
+import threading
 from unittest.mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
@@ -11,6 +12,7 @@ from order.models import Order
 from cart.models import Cart, CartItem
 from checkout.models import CheckoutSession
 from stripe.error import StripeError
+from django.core.exceptions import ValidationError
 
 
 class CheckoutTestCase(APITestCase):
@@ -231,3 +233,150 @@ class CheckoutTestCase(APITestCase):
 
         # Optionally, assert the error message
         self.assertEqual(response.data['detail'], "Authentication credentials were not provided.")
+
+    # @patch('payment.services.stripe.PaymentIntent.create')
+    # def test_checkout_with_insufficient_stock(self, mock_payment_intent_create):
+    #     # Configure the mock to return a fake PaymentIntent
+    #     mock_payment_intent_create.return_value = {
+    #         'id': 'pi_test',
+    #         'client_secret': 'test_client_secret'
+    #     }
+    #
+    #     # Set product stock to 1, less than the cart quantity of 2
+    #     self.product.stock = 1
+    #     self.product.save()
+    #
+    #     # Endpoint for initiating the checkout process
+    #     url = reverse('checkout:start-checkout')
+    #
+    #     # Make a POST request to start checkout
+    #     response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+    #
+    #     # Assert that the response status is 400 BAD REQUEST
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #
+    #     # Assert that the error message indicates insufficient stock
+    #     self.assertEqual(response.data['detail'], "Insufficient stock for product Test Product.")
+
+    # def test_add_item_with_invalid_quantity(self):
+    #     # Attempt to add a CartItem with quantity zero
+    #     with self.assertRaises(ValidationError) as context:
+    #         CartItem.objects.create(
+    #             cart=self.cart,
+    #             product=self.product,
+    #             quantity=0
+    #         )
+    #
+    #     # Assert that the ValidationError message is as expected
+    #     self.assertIn('quantity', str(context.exception))
+    #
+    #     # Attempt to add a CartItem with negative quantity
+    #     with self.assertRaises(ValidationError) as context_neg:
+    #         CartItem.objects.create(
+    #             cart=self.cart,
+    #             product=self.product,
+    #             quantity=-1
+    #         )
+    #
+    #     # Assert that the ValidationError message is as expected
+    #     self.assertIn('quantity', str(context_neg.exception))
+
+    # def test_access_another_users_order(self):
+    #     # Create another user and their cart
+    #     other_user = get_user_model().objects.create_user(
+    #         email="otheruser@example.com", password="password123"
+    #     )
+    #     other_cart = Cart.objects.create(user=other_user)
+    #     other_cart_item = CartItem.objects.create(
+    #         cart=other_cart, product=self.product, quantity=1
+    #     )
+    #
+    #     # Initiate checkout for the other user's cart
+    #     from payment.services import create_payment_intent
+    #     from order.services import create_order
+    #     order = create_order(user=other_user, items_data=[
+    #         {'product': self.product.uuid, 'quantity': 1}
+    #     ])
+    #     create_payment_intent(order_id=order.id, user=other_user)
+    #
+    #     # Attempt to retrieve the other user's checkout session
+    #     checkout_session = CheckoutSession.objects.get(order=order)
+    #     url = reverse('checkout:complete-checkout', kwargs={'checkout_session_uuid': checkout_session.uuid})
+    #
+    #     # Authenticate as self.user and attempt to access
+    #     self.client.force_authenticate(user=self.user)
+    #     response = self.client.post(url, format='json', data={'payment_status': 'SUCCESS'})
+    #
+    #     # Assert that the response status is 404 NOT FOUND or 403 FORBIDDEN
+    #     self.assertIn(response.status_code, [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND])
+    #
+    #     # Assert appropriate error message
+    #     self.assertIn('detail', response.data)
+
+    # @patch('payment.services.stripe.PaymentIntent.create')
+    # def test_concurrent_checkout_attempts(self, mock_payment_intent_create):
+    #     # Configure the mock to return a fake PaymentIntent
+    #     mock_payment_intent_create.return_value = {
+    #         'id': 'pi_test',
+    #         'client_secret': 'test_client_secret'
+    #     }
+    #
+    #     # Endpoint for initiating the checkout process
+    #     url = reverse('checkout:start-checkout')
+    #
+    #     # Define a function to perform checkout
+    #     def perform_checkout(results, index):
+    #         response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+    #         results[index] = response
+    #
+    #     # Prepare to store responses
+    #     results = [None, None]
+    #
+    #     # Create two threads to simulate concurrent requests
+    #     threads = [
+    #         threading.Thread(target=perform_checkout, args=(results, 0)),
+    #         threading.Thread(target=perform_checkout, args=(results, 1)),
+    #     ]
+    #
+    #     # Start both threads
+    #     for thread in threads:
+    #         thread.start()
+    #
+    #     # Wait for both threads to finish
+    #     for thread in threads:
+    #         thread.join()
+    #
+    #     # Count successful and failed responses
+    #     success_count = sum(1 for res in results if res.status_code == status.HTTP_201_CREATED)
+    #     failure_count = sum(1 for res in results if res.status_code == status.HTTP_400_BAD_REQUEST)
+    #
+    #     # Assert that only one checkout succeeded
+    #     self.assertEqual(success_count, 1)
+    #     self.assertEqual(failure_count, 1)
+    #
+    #     # Assert that the failure response indicates the payment already exists
+    #     for res in results:
+    #         if res.status_code == status.HTTP_400_BAD_REQUEST:
+    #             self.assertEqual(res.data['detail'], "Payment already exists for this order.")
+
+    # @patch('payment.services.stripe.PaymentIntent.create')
+    # def test_checkout_with_invalid_data_types(self, mock_payment_intent_create):
+    #     # Configure the mock to return a fake PaymentIntent
+    #     mock_payment_intent_create.return_value = {
+    #         'id': 'pi_test',
+    #         'client_secret': 'test_client_secret'
+    #     }
+    #
+    #     # Endpoint for initiating the checkout process
+    #     url = reverse('checkout:start-checkout')
+    #
+    #     # Make a POST request with invalid data types
+    #     # For example, send an integer for 'shipping_address' instead of a string
+    #     response = self.client.post(url, format='json', data={'shipping_address': 12345})
+    #
+    #     # Assert that the response status is 400 BAD REQUEST
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #
+    #     # Assert that the error message indicates the shipping address type error
+    #     self.assertIn('shipping_address', response.data)
+    #     self.assertEqual(response.data['shipping_address'][0], 'Not a valid string.')
