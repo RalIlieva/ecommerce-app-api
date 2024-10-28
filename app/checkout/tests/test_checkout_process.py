@@ -86,31 +86,32 @@ class CheckoutTestCase(APITestCase):
         self.assertIn('payment_secret', response.data)
         self.assertEqual(response.data['payment_secret'], 'test_client_secret')
 
-    # @patch('payment.services.stripe.PaymentIntent.create')
-    # def test_checkout_already_paid_order(self, mock_payment_intent_create):
-    #     # Configure the mock to return a fake PaymentIntent
-    #     mock_payment_intent_create.return_value = {
-    #         'id': 'pi_test',
-    #         'client_secret': 'test_client_secret'
-    #     }
-    #
-    #     # Endpoint for initiating the checkout process
-    #     url = reverse('checkout:start-checkout')
-    #
-    #     # Make a POST request to start checkout
-    #     response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
-    #
-    #     # Assert that the response is successful
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    #
-    #     # Attempt to initiate checkout again for the same order
-    #     response_duplicate = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
-    #
-    #     # Assert that the response status is 400 BAD REQUEST
-    #     self.assertEqual(response_duplicate.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    #     # Assert that the error message indicates the payment already exists
-    #     self.assertEqual(response_duplicate.data['detail'], "Payment already exists for this order.")
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_checkout_already_paid_order(self, mock_payment_intent_create):
+        self.client.force_authenticate(user=self.user)
+        # Configure the mock to return a fake PaymentIntent
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Make a POST request to start checkout
+        response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+
+        # Assert that the response is successful
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Attempt to initiate checkout again for the same order
+        response_duplicate = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+
+        # Assert that the response status is 400 BAD REQUEST
+        self.assertEqual(response_duplicate.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Assert that the error message indicates the payment already exists
+        self.assertEqual(response_duplicate.data['detail'], "Checkout session already exists for this cart.")
 
     # @patch('payment.services.stripe.PaymentIntent.create')
     # def test_checkout_with_missing_shipping_address(self, mock_payment_intent_create):

@@ -26,10 +26,17 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         if not cart.items.exists():
             return Response({'detail': "Cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Debug statement: Checking cart items
-        print(f"Cart Items Count: {cart.items.count()}")
-        total_amount = cart.get_total()
-        print(f"Cart Total Amount: {total_amount}")
+        # # Debug statement: Checking cart items
+        # print(f"Cart Items Count: {cart.items.count()}")
+        # total_amount = cart.get_total()
+        # print(f"Cart Total Amount: {total_amount}")
+
+        # Check if a CheckoutSession already exists for this cart
+        if CheckoutSession.objects.filter(cart=cart).exists():
+            return Response(
+                {'detail': "Checkout session already exists for this cart."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Create the checkout session
         checkout_session = CheckoutSession.objects.create(
