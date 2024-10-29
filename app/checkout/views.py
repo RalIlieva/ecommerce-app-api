@@ -16,11 +16,6 @@ from payment.services import (
 )
 from payment.models import Payment
 from django.db import transaction
-import logging
-
-
-# Set up logging
-logger = logging.getLogger(__name__)
 
 
 class StartCheckoutSessionView(generics.CreateAPIView):
@@ -44,11 +39,6 @@ class StartCheckoutSessionView(generics.CreateAPIView):
 
         # Validate request data using the serializer
         serializer = self.get_serializer(data=request.data, context={'request': request})
-
-        # if not serializer.is_valid():
-        #     # Debugging: Print out the validation errors
-        #     print(f"Validation Errors: {serializer.errors}")
-
         serializer.is_valid(raise_exception=True)  # Validate input data before proceeding
 
         # Extract validated data
@@ -59,7 +49,6 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             user=request.user,
             cart=cart,
             shipping_address=shipping_address
-            # shipping_address=request.data.get('shipping_address', '')
         )
 
         # Prepare items data to pass to create_order function
@@ -75,7 +64,6 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         try:
             order = create_order(user=request.user, items_data=items_data)
         except Exception as e:
-            # print(f"Failed to create order: {str(e)}")  # Debug statement
             return Response({'detail': f"Failed to create order: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a payment intent for the checkout and attach it to a payment object
