@@ -15,6 +15,7 @@ from payment.services import (
     update_payment_status
 )
 from payment.models import Payment
+from order.models import Order, OrderItem
 from django.db import transaction
 
 
@@ -133,8 +134,13 @@ class CompleteCheckoutView(APIView):
         # Update the checkout session and order status
         checkout_session.status = 'COMPLETED'
         checkout_session.payment.status = Payment.SUCCESS
+
+        order = checkout_session.payment.order
+        order.status = Order.PAID
+
         checkout_session.save()
         checkout_session.payment.save()
+        order.save()
 
         return Response({"detail": "Checkout completed successfully.", "order_id": checkout_session.payment.order.uuid},
                         status=status.HTTP_200_OK)
