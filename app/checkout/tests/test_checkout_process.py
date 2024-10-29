@@ -10,9 +10,11 @@ from products.models import Product, Category
 from payment.models import Payment
 from order.models import Order
 from cart.models import Cart, CartItem
+from cart.services import add_item_to_cart
 from checkout.models import CheckoutSession
 from stripe.error import StripeError
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
+# from django.core.exceptions import ValidationError
 
 
 class CheckoutTestCase(APITestCase):
@@ -259,6 +261,25 @@ class CheckoutTestCase(APITestCase):
         # Assert that the error message indicates insufficient stock - checkout views and core exception
         self.assertEqual(response.data['detail'], "Failed to create order: Not enough stock available")
 
+    def test_add_item_with_invalid_quantity(self):
+        # Attempt to add a CartItem with quantity zero using the service function
+        with self.assertRaises(ValidationError) as context:
+            add_item_to_cart(user=self.user, product_id=self.product.id, quantity=0)
+
+        # Extract the error detail from the exception
+        error_detail = context.exception.detail
+        # Assert that the ValidationError message is as expected
+        self.assertIn('Quantity must be greater than zero.', str(error_detail[0]))
+
+        # Attempt to add a CartItem with negative quantity using the service function
+        with self.assertRaises(ValidationError) as context_neg:
+            add_item_to_cart(user=self.user, product_id=self.product.id, quantity=-1)
+
+        # Extract the error detail from the exception
+        error_detail_neg = context_neg.exception.detail
+        # Assert that the ValidationError message is as expected
+        self.assertIn('Quantity must be greater than zero.', str(error_detail_neg[0]))
+
     # def test_add_item_with_invalid_quantity(self):
     #     # Attempt to add a CartItem with quantity zero
     #     with self.assertRaises(ValidationError) as context:
@@ -374,10 +395,6 @@ class CheckoutTestCase(APITestCase):
         # Make a POST request with invalid data types
         # For example, send an integer for 'shipping_address' instead of a string
         response = self.client.post(url, format='json', data={'shipping_address': 12345})
-
-        # Debugging response to understand why it failed
-        print(f"Response Status Code: {response.status_code}")
-        print(f"Response Data: {response.data}")
 
         # Assert that the response status is 400 BAD REQUEST
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
