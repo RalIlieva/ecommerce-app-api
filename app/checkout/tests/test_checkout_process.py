@@ -235,29 +235,29 @@ class CheckoutTestCase(APITestCase):
         # Optionally, assert the error message
         self.assertEqual(response.data['detail'], "Authentication credentials were not provided.")
 
-    # @patch('payment.services.stripe.PaymentIntent.create')
-    # def test_checkout_with_insufficient_stock(self, mock_payment_intent_create):
-    #     # Configure the mock to return a fake PaymentIntent
-    #     mock_payment_intent_create.return_value = {
-    #         'id': 'pi_test',
-    #         'client_secret': 'test_client_secret'
-    #     }
-    #
-    #     # Set product stock to 1, less than the cart quantity of 2
-    #     self.product.stock = 1
-    #     self.product.save()
-    #
-    #     # Endpoint for initiating the checkout process
-    #     url = reverse('checkout:start-checkout')
-    #
-    #     # Make a POST request to start checkout
-    #     response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
-    #
-    #     # Assert that the response status is 400 BAD REQUEST
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    #     # Assert that the error message indicates insufficient stock
-    #     self.assertEqual(response.data['detail'], "Insufficient stock for product Test Product.")
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_checkout_with_insufficient_stock(self, mock_payment_intent_create):
+        # Configure the mock to return a fake PaymentIntent
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Set product stock to 1, less than the cart quantity of 2
+        self.product.stock = 1
+        self.product.save()
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Make a POST request to start checkout
+        response = self.client.post(url, format='json', data={'shipping_address': '123 Main St'})
+
+        # Assert that the response status is 400 BAD REQUEST
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Assert that the error message indicates insufficient stock - checkout views and core exception
+        self.assertEqual(response.data['detail'], "Failed to create order: Not enough stock available")
 
     # def test_add_item_with_invalid_quantity(self):
     #     # Attempt to add a CartItem with quantity zero
