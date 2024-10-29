@@ -280,61 +280,6 @@ class CheckoutTestCase(APITestCase):
         # Assert that the ValidationError message is as expected
         self.assertIn('Quantity must be greater than zero.', str(error_detail_neg[0]))
 
-    # def test_add_item_with_invalid_quantity(self):
-    #     # Attempt to add a CartItem with quantity zero
-    #     with self.assertRaises(ValidationError) as context:
-    #         CartItem.objects.create(
-    #             cart=self.cart,
-    #             product=self.product,
-    #             quantity=0
-    #         )
-    #
-    #     # Assert that the ValidationError message is as expected
-    #     self.assertIn('quantity', str(context.exception))
-    #
-    #     # Attempt to add a CartItem with negative quantity
-    #     with self.assertRaises(ValidationError) as context_neg:
-    #         CartItem.objects.create(
-    #             cart=self.cart,
-    #             product=self.product,
-    #             quantity=-1
-    #         )
-    #
-    #     # Assert that the ValidationError message is as expected
-    #     self.assertIn('quantity', str(context_neg.exception))
-
-    # def test_access_another_users_order(self):
-    #     # Create another user and their cart
-    #     other_user = get_user_model().objects.create_user(
-    #         email="otheruser@example.com", password="password123"
-    #     )
-    #     other_cart = Cart.objects.create(user=other_user)
-    #     other_cart_item = CartItem.objects.create(
-    #         cart=other_cart, product=self.product, quantity=1
-    #     )
-    #
-    #     # Initiate checkout for the other user's cart
-    #     from payment.services import create_payment_intent
-    #     from order.services import create_order
-    #     order = create_order(user=other_user, items_data=[
-    #         {'product': self.product.uuid, 'quantity': 1}
-    #     ])
-    #     create_payment_intent(order_id=order.id, user=other_user)
-    #
-    #     # Attempt to retrieve the other user's checkout session
-    #     checkout_session = CheckoutSession.objects.get(order=order)
-    #     url = reverse('checkout:complete-checkout', kwargs={'checkout_session_uuid': checkout_session.uuid})
-    #
-    #     # Authenticate as self.user and attempt to access
-    #     self.client.force_authenticate(user=self.user)
-    #     response = self.client.post(url, format='json', data={'payment_status': 'SUCCESS'})
-    #
-    #     # Assert that the response status is 404 NOT FOUND or 403 FORBIDDEN
-    #     self.assertIn(response.status_code, [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND])
-    #
-    #     # Assert appropriate error message
-    #     self.assertIn('detail', response.data)
-
     # @patch('payment.services.stripe.PaymentIntent.create')
     # def test_concurrent_checkout_attempts(self, mock_payment_intent_create):
     #     # Configure the mock to return a fake PaymentIntent
@@ -402,3 +347,50 @@ class CheckoutTestCase(APITestCase):
         # Assert that the error message indicates the shipping address type error
         self.assertIn('shipping_address', response.data['detail'])
         self.assertEqual(response.data['detail']['shipping_address'][0], 'Shipping address cannot be purely numeric.')
+
+    def test_access_another_users_order(self):
+        # Create another user and their cart
+        other_user = get_user_model().objects.create_user(
+            email="otheruser@example.com", password="password123"
+        )
+        other_cart = Cart.objects.create(user=other_user)
+        other_cart_item = CartItem.objects.create(
+            cart=other_cart, product=self.product, quantity=1
+        )
+
+        # Initiate checkout for the other user's cart
+        from payment.services import create_payment_intent
+        from order.services import create_order
+
+        # Create an order for the other user
+        order = create_order(user=other_user, items_data=[
+            {'product': self.product.uuid, 'quantity': 1}
+        ])
+
+        # Create a payment intent for that order
+        create_payment_intent(order_id=order.id, user=other_user)
+
+        # Retrieve the payment object associated with the order
+        payment = Payment.objects.get(order=order)
+
+        # Create the checkout session manually since it's not created automatically
+        checkout_session = CheckoutSession.objects.create(
+            user=other_user,
+            cart=other_cart,
+            payment=payment,
+            shipping_address="123 Main St",
+            status='IN_PROGRESS'
+        )
+
+        # URL for completing the checkout session
+        url = reverse('checkout:complete-checkout', kwargs={'checkout_session_uuid': checkout_session.uuid})
+
+        # Authenticate as self.user and attempt to access another user's checkout session
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, format='json', data={'payment_status': 'SUCCESS'})
+
+        # Assert that the response status is 404 NOT FOUND or 403 FORBIDDEN
+        self.assertIn(response.status_code, [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND])
+
+        # Assert appropriate error message
+        self.assertIn('detail', response.data)
