@@ -113,26 +113,26 @@ class CheckoutTestCase(APITestCase):
         # Assert that the error message indicates the payment already exists
         self.assertEqual(response_duplicate.data['detail'], "Checkout session already exists for this cart.")
 
-    # @patch('payment.services.stripe.PaymentIntent.create')
-    # def test_checkout_with_missing_shipping_address(self, mock_payment_intent_create):
-    #     # Configure the mock to return a fake PaymentIntent
-    #     mock_payment_intent_create.return_value = {
-    #         'id': 'pi_test',
-    #         'client_secret': 'test_client_secret'
-    #     }
-    #
-    #     # Endpoint for initiating the checkout process
-    #     url = reverse('checkout:start-checkout')
-    #
-    #     # Make a POST request without shipping_address
-    #     response = self.client.post(url, format='json', data={})
-    #
-    #     # Assert that the response status is 400 BAD REQUEST
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    #     # Assert that the error message indicates the shipping address is required
-    #     self.assertIn('shipping_address', response.data)
-    #     self.assertEqual(response.data['shipping_address'][0], 'This field is required.')
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_checkout_with_missing_shipping_address(self, mock_payment_intent_create):
+        # Configure the mock to return a fake PaymentIntent
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Make a POST request without shipping_address
+        response = self.client.post(url, format='json', data={})
+
+        # Assert that the response status is 400 BAD REQUEST
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Assert that the error message indicates the shipping address is required
+        self.assertIn('shipping_address', response.data['detail'])
+        self.assertEqual(response.data['detail']['shipping_address'][0], 'This field is required.')
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_payment_creation_stripe_error(self, mock_payment_intent_create):

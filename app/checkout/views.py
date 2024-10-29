@@ -26,11 +26,6 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         if not cart.items.exists():
             return Response({'detail': "Cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # # Debug statement: Checking cart items
-        # print(f"Cart Items Count: {cart.items.count()}")
-        # total_amount = cart.get_total()
-        # print(f"Cart Total Amount: {total_amount}")
-
         # Check if a CheckoutSession already exists for this cart
         if CheckoutSession.objects.filter(cart=cart).exists():
             return Response(
@@ -38,11 +33,19 @@ class StartCheckoutSessionView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Validate request data using the serializer
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)  # Validate input data before proceeding
+
+        # Extract validated data
+        shipping_address = serializer.validated_data['shipping_address']
+
         # Create the checkout session
         checkout_session = CheckoutSession.objects.create(
             user=request.user,
             cart=cart,
-            shipping_address=request.data.get('shipping_address', '')
+            shipping_address=shipping_address
+            # shipping_address=request.data.get('shipping_address', '')
         )
 
         # Prepare items data to pass to create_order function
@@ -58,20 +61,13 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         try:
             order = create_order(user=request.user, items_data=items_data)
         except Exception as e:
-            print(f"Failed to create order: {str(e)}")  # Debug statement
+            # print(f"Failed to create order: {str(e)}")  # Debug statement
             return Response({'detail': f"Failed to create order: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Create a payment intent for the checkout and attach it to a payment object
         try:
             payment_secret = create_payment_intent(order_id=order.id, user=request.user)
             payment = Payment.objects.get(order=order)
-            # payment = Payment.objects.create(
-            #     order=order,
-            #     user=request.user,
-            #     amount=total_amount,
-            #     stripe_payment_intent_id=payment_secret,
-            #     status=Payment.PENDING
-            # )
             checkout_session.payment = payment
             # Attach 'payment_secret' dynamically to the checkout_session instance
             setattr(checkout_session, 'payment_secret', payment_secret)
