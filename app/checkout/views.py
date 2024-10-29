@@ -16,6 +16,11 @@ from payment.services import (
 )
 from payment.models import Payment
 from django.db import transaction
+import logging
+
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
 class StartCheckoutSessionView(generics.CreateAPIView):
@@ -111,7 +116,10 @@ class CompleteCheckoutView(APIView):
             # if payment_intent.status != 'succeeded':
             if payment_intent['status'] != 'succeeded':
                 checkout_session.status = 'FAILED'
+                checkout_session.payment.status = Payment.FAILED
                 checkout_session.save()
+                checkout_session.payment.save()
+
                 return Response({"detail": "Payment failed. Checkout could not be completed."},
                                     status=status.HTTP_400_BAD_REQUEST)
         except stripe_error.InvalidRequestError as e:
@@ -136,8 +144,8 @@ class CompleteCheckoutView(APIView):
 
         # Update the checkout session and order status
         checkout_session.status = 'COMPLETED'
-        checkout_session.save()
         checkout_session.payment.status = Payment.SUCCESS
+        checkout_session.save()
         checkout_session.payment.save()
 
         return Response({"detail": "Checkout completed successfully.", "order_id": checkout_session.payment.order.uuid},
