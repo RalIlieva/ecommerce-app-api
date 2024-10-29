@@ -34,7 +34,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             )
 
         # Validate request data using the serializer
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+
+        if not serializer.is_valid():
+            # Debugging: Print out the validation errors
+            print(f"Validation Errors: {serializer.errors}")
+
         serializer.is_valid(raise_exception=True)  # Validate input data before proceeding
 
         # Extract validated data

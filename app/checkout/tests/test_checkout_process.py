@@ -360,24 +360,28 @@ class CheckoutTestCase(APITestCase):
     #         if res.status_code == status.HTTP_400_BAD_REQUEST:
     #             self.assertEqual(res.data['detail'], "Payment already exists for this order.")
 
-    # @patch('payment.services.stripe.PaymentIntent.create')
-    # def test_checkout_with_invalid_data_types(self, mock_payment_intent_create):
-    #     # Configure the mock to return a fake PaymentIntent
-    #     mock_payment_intent_create.return_value = {
-    #         'id': 'pi_test',
-    #         'client_secret': 'test_client_secret'
-    #     }
-    #
-    #     # Endpoint for initiating the checkout process
-    #     url = reverse('checkout:start-checkout')
-    #
-    #     # Make a POST request with invalid data types
-    #     # For example, send an integer for 'shipping_address' instead of a string
-    #     response = self.client.post(url, format='json', data={'shipping_address': 12345})
-    #
-    #     # Assert that the response status is 400 BAD REQUEST
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #
-    #     # Assert that the error message indicates the shipping address type error
-    #     self.assertIn('shipping_address', response.data)
-    #     self.assertEqual(response.data['shipping_address'][0], 'Not a valid string.')
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_checkout_with_invalid_data_types(self, mock_payment_intent_create):
+        # Configure the mock to return a fake PaymentIntent
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Make a POST request with invalid data types
+        # For example, send an integer for 'shipping_address' instead of a string
+        response = self.client.post(url, format='json', data={'shipping_address': 12345})
+
+        # Debugging response to understand why it failed
+        print(f"Response Status Code: {response.status_code}")
+        print(f"Response Data: {response.data}")
+
+        # Assert that the response status is 400 BAD REQUEST
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # Assert that the error message indicates the shipping address type error
+        self.assertIn('shipping_address', response.data['detail'])
+        self.assertEqual(response.data['detail']['shipping_address'][0], 'Shipping address cannot be purely numeric.')
