@@ -2,6 +2,10 @@ from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from stripe import error as stripe_error
+import stripe
+
 from .models import CheckoutSession
 from cart.services import get_or_create_cart
 from .serializers import CheckoutSessionSerializer
@@ -100,13 +104,27 @@ class CompleteCheckoutView(APIView):
         if checkout_session.status != 'IN_PROGRESS':
             return Response({"detail": "Checkout session is no longer valid."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Here, we verify if the payment was successful
-        payment_status = request.data.get('payment_status')  # Assume frontend sends payment status
-        if payment_status != 'SUCCESS':
-            checkout_session.status = 'FAILED'
-            checkout_session.save()
-            return Response({"detail": "Payment failed. Checkout could not be completed."},
+            # Retrieve the payment intent from Stripe
+        try:
+            payment_intent = stripe.PaymentIntent.retrieve(checkout_session.payment.stripe_payment_intent_id)
+            # Validate payment intent status
+            # if payment_intent.status != 'succeeded':
+            if payment_intent['status'] != 'succeeded':
+                checkout_session.status = 'FAILED'
+                checkout_session.save()
+                return Response({"detail": "Payment failed. Checkout could not be completed."},
+                                    status=status.HTTP_400_BAD_REQUEST)
+        except stripe_error.InvalidRequestError as e:
+            return Response({"detail": f"Stripe payment retrieval failed: {str(e)}"},
                             status=status.HTTP_400_BAD_REQUEST)
+
+        # # Here, we verify if the payment was successful via the frontend - not secure
+        # payment_status = request.data.get('payment_status')  # Assume frontend sends payment status
+        # if payment_status != 'SUCCESS':
+        #     checkout_session.status = 'FAILED'
+        #     checkout_session.save()
+        #     return Response({"detail": "Payment failed. Checkout could not be completed."},
+        #                     status=status.HTTP_400_BAD_REQUEST)
 
         # Update the payment status
         try:
