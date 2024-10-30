@@ -15,7 +15,7 @@ from payment.services import (
     update_payment_status
 )
 from payment.models import Payment
-from order.models import Order, OrderItem
+from order.models import Order
 from django.db import transaction
 
 
@@ -29,7 +29,10 @@ class StartCheckoutSessionView(generics.CreateAPIView):
 
         # Validate cart - it shouldn't be empty
         if not cart.items.exists():
-            return Response({'detail': "Cart is empty."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': "Cart is empty."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Check if a CheckoutSession already exists for this cart
         if CheckoutSession.objects.filter(cart=cart).exists():
@@ -39,8 +42,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             )
 
         # Validate request data using the serializer
-        serializer = self.get_serializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)  # Validate input data before proceeding
+        serializer = self.get_serializer(
+            data=request.data,
+            context={'request': request}
+        )
+        # Validate input data before proceeding
+        serializer.is_valid(raise_exception=True)
 
         # Extract validated data
         shipping_address = serializer.validated_data['shipping_address']
@@ -65,19 +72,26 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         try:
             order = create_order(user=request.user, items_data=items_data)
         except Exception as e:
-            return Response({'detail': f"Failed to create order: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': f"Failed to create order: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        # Create a payment intent for the checkout and attach it to a payment object
+        # Create payment intent for checkout & attach it to a payment object
         try:
-            payment_secret = create_payment_intent(order_id=order.id, user=request.user)
+            payment_secret = create_payment_intent(
+                order_id=order.id, user=request.user
+            )
             payment = Payment.objects.get(order=order)
             checkout_session.payment = payment
-            # Attach 'payment_secret' dynamically to the checkout_session instance
+            # Attach 'payment_secret' dynamically to checkout_session instance
             setattr(checkout_session, 'payment_secret', payment_secret)
             checkout_session.save()
         except Exception as e:
-            return Response({'detail': f"Failed to create payment intent: {str(e)}"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'detail': f"Failed to create payment intent: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         serializer = self.get_serializer(checkout_session)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -90,17 +104,27 @@ class CompleteCheckoutView(APIView):
     def post(self, request, *args, **kwargs):
         checkout_session_uuid = kwargs['checkout_session_uuid']
         try:
-            checkout_session = CheckoutSession.objects.select_for_update().get(uuid=checkout_session_uuid,
-                                                                               user=request.user)
+            checkout_session = CheckoutSession.objects.select_for_update().get(
+                uuid=checkout_session_uuid,
+                user=request.user
+            )
         except CheckoutSession.DoesNotExist:
-            return Response({"detail": "Checkout session not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Checkout session not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
         if checkout_session.status != 'IN_PROGRESS':
-            return Response({"detail": "Checkout session is no longer valid."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Checkout session is no longer valid."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
             # Retrieve the payment intent from Stripe
         try:
-            payment_intent = stripe.PaymentIntent.retrieve(checkout_session.payment.stripe_payment_intent_id)
+            payment_intent = stripe.PaymentIntent.retrieve(
+                checkout_session.payment.stripe_payment_intent_id
+            )
             # Validate payment intent status
             # if payment_intent.status != 'succeeded':
             if payment_intent['status'] != 'succeeded':
@@ -109,27 +133,25 @@ class CompleteCheckoutView(APIView):
                 checkout_session.save()
                 checkout_session.payment.save()
 
-                return Response({"detail": "Payment failed. Checkout could not be completed."},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"detail": "Payment failed. Checkout could not be completed."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except stripe_error.InvalidRequestError as e:
-            return Response({"detail": f"Stripe payment retrieval failed: {str(e)}"},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        # # Here, we verify if the payment was successful via the frontend - not secure
-        # payment_status = request.data.get('payment_status')  # Assume frontend sends payment status
-        # if payment_status != 'SUCCESS':
-        #     checkout_session.status = 'FAILED'
-        #     checkout_session.save()
-        #     return Response({"detail": "Payment failed. Checkout could not be completed."},
-        #                     status=status.HTTP_400_BAD_REQUEST)
-
-        # Update the payment status
+            return Response(
+                {"detail": f"Stripe payment retrieval failed: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         try:
-            update_payment_status(checkout_session.payment.stripe_payment_intent_id, 'COMPLETED')
+            update_payment_status(
+                checkout_session.payment.stripe_payment_intent_id,
+                'COMPLETED'
+            )
         except Exception as e:
-            print(f"Failed to update payment status: {str(e)}")  # Debug statement
-            return Response({"detail": f"Failed to update payment status: {str(e)}"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": f"Failed to update payment status: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Update the checkout session and order status
         checkout_session.status = 'COMPLETED'
@@ -142,5 +164,21 @@ class CompleteCheckoutView(APIView):
         checkout_session.payment.save()
         order.save()
 
-        return Response({"detail": "Checkout completed successfully.", "order_id": checkout_session.payment.order.uuid},
-                        status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Checkout completed successfully.",
+             "order_id": checkout_session.payment.order.uuid},
+            status=status.HTTP_200_OK
+        )
+
+        # # Verify if the payment-successful via the frontend-not secure
+        # Assume frontend sends payment status
+        # payment_status = request.data.get('payment_status')
+        # if payment_status != 'SUCCESS':
+        #     checkout_session.status = 'FAILED'
+        #     checkout_session.save()
+        #     return Response(
+        #     {"detail": "Payment failed. Checkout could not be completed."},
+        #                     status=status.HTTP_400_BAD_REQUEST
+        #                     )
+
+        # Update the payment status
