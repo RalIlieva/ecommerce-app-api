@@ -7,8 +7,19 @@ from cart.models import Cart, CartItem
 
 
 class CheckoutTestCase(APITestCase):
+    """
+    Test case for the checkout initiation process.
+    This test suite verifies the behavior of the checkout process
+    under different conditions, incl. attempts to initiate
+    checkout with an empty cart.
+    """
 
     def setUp(self):
+        """
+        Set up the environment for the checkout tests.
+        Creates the necessary user, product, cart, cart items
+        to be used in the test cases.
+        """
         # Create test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com", password="password123"
@@ -30,6 +41,21 @@ class CheckoutTestCase(APITestCase):
         )
 
     def test_checkout_with_empty_cart(self):
+        """
+        Test attempting to initiate a checkout with an empty cart.
+        This test verifies that an attempt to initiate the checkout process
+        with an empty cart fails and returns a `400 BAD REQUEST` status.
+
+        Steps:
+            - Remove all items from the user's cart.
+            - Make a POST request to initiate the checkout process.
+            - Assert that the response indicates failure due to an empty cart.
+
+        Expected Outcome:
+            - The response status should be `400 BAD REQUEST`.
+            - The response should contain an error message indicating
+            the cart is empty.
+        """
         # Ensure the cart is empty
         cart = Cart.objects.get(user=self.user)
         cart.items.all().delete()  # Remove all items from the cart
