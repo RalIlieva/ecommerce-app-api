@@ -10,8 +10,19 @@ from checkout.models import CheckoutSession
 
 
 class CompleteCheckoutFlowTestCase(APITestCase):
+    """
+    Test case for the complete checkout flow.
+    This test suite verifies the behavior of the complete checkout process,
+    including initiating checkout, completing checkout, payment verification,
+    and stock update.
+    """
 
     def setUp(self):
+        """
+        Set up the environment for the complete checkout flow tests.
+        Creates the necessary user, product, cart, cart items
+        to be used in the test cases.
+        """
         # Create test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com", password="password123"
@@ -38,6 +49,30 @@ class CompleteCheckoutFlowTestCase(APITestCase):
             self, mock_payment_intent_retrieve,
             mock_payment_intent_create
     ):
+        """
+        Test the complete checkout flow,
+        incl. initiating & completing checkout.
+        Steps:
+            - Mock PaymentIntent.create to simulate
+            Stripe payment intent creation.
+            - Mock PaymentIntent.retrieve to simulate
+            a successful payment.
+            - Initiate the checkout process via an API call.
+            - Complete the checkout process via an API call.
+            - Verify the checkout status, payment status, product stock update,
+                and proper interaction with mocked services.
+
+        Expected Outcomes:
+            - The checkout initiation should be successful,
+            returning a payment secret.
+            - The checkout completion should be successful,
+            returning an order ID.
+            - The payment status should be updated to SUCCESS.
+            - The checkout session status should be updated
+            to COMPLETED.
+            - The product stock decreases by the purchased quantity
+            - Stripe's PaymentIntent.retrieve method should be called correctly
+        """
         # Mock PaymentIntent.create to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_complete_flow',

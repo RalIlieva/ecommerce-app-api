@@ -363,63 +363,6 @@ class CheckoutTestCase(APITestCase):
             str(error_detail_neg[0])
         )
 
-    # @patch('payment.services.stripe.PaymentIntent.create')
-    # def test_concurrent_checkout_attempts(self, mock_payment_intent_create):
-    #     # Configure the mock to return a fake PaymentIntent
-    #     mock_payment_intent_create.return_value = {
-    #         'id': 'pi_test',
-    #         'client_secret': 'test_client_secret'
-    #     }
-    #
-    #     # Endpoint for initiating the checkout process
-    #     url = reverse('checkout:start-checkout')
-    #
-    #     # Define a function to perform checkout
-    #     def perform_checkout(results, index):
-    #         response = self.client.post(
-    #         url, format='json',
-    #         data={'shipping_address': '123 Main St'}
-    #         )
-    #         results[index] = response
-    #
-    #     # Prepare to store responses
-    #     results = [None, None]
-    #
-    #     # Create two threads to simulate concurrent requests
-    #     threads = [
-    #         threading.Thread(target=perform_checkout, args=(results, 0)),
-    #         threading.Thread(target=perform_checkout, args=(results, 1)),
-    #     ]
-    #
-    #     # Start both threads
-    #     for thread in threads:
-    #         thread.start()
-    #
-    #     # Wait for both threads to finish
-    #     for thread in threads:
-    #         thread.join()
-    #
-    #     # Count successful and failed responses
-    #     success_count = sum(
-    #     1 for res in results if res.status_code == status.HTTP_201_CREATED
-    #     )
-    #     failure_count = sum(
-    #     1 for res in results if res.status_code ==
-    #     status.HTTP_400_BAD_REQUEST
-    #     )
-    #
-    #     # Assert that only one checkout succeeded
-    #     self.assertEqual(success_count, 1)
-    #     self.assertEqual(failure_count, 1)
-    #
-    #     # Assert the failure response indicates the payment already exists
-    #     for res in results:
-    #         if res.status_code == status.HTTP_400_BAD_REQUEST:
-    #             self.assertEqual(
-    #             res.data['detail'],
-    #             "Payment already exists for this order."
-    #             )
-
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_checkout_with_invalid_data_types(
             self, mock_payment_intent_create
