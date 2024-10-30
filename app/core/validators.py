@@ -6,4 +6,6 @@ def validate_string_only(value):
         raise serializers.ValidationError("Not a valid string.")
         # Additional check to reject purely numeric strings
     if value.isdigit():
-        raise serializers.ValidationError("Shipping address cannot be purely numeric.")
+        raise serializers.ValidationError(
+            "Shipping address cannot be purely numeric."
+        )
