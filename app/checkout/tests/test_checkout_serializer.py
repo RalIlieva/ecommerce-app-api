@@ -7,8 +7,29 @@ from checkout.serializers import CheckoutSessionSerializer
 
 
 class CheckoutSessionSerializerTestCase(APITestCase):
+    """
+    Test case for the CheckoutSessionSerializer.
+
+    This suite ensures that the CheckoutSessionSerializer handles
+    data correctly during validation and serialization.
+    It validates that the serializer correctly requires fields,
+    and serializes data in the expected format.
+    """
 
     def setUp(self):
+        """
+        Set up the environment for the test.
+
+        Creates a test user, product, category, cart, and checkout session.
+        These objects are required to validate the behavior of the serializer.
+
+        Steps:
+            - Create a test user.
+            - Create a category and product for the user's cart.
+            - Add the product to the user's cart.
+            - Create a checkout session for the user.
+        """
+
         # Create test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com", password="password123"
@@ -35,6 +56,19 @@ class CheckoutSessionSerializerTestCase(APITestCase):
         )
 
     def test_serializer_validation_missing_fields(self):
+        """
+        Test validation for missing fields in CheckoutSessionSerializer.
+        This test ensures that the serializer correctly handles the absence of
+        required fields such as `user` and `shipping_address`.
+
+        Steps:
+            - Try to serialize CheckoutSession instance without required fields
+            - Validate that the serializer marks the missing fields as invalid
+
+        Expected Outcome:
+            - The serializer should not be valid.
+            - The 'shipping_address' field should be present in the errors.
+        """
         # Attempt to serialize a CheckoutSession without required fields
         data = {
             # 'user' is missing
@@ -49,6 +83,25 @@ class CheckoutSessionSerializerTestCase(APITestCase):
         self.assertIn('shipping_address', serializer.errors)
 
     def test_checkout_session_serializer_representation(self):
+        """
+        Test the serialized representation of a CheckoutSession.
+        This test verifies that the serializer properly serializes a
+        CheckoutSession` object, including fields like `user`, `cart`,
+        `shipping_address`, and an attached `payment_secret`.
+
+        Steps:
+            - Attach a `payment_secret` to the checkout session instance.
+            - Serialize the checkout session using the serializer.
+            - Verify all expected fields are present in the serialized data.
+            - Assert the data types of each field and specific field values.
+
+        Expected Outcome:
+            - The serialized data should contain all the expected fields.
+            - The data types of the serialized fields should match
+            the expectations.
+            - The nested cart data should correctly reflect
+            the product and quantity.
+        """
         # Attach payment_secret to the checkout session
         setattr(self.checkout_session, 'payment_secret', 'serializer_secret')
 
