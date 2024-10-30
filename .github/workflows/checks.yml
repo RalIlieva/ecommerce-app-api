@@ -114,8 +114,6 @@ jobs:
 #      - name: Lint
 #        run: docker compose run --rm app sh -c "flake8"
 
->>>>>>> feature/UUID
-
 #---
 #name: Checks
 #
