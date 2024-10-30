@@ -17,8 +17,23 @@ from rest_framework.exceptions import ValidationError
 
 
 class CheckoutTestCase(APITestCase):
+    """
+    Test case for various scenarios in the checkout process.
+    This test suite verifies different aspects of the checkout process,
+    such as initiating the checkout, handling errors, managing stock,
+    preventing unauthorized access, and validating input.
+    """
 
     def setUp(self):
+        """
+        Set up the environment for the checkout tests.
+        Creates the necessary user, product, cart, cart items
+        to be used in the test cases.
+        Steps:
+            - Create a test user and authenticate the user.
+            - Create a category and a product for testing.
+            - Add the product to a cart for the test user.
+        """
         # Create test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com", password="password123"
@@ -41,6 +56,18 @@ class CheckoutTestCase(APITestCase):
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_successful_checkout(self, mock_payment_intent_create):
+        """
+        Test a successful checkout initiation.
+        Steps:
+            - Mock the Stripe PaymentIntent creation to simulate the Stripe API
+            - Initiate the checkout process with valid data.
+            - Verify that a Payment object and CheckoutSession are created.
+            - Assert the payment secret is returned correctly.
+        Expected Outcome:
+            - The checkout initiation should succeed.
+            - PaymentIntent should be created with the correct parameters.
+            - The response should include a 'payment_secret'.
+        """
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -100,6 +127,16 @@ class CheckoutTestCase(APITestCase):
     def test_checkout_already_paid_order(
             self, mock_payment_intent_create
     ):
+        """
+        Test attempting to initiate checkout for an already existing session.
+        Steps:
+            - Initiate the checkout process.
+            - Attempt to initiate checkout again with the same cart.
+            - Assert that the second attempt fails with a 400 BAD REQUEST.
+        Expected Outcome:
+            - The first attempt should succeed, and the second should fail.
+            - The error message should indicate the session already exists.
+        """
         self.client.force_authenticate(user=self.user)
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
@@ -141,6 +178,13 @@ class CheckoutTestCase(APITestCase):
     def test_checkout_with_missing_shipping_address(
             self, mock_payment_intent_create
     ):
+        """
+        Test attempt to initiate checkout without a shipping address.
+        Expected Outcome:
+            - The request should fail with a 400 BAD REQUEST.
+            - The error message should indicate that
+            the 'shipping_address' field is required.
+        """
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -165,6 +209,12 @@ class CheckoutTestCase(APITestCase):
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_payment_creation_stripe_error(self, mock_payment_intent_create):
+        """
+        Test handling a Stripe API error during payment intent creation.
+        Expected Outcome:
+            - The request should fail with a 400 BAD REQUEST.
+            - No Payment object should be created.
+        """
         # Configure the mock to raise a StripeError
         mock_payment_intent_create.side_effect = StripeError(
             "Stripe API error occurred."
@@ -199,6 +249,19 @@ class CheckoutTestCase(APITestCase):
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_duplicate_checkout_attempts(self, mock_payment_intent_create):
+        """
+        Test attempting multiple checkout initiations for the same cart.
+        Steps:
+            - Initiate the checkout process once.
+            - Attempt to initiate checkout again for the same cart.
+            - Assert the second attempt fails with a 400 BAD REQUEST status.
+        Expected Outcome:
+            - The first attempt to initiate checkout should succeed.
+            - The second attempt should fail with an error indicating that
+            a checkout session already exists for the cart.
+            - Verify that PaymentIntent.create was called only once.
+        """
+
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -236,6 +299,11 @@ class CheckoutTestCase(APITestCase):
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_stock_updates_after_checkout(self, mock_payment_intent_create):
+        """
+        Test the product stock updates correctly after a successful checkout.
+        Expected Outcome:
+            - The product stock should decrease by the purchased quantity.
+        """
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -270,6 +338,16 @@ class CheckoutTestCase(APITestCase):
     def test_checkout_requires_authentication(
             self, mock_payment_intent_create
     ):
+        """
+        Test attempting to initiate checkout without being authenticated.
+        Steps:
+            - Log out the user to simulate an unauthenticated request.
+            - Attempt to initiate checkout.
+
+        Expected Outcome:
+            - The request should fail with a 401 UNAUTHORIZED status.
+            - The error message should indicate authentication is required.
+        """
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -301,6 +379,18 @@ class CheckoutTestCase(APITestCase):
     def test_checkout_with_insufficient_stock(
             self, mock_payment_intent_create
     ):
+        """
+        Test initiating checkout when the cart contains
+        items with insufficient stock.
+        Steps:
+            - Set the product stock to a value lower
+            than the cart quantity.
+            - Attempt to initiate checkout.
+        Expected Outcome:
+            - The request should fail with a 400 BAD REQUEST status.
+            - The error message should indicate that
+            there is not enough stock available.
+        """
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -331,6 +421,17 @@ class CheckoutTestCase(APITestCase):
         )
 
     def test_add_item_with_invalid_quantity(self):
+        """
+        Test adding an item to the cart with an invalid quantity.
+        Steps:
+            - Add an item with a quantity of 0.
+            - Add an item with a negative quantity.
+        Expected Outcome:
+            - Adding an item with a quantity of 0 or
+            less should raise a ValidationError.
+            - The error message should indicate that
+            the quantity must be greater than zero.
+        """
         # Add a CartItem with quantity 0 using the service function
         with self.assertRaises(ValidationError) as context:
             add_item_to_cart(
@@ -367,6 +468,17 @@ class CheckoutTestCase(APITestCase):
     def test_checkout_with_invalid_data_types(
             self, mock_payment_intent_create
     ):
+        """
+        Test initiating checkout with invalid data types.
+        Steps:
+            - Provide an integer for 'shipping_address'
+            instead of a string.
+            - Attempt to initiate checkout.
+        Expected Outcome:
+            - The request should fail with a 400 BAD REQUEST status.
+            - The error message should indicate that
+            the 'shipping_address' is invalid.
+        """
         # Configure the mock to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_test',
@@ -394,6 +506,20 @@ class CheckoutTestCase(APITestCase):
         )
 
     def test_access_another_users_order(self):
+        """
+        Test attempting to access another user's checkout session.
+        Steps:
+            - Create another user and their cart, order, and payment.
+            - Initiate checkout for the other user's cart.
+            - Attempt to access the other user's checkout session
+            while authenticated as self.user.
+
+        Expected Outcome:
+            - The request should fail with a 403 FORBIDDEN or
+            404 NOT FOUND status.
+            - The error message should indicate
+            the user does not have access to the checkout session.
+        """
         # Create another user and their cart
         other_user = get_user_model().objects.create_user(
             email="otheruser@example.com", password="password123"
