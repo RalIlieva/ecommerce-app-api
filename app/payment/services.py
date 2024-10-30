@@ -43,6 +43,7 @@ def create_payment_intent(order_id, user):
             currency='usd',
             metadata={'order_id': order.id},
             payment_method_types=['card'],
+            idempotency_key=f"order_{order.id}_payment"  # Ensure uniqueness
         )
     except stripe.error.StripeError as e:
         # If Stripe raises an error, raise a custom PaymentFailedException

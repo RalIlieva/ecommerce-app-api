@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'order',
     'payment',
     'cart',
+    'checkout',
     'wishlist',
     'rest_framework',
     'drf_spectacular',
@@ -230,3 +231,7 @@ LOGGING = {
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+
+# Session Configuration
+SESSION_COOKIE_AGE = 1800  # 30 minutes in seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
