@@ -1,4 +1,4 @@
-from rest_framework.test import APITestCase, APIClient
+from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 from products.models import Product, Category
 from cart.models import Cart, CartItem
@@ -81,4 +81,7 @@ class CheckoutSessionSerializerTestCase(APITestCase):
         self.assertIn('items', data['cart'])
         self.assertEqual(len(data['cart']['items']), 1)
         self.assertEqual(data['cart']['items'][0]['quantity'], 2)
-        self.assertEqual(data['cart']['items'][0]['product']['name'], 'Test Product')
+        self.assertEqual(
+            data['cart']['items'][0]['product']['name'],
+            'Test Product'
+        )

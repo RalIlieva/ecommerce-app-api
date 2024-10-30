@@ -24,7 +24,8 @@ class CheckoutSessionDeletionTestCase(APITestCase):
             'status': 'succeeded'
         }
 
-        # Create test user, category, product, cart, cart items, order, payment, and checkout session
+        # Create test user, category, product, cart, cart items,
+        # order, payment, and checkout session
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com", password="password123"
         )
@@ -45,8 +46,12 @@ class CheckoutSessionDeletionTestCase(APITestCase):
             {'product': self.product.uuid, 'quantity': 1}
         ])
         # This now uses the mocked function
-        self.payment_secret = create_payment_intent(order_id=self.order.id, user=self.user)
-        self.payment = Payment.objects.get(order=self.order)
+        self.payment_secret = create_payment_intent(
+            order_id=self.order.id, user=self.user
+        )
+        self.payment = Payment.objects.get(
+            order=self.order
+        )
         self.checkout_session = CheckoutSession.objects.create(
             user=self.user,
             cart=self.cart,
@@ -66,4 +71,3 @@ class CheckoutSessionDeletionTestCase(APITestCase):
         # Verify that the related Order and Payment still exist
         self.assertTrue(Order.objects.filter(id=self.order.id).exists())
         self.assertTrue(Payment.objects.filter(id=self.payment.id).exists())
-
