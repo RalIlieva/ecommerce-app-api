@@ -5,11 +5,7 @@ from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from products.models import Product, Category
-from payment.models import Payment
-from order.models import Order
 from cart.models import Cart, CartItem
-from checkout.models import CheckoutSession
-from stripe.error import StripeError
 
 
 class CheckoutPerformanceTestCase(APITestCase):
@@ -52,7 +48,10 @@ class CheckoutPerformanceTestCase(APITestCase):
         start_time = time.time()
 
         # Make a POST request to start checkout
-        response = self.client.post(url, format='json', data={'shipping_address': '789 Oak St'})
+        response = self.client.post(
+            url, format='json',
+            data={'shipping_address': '789 Oak St'}
+        )
 
         # End timing
         end_time = time.time()
@@ -61,5 +60,9 @@ class CheckoutPerformanceTestCase(APITestCase):
         # Assert that the response is successful
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Assert that the response time is within acceptable limits (e.g., < 2 seconds)
-        self.assertLess(elapsed_time, 2, f"Checkout initiation took too long: {elapsed_time} seconds")
+        # Assert  the response time is within acceptable limits
+        # (e.g., < 2 seconds)
+        self.assertLess(
+            elapsed_time, 2,
+            f"Checkout initiation took too long: {elapsed_time} seconds"
+        )

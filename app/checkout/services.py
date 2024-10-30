@@ -1,5 +1,4 @@
 from order.models import Order, OrderItem
-from cart.models import CartItem
 
 
 def create_order_from_cart(cart, user):

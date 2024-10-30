@@ -62,7 +62,10 @@ class CheckoutTestCase(APITestCase):
             print(f"Response Data: {response.data}")
 
         # Check if response is successful
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
 
         # Verify the payment intent was created with the correct parameters
         order = Order.objects.get(user=self.user)
@@ -219,7 +222,10 @@ class CheckoutTestCase(APITestCase):
         )
 
         # Assert that the second attempt fails due to existing payment
-        self.assertEqual(response_second.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response_second.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
         self.assertEqual(
             response_second.data['detail'],
             "Checkout session already exists for this cart."

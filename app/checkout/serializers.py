@@ -8,8 +8,11 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     cart = CartSerializer(read_only=True)
     uuid = serializers.UUIDField(read_only=True)
     payment_secret = serializers.SerializerMethodField(read_only=True)
-    shipping_address = serializers.CharField(required=True, validators=[validate_string_only])
-    user = serializers.PrimaryKeyRelatedField(read_only=True)  # Mark user as read-only
+    shipping_address = serializers.CharField(
+        required=True,
+        validators=[validate_string_only]
+    )
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = CheckoutSession
