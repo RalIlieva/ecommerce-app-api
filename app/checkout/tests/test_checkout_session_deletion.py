@@ -9,9 +9,36 @@ from checkout.models import CheckoutSession
 
 
 class CheckoutSessionDeletionTestCase(APITestCase):
+    """
+    Test case for the deletion of a CheckoutSession.
+    Ensures that deleting a CheckoutSession does not affect
+    related objects such as the Order or Payment.
+    """
     @patch('payment.services.stripe.PaymentIntent.create')
     @patch('payment.services.stripe.PaymentIntent.retrieve')
-    def setUp(self, mock_retrieve_payment_intent, mock_create_payment_intent):
+    def setUp(
+            self, mock_retrieve_payment_intent,
+            mock_create_payment_intent
+    ):
+        """
+        Set up the environment for the test.
+
+        Mocks the Stripe PaymentIntent creation and retrieval calls to prevent
+        real API interactions. Sets up a test user, category, product, cart,
+        cart items, order, payment, and checkout session.
+
+        Args:
+            mock_retrieve_payment_intent (MagicMock):
+            Mock for retrieving PaymentIntent.
+            mock_create_payment_intent (MagicMock):
+            Mock for creating PaymentIntent.
+
+        Steps:
+            - Mock Stripe API calls to simulate successful payment scenarios.
+            - Create and authenticate a test user.
+            - Create the related objects needed for a checkout session:
+            product, cart, order, payment, etc.
+        """
         # Mock PaymentIntent.create to return a fake PaymentIntent
         mock_create_payment_intent.return_value = {
             'id': 'pi_test_deletion',
@@ -61,6 +88,25 @@ class CheckoutSessionDeletionTestCase(APITestCase):
         )
 
     def test_delete_checkout_session(self):
+        """
+        Test the deletion of a CheckoutSession.
+
+        This test verifies that deleting a CheckoutSession
+        does not delete the related Order or Payment objects.
+        Only the CheckoutSession is expected to be removed,
+        while other related data remains intact.
+
+        Steps:
+            - Delete the existing checkout session.
+            - Verify that the checkout session is deleted.
+            - Ensure that related Order and Payment objects still exist.
+
+        Expected Outcomes:
+            - Deleting the checkout session should raise
+             DoesNotExist exception when attempting to
+             retrieve it from db.
+            - The Order and Payment should still be present in the database.
+        """
         # Delete the checkout session
         self.checkout_session.delete()
 
