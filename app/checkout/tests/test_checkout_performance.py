@@ -9,7 +9,19 @@ from cart.models import Cart, CartItem
 
 
 class CheckoutPerformanceTestCase(APITestCase):
+    """
+    Test case for evaluating the performance of
+    the checkout initiation process.
+    This suite measures the performance of the checkout initiation, ensuring
+    that the response times are within acceptable limits even under simulated
+    delays (e.g., network latency).
+    """
     def setUp(self):
+        """
+        Set up the environment for the performance test.
+        Creates the necessary user, product, cart, cart items
+        to be used in the test case.
+        """
         # Create test user
         self.user = get_user_model().objects.create_user(
             email="testuser@example.com", password="password123"
@@ -32,6 +44,28 @@ class CheckoutPerformanceTestCase(APITestCase):
 
     @patch('payment.services.stripe.PaymentIntent.create')
     def test_checkout_initiation_performance(self, mock_payment_intent_create):
+        """
+        Test the performance of the checkout initiation.
+        This test measures the time taken to initiate the checkout process,
+        ensuring that it completes within an acceptable limit.
+        Steps:
+            - Mock the Stripe `PaymentIntent.create` method to introduce
+            a delay to simulate network latency.
+            - Initiate the checkout process and time the response.
+            - Assert that the response is successful.
+            - Assert that the response time is within acceptable limits
+            (e.g., < 2 seconds).
+
+        Expected Outcome:
+            - The checkout initiation should be completed successfully.
+            - The elapsed time should be less than the
+            predefined acceptable limit.
+
+        Notes:
+            - Simulates a network delay of 0.5 seconds using `time.sleep()`.
+            - This test ensures that the system remains performant even when
+            facing external latency.
+        """
         # Configure the mock to return a fake PaymentIntent with a delay
         def delayed_create(*args, **kwargs):
             time.sleep(0.5)  # Simulate network delay
