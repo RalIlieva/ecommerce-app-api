@@ -1,3 +1,7 @@
+"""
+Views for checkout app.
+"""
+
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -20,10 +24,41 @@ from django.db import transaction
 
 
 class StartCheckoutSessionView(generics.CreateAPIView):
+    """
+    API endpoint to start a checkout session.
+    This view handles the creation of a checkout session for a user's cart.
+    It ensures the cart is not empty, creates an order for the cart items,
+    and initiates a payment intent.
+    Attributes:
+        permission_classes (list):
+        List of permission classes;
+        only authenticated users can initiate checkout.
+        serializer_class (Serializer):
+        The serializer used for validating input data.
+    Methods:
+        post(request, *args, **kwargs):
+        Handles POST requests to initiate a checkout session.
+       """
     permission_classes = [IsAuthenticated]
     serializer_class = CheckoutSessionSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles the creation of a new checkout session.
+        The method retrieves the user's cart, validates that it is not empty,
+        and then creates a new checkout session. It also creates an order
+        from the cart items and initiates a payment intent.
+
+        Args:
+            request (Request):
+            The request object containing user and checkout data.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        Returns:
+            Response:
+            JSON response containing the checkout session details
+            or error information.
+        """
         # Get the user's cart
         cart = get_or_create_cart(request.user)
 
@@ -98,10 +133,42 @@ class StartCheckoutSessionView(generics.CreateAPIView):
 
 
 class CompleteCheckoutView(APIView):
+    """
+    API endpoint to complete a checkout session.
+
+    This view handles completing the checkout session by validating the payment
+    status with Stripe, updating the status of the payment,
+    and marking the order as completed.
+
+    Attributes:
+        permission_classes (list): List of permission classes;
+        only authenticated users can complete checkout.
+
+    Methods:
+        post(request, *args, **kwargs):
+        Handles POST requests to complete a checkout session.
+    """
     permission_classes = [IsAuthenticated]
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
+        """
+        Completes a checkout session by validating payment status with Stripe.
+
+        This method locks the checkout session to ensure consistency
+        while verifying the payment intent & updating the payment status.
+        If successful, it marks the order & checkout session as completed.
+
+        Args:
+            request (Request): The request object containing user information.
+            *args: Variable length argument list.
+            **kwargs:
+            Arbitrary keyword arguments containing checkout session UUID.
+
+        Returns:
+            Response:
+            JSON response indicating success or failure of checkout process.
+        """
         checkout_session_uuid = kwargs['checkout_session_uuid']
         try:
             checkout_session = CheckoutSession.objects.select_for_update().get(

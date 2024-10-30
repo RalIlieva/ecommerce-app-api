@@ -1,4 +1,7 @@
-from order.models import Order, OrderItem
+from order.models import (
+    Order,
+    OrderItem
+)
 
 
 def create_order_from_cart(cart, user):
