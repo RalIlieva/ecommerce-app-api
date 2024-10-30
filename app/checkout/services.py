@@ -1,3 +1,7 @@
+"""
+Business logic - functions - write to db.
+"""
+
 from order.models import (
     Order,
     OrderItem

@@ -1,3 +1,7 @@
+"""
+Checkout serializers.
+"""
+
 from rest_framework import serializers
 from .models import CheckoutSession
 from core.validators import validate_string_only

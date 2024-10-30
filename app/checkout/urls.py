@@ -1,3 +1,7 @@
+"""
+URL mappings for the checkout app.
+"""
+
 from django.urls import path
 from .views import StartCheckoutSessionView, CompleteCheckoutView
 

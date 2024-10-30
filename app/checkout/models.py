@@ -1,3 +1,7 @@
+"""
+Checkout models.
+"""
+
 from django.db import models
 from django.conf import settings
 from cart.models import Cart
