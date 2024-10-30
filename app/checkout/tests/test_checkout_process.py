@@ -404,7 +404,8 @@ class CheckoutTestCase(APITestCase):
     #     1 for res in results if res.status_code == status.HTTP_201_CREATED
     #     )
     #     failure_count = sum(
-    #     1 for res in results if res.status_code == status.HTTP_400_BAD_REQUEST
+    #     1 for res in results if res.status_code ==
+    #     status.HTTP_400_BAD_REQUEST
     #     )
     #
     #     # Assert that only one checkout succeeded

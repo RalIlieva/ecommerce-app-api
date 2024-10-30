@@ -134,7 +134,9 @@ class CompleteCheckoutView(APIView):
                 checkout_session.payment.save()
 
                 return Response(
-                    {"detail": "Payment failed. Checkout could not be completed."},
+                    {"detail":
+                        "Payment failed. Checkout could not be completed."
+                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
         except stripe_error.InvalidRequestError as e:

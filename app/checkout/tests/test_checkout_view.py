@@ -21,11 +21,13 @@ class CompleteCheckoutViewTestCase(APITestCase):
             mock_stripe_payment_intent_create
     ):
         # Mock the Stripe PaymentIntent.create call to prevent actual API calls
-        mock_stripe_payment_intent_create.side_effect = self.mocked_stripe_payment_intent_create
+        mock_stripe_payment_intent_create.side_effect = \
+            self.mocked_stripe_payment_intent_create
 
         # Generate a unique payment secret for every test
         # to avoid Stripe's IdempotencyError
-        mock_create_payment_intent.side_effect = lambda *args, **kwargs: f'test_payment_secret_{uuid.uuid4()}'
+        mock_create_payment_intent.side_effect = \
+            lambda *args, **kwargs: f'test_payment_secret_{uuid.uuid4()}'
 
         # Create test user
         self.user = get_user_model().objects.create_user(
@@ -294,7 +296,10 @@ class CompleteCheckoutViewTestCase(APITestCase):
         print("Attempting to start checkout process...")
 
         # Make a POST request to initiate the checkout session
-        start_response = self.client.post(start_checkout_url, format='json', data={'shipping_address': '321 Pine St'})
+        start_response = self.client.post(
+            start_checkout_url, format='json',
+            data={'shipping_address': '321 Pine St'}
+        )
 
         # Print response for debugging purposes if it fails
         if start_response.status_code != status.HTTP_201_CREATED:

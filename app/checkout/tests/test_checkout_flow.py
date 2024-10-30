@@ -66,7 +66,9 @@ class CompleteCheckoutFlowTestCase(APITestCase):
 
         # Retrieve the CheckoutSession
         checkout_session_uuid = start_response.data['uuid']
-        checkout_session = CheckoutSession.objects.get(uuid=checkout_session_uuid)
+        checkout_session = CheckoutSession.objects.get(
+            uuid=checkout_session_uuid
+        )
 
         # Step 2: Complete Checkout
         complete_checkout_url = reverse(
