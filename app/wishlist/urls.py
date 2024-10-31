@@ -6,6 +6,9 @@ from .views import (
     MoveToCartView
 )
 
+# A namespace for the order app
+app_name = 'wishlist'
+
 urlpatterns = [
     path('', WishlistView.as_view(), name='wishlist-detail'),
     path('add/', AddToWishlistView.as_view(), name='wishlist-add'),
