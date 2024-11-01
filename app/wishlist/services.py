@@ -33,14 +33,6 @@ def remove_product_from_wishlist(user, product_uuid):
     wishlist_item = wishlist.items.filter(product=product).first()
     if wishlist_item:
         wishlist_item.delete()
-    # wishlist = get_or_create_wishlist(user)
-    # product = get_object_or_404(Product, uuid=product_uuid)
-    #
-    # try:
-    #     item = WishlistItem.objects.get(wishlist=wishlist, product=product)
-    #     item.delete()
-    # except WishlistItem.DoesNotExist:
-    #     raise NotFound("Product not found in the wishlist.")
 
 
 def move_wishlist_item_to_cart(user, product_uuid):
