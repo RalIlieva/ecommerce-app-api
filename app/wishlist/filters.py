@@ -1,4 +1,6 @@
-# wishlist/filters.py
+"""
+Filters for wishlist.
+"""
 
 import django_filters
 from .models import WishlistItem
