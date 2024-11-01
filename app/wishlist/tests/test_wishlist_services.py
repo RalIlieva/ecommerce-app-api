@@ -14,7 +14,6 @@ from wishlist.services import (
     move_wishlist_item_to_cart
 )
 from products.models import Product, Category
-from rest_framework.exceptions import ValidationError
 from cart.models import CartItem
 
 User = get_user_model()

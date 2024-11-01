@@ -13,7 +13,9 @@ def add_product_to_wishlist(user, product_uuid):
     wishlist = get_or_create_wishlist(user)
     product = get_object_or_404(Product, uuid=product_uuid)
 
-    if WishlistItem.objects.filter(wishlist=wishlist, product=product).exists():
+    if WishlistItem.objects.filter(
+            wishlist=wishlist, product=product
+    ).exists():
         raise ValidationError("Product is already in the wishlist.")
 
     WishlistItem.objects.create(wishlist=wishlist, product=product)
