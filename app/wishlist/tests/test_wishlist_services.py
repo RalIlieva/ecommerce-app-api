@@ -83,3 +83,17 @@ class UnauthorizedWishlistAccessTest(TestCase):
     def test_unauthorized_add_to_wishlist(self):
         response = self.client.post(reverse('wishlist:wishlist-add'), {'product_uuid': str(self.product.uuid)})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class WishlistNoStockTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(email="user@example.com", password="password123")
+        self.category = Category.objects.create(name='Electronics', slug='electronics')
+        self.product = Product.objects.create(name='Test Product', price=100.0, stock=5, category=self.category)
+
+    def test_add_product_with_no_stock_to_wishlist(self):
+        wishlist = add_product_to_wishlist(self.user, self.product.uuid)
+        self.assertEqual(wishlist.items.count(), 1)
+        self.assertEqual(wishlist.items.first().product, self.product)
