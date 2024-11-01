@@ -1,5 +1,7 @@
 # wishlist/tests/test_wishlist_services.py
 
+import uuid
+from rest_framework.exceptions import ValidationError, NotFound
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from wishlist.services import (
@@ -49,9 +51,12 @@ class WishlistServiceTest(TestCase):
         wishlist = get_or_create_wishlist(self.user)
         self.assertEqual(wishlist.items.count(), 0)
 
-    # def test_remove_nonexistent_product_from_wishlist(self):
-    #     with self.assertRaises(NotFound):
-    #         remove_product_from_wishlist(self.user, 'nonexistent-uuid')
+    def test_remove_nonexistent_product_from_wishlist(self):
+        # Generate a valid UUID that doesn't exist in the database
+        non_existent_uuid = uuid.uuid4()
+
+        with self.assertRaises(NotFound):
+            remove_product_from_wishlist(self.user, non_existent_uuid)
 
     def test_move_wishlist_item_to_cart(self):
         add_product_to_wishlist(self.user, self.product.uuid)
