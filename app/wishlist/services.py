@@ -3,7 +3,6 @@ Business logic - functions - write to db.
 """
 
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError, NotFound
 from products.models import Product
 from core.exceptions import (
     ProductAlreadyInWishlistException,
@@ -11,6 +10,7 @@ from core.exceptions import (
     InsufficientStockError
 )
 from .models import Wishlist, WishlistItem
+
 
 def get_or_create_wishlist(user):
     wishlist, created = Wishlist.objects.get_or_create(user=user)
@@ -53,6 +53,7 @@ def remove_product_from_wishlist(user, product_uuid):
     # If found, delete the wishlist item
     wishlist_item.delete()
 
+
 def move_wishlist_item_to_cart(user, product_uuid):
     """
     Move a product from the user's wishlist to the cart.
@@ -63,7 +64,6 @@ def move_wishlist_item_to_cart(user, product_uuid):
 
     if product.stock <= 0:
         raise InsufficientStockError()
-        # raise ValidationError("This product is currently out of stock.")
 
     remove_product_from_wishlist(user, product_uuid)
     add_item_to_cart(user, product.id, quantity=1)

@@ -1,7 +1,4 @@
-# wishlist/tests/test_wishlist_services.py
-
 import uuid
-from rest_framework.exceptions import ValidationError, NotFound
 from rest_framework import status
 from django.urls import reverse
 from django.test import TestCase
@@ -76,8 +73,6 @@ class WishlistServiceTest(TestCase):
         add_product_to_wishlist(self.user, self.product.uuid)
         with self.assertRaises(ProductAlreadyInWishlistException):
             add_product_to_wishlist(self.user, self.product.uuid)
-        # with self.assertRaises(ValidationError):
-        #     add_product_to_wishlist(self.user, self.product.uuid)
 
     def test_remove_product_from_wishlist(self):
         """
@@ -101,9 +96,6 @@ class WishlistServiceTest(TestCase):
 
         with self.assertRaises(ProductNotInWishlistException):
             remove_product_from_wishlist(self.user, non_existent_uuid)
-
-        # with self.assertRaises(NotFound):
-        #     remove_product_from_wishlist(self.user, non_existent_uuid)
 
     def test_move_wishlist_item_to_cart(self):
         """
@@ -222,7 +214,6 @@ class WishlistRemoveNonExistentItemTest(TestCase):
 
         add_product_to_wishlist(self.user, self.product.uuid)
 
-
     def test_remove_item_not_in_wishlist(self):
         """
         Test removal of an item not in the wishlist:
@@ -230,8 +221,9 @@ class WishlistRemoveNonExistentItemTest(TestCase):
         expecting a NotFound exception.
         """
         # Remove a product that has never been added
-        another_product = Product.objects.create(name='Another Product', price=150.0, stock=10, category=self.category)
+        another_product = Product.objects.create(
+            name='Another Product', price=150.0, stock=10,
+            category=self.category
+        )
         with self.assertRaises(ProductNotInWishlistException):
             remove_product_from_wishlist(self.user, another_product.uuid)
-        # with self.assertRaises(NotFound):
-        #     remove_product_from_wishlist(self.user, uuid.uuid4())
