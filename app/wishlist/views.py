@@ -1,3 +1,7 @@
+"""
+Views for wishlist app.
+"""
+
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,6 +15,18 @@ from .services import (
 
 
 class WishlistView(generics.RetrieveAPIView):
+    """
+    Retrieve the current user's wishlist.
+
+    This view retrieves the wishlist of the authenticated user.
+    If no wishlist exists for the user, a new one is created.
+
+    * Requires user to be authenticated.
+    * Returns serialized wishlist data.
+
+    Returns:
+        Response: Serialized data of the user's wishlist.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = WishlistSerializer
 
@@ -19,6 +35,15 @@ class WishlistView(generics.RetrieveAPIView):
 
 
 class AddToWishlistView(generics.CreateAPIView):
+    """
+    Add a product to the user's wishlist.
+    This view allows an authenticated user to add a specified product
+    to their wishlist.
+    * Requires user to be authenticated.
+    * Expects a 'product_uuid' in the request data.
+    Returns:
+        Response: A confirmation message with HTTP 201 status.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = WishlistItemSerializer
 
@@ -32,6 +57,16 @@ class AddToWishlistView(generics.CreateAPIView):
 
 
 class RemoveFromWishlistView(generics.DestroyAPIView):
+    """
+    Remove a product from the user's wishlist.
+    This view allows an authenticated user to remove a specific product
+    from their wishlist by providing the product's UUID in the URL.
+    * Requires user to be authenticated.
+    * Expects 'product_uuid' in URL parameters.
+
+    Returns:
+        Response: A confirmation message with HTTP 204 status.
+    """
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, *args, **kwargs):
@@ -44,6 +79,15 @@ class RemoveFromWishlistView(generics.DestroyAPIView):
 
 
 class MoveToCartView(generics.CreateAPIView):
+    """
+    Move a product from the wishlist to the cart.
+    This view allows an authenticated user to move a specified product
+    from their wishlist to the shopping cart.
+    * Requires user to be authenticated.
+    * Expects 'product_uuid' in the request data.
+    Returns:
+        Response: A confirmation message with HTTP 200 status.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
