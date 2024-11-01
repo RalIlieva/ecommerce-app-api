@@ -97,3 +97,16 @@ class WishlistNoStockTest(TestCase):
         wishlist = add_product_to_wishlist(self.user, self.product.uuid)
         self.assertEqual(wishlist.items.count(), 1)
         self.assertEqual(wishlist.items.first().product, self.product)
+
+
+class WishlistRemoveNonExistentItemTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(email="user@example.com", password="password123")
+        self.category = Category.objects.create(name='Electronics', slug='electronics')
+        self.product = Product.objects.create(name='Test Product', price=100.0, stock=5, category=self.category)
+
+    def test_remove_item_not_in_wishlist(self):
+        # Remove a product that has never been added
+        with self.assertRaises(NotFound):
+            remove_product_from_wishlist(self.user, uuid.uuid4())
