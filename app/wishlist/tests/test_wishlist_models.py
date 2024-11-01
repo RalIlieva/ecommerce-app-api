@@ -62,7 +62,7 @@ class WishlistModelTest(TestCase):
         Test uniqueness constraint on wishlist items:
         - Adds a product to the wishlist.
         - Attempts to add the same product again, expecting an IntegrityError.
-        - Verifies that duplicate products cannot be added to the same wishlist.
+        - Verifies duplicate products cannot be added to the same wishlist.
         """
         wishlist = Wishlist.objects.create(user=self.user)
         WishlistItem.objects.create(

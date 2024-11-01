@@ -100,7 +100,7 @@ class WishlistServiceTest(TestCase):
         """
         Test moving a wishlist item to the cart:
         - Adds a product to the wishlist and then moves it to the cart.
-        - Verifies that the item is removed from the wishlist and added to the cart.
+        - Verifies the item is removed from the wishlist & added to the cart.
         """
         add_product_to_wishlist(self.user, self.product.uuid)
         move_wishlist_item_to_cart(self.user, self.product.uuid)
@@ -114,12 +114,13 @@ class WishlistServiceTest(TestCase):
 
 class UnauthorizedWishlistAccessTest(TestCase):
     """
-    Test suite for ensuring unauthorized users cannot access wishlist functionality.
+    Test suite for ensuring unauthorized users
+    cannot access wishlist functionality.
     """
 
     def setUp(self):
         """
-        Set up an API client, category, and product for unauthorized access tests.
+        Set up API client, category, product for unauthorized access tests.
         """
         self.client = APIClient()
         self.category = Category.objects.create(
@@ -153,7 +154,8 @@ class UnauthorizedWishlistAccessTest(TestCase):
 
 class WishlistNoStockTest(TestCase):
     """
-    Test suite for adding items to the wishlist where stock status may affect eligibility.
+    Test suite for adding items to the wishlist
+    where stock status may affect eligibility.
     """
 
     def setUp(self):
@@ -178,7 +180,8 @@ class WishlistNoStockTest(TestCase):
     def test_add_product_with_no_stock_to_wishlist(self):
         """
         Test adding a product with no stock to the wishlist:
-        - Ensures that products can be added to the wishlist even if out of stock.
+        - Ensures that products can be added to the wishlist
+        even if out of stock.
         """
         wishlist = add_product_to_wishlist(self.user, self.product.uuid)
         self.assertEqual(wishlist.items.count(), 1)
@@ -187,12 +190,12 @@ class WishlistNoStockTest(TestCase):
 
 class WishlistRemoveNonExistentItemTest(TestCase):
     """
-    Test suite for ensuring appropriate handling when removing a non-existent item.
+    Test suite for appropriate handling when removing a non-existent item.
     """
 
     def setUp(self):
         """
-        Set up a user, category, and product instance for non-existent item tests.
+        Set up user, category, product instance for non-existent item tests.
         """
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -211,7 +214,8 @@ class WishlistRemoveNonExistentItemTest(TestCase):
     def test_remove_item_not_in_wishlist(self):
         """
         Test removal of an item not in the wishlist:
-        - Attempts to remove a product that was never added, expecting a NotFound exception.
+        - Attempts to remove a product that was never added,
+        expecting a NotFound exception.
         """
         # Remove a product that has never been added
         with self.assertRaises(NotFound):
