@@ -45,16 +45,16 @@ class WishlistSelectorsTest(TestCase):
 
     def test_get_user_wishlist(self):
         """
-        Test that `get_user_wishlist` retrieves the correct wishlist for the user:
-        - Verifies that the returned wishlist belongs to the test user.
+        Test`get_user_wishlist` retrieves the correct wishlist for the user:
+        - Verifies the returned wishlist belongs to the test user.
         """
         wishlist = get_user_wishlist(self.user)
         self.assertEqual(wishlist.user, self.user)
 
     def test_get_wishlist_items(self):
         """
-        Test that `get_wishlist_items` retrieves all items in the user's wishlist:
-        - Checks that the returned items list contains the expected wishlist item.
+        Test`get_wishlist_items` retrieves all items in the user's wishlist:
+        - Checks the returned items list contains the expected wishlist item.
         """
         items = get_wishlist_items(self.user)
         self.assertEqual(len(items), 1)
