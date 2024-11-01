@@ -2,7 +2,10 @@
 
 import uuid
 from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework import status
+from django.urls import reverse
 from django.test import TestCase
+from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 from wishlist.services import (
     get_or_create_wishlist,
@@ -64,3 +67,19 @@ class WishlistServiceTest(TestCase):
         self.assertTrue(CartItem.objects.filter(cart__user=self.user, product=self.product).exists())
         wishlist = get_or_create_wishlist(self.user)
         self.assertEqual(wishlist.items.count(), 0)
+
+
+class UnauthorizedWishlistAccessTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.category = Category.objects.create(name='Electronics', slug='electronics')
+        self.product = Product.objects.create(name='Test Product', price=100.0, stock=5, category=self.category)
+
+    def test_unauthorized_access_to_wishlist(self):
+        response = self.client.get(reverse('wishlist:wishlist-detail'))
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_unauthorized_add_to_wishlist(self):
+        response = self.client.post(reverse('wishlist:wishlist-add'), {'product_uuid': str(self.product.uuid)})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
