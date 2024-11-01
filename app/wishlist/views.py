@@ -1,7 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import WishlistItem
 from .serializers import WishlistSerializer, WishlistItemSerializer
 from .services import (
     get_or_create_wishlist,
@@ -26,7 +25,10 @@ class AddToWishlistView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         product_uuid = request.data.get('product_uuid')
         add_product_to_wishlist(request.user, product_uuid)
-        return Response({'detail': 'Product added to wishlist.'}, status=status.HTTP_201_CREATED)
+        return Response(
+            {'detail': 'Product added to wishlist.'},
+            status=status.HTTP_201_CREATED
+        )
 
 
 class RemoveFromWishlistView(generics.DestroyAPIView):
@@ -35,7 +37,10 @@ class RemoveFromWishlistView(generics.DestroyAPIView):
     def delete(self, request, *args, **kwargs):
         product_uuid = kwargs.get('product_uuid')
         remove_product_from_wishlist(request.user, product_uuid)
-        return Response({'detail': 'Product removed from wishlist.'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'detail': 'Product removed from wishlist.'},
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class MoveToCartView(generics.CreateAPIView):
@@ -44,4 +49,7 @@ class MoveToCartView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         product_uuid = request.data.get('product_uuid')
         move_wishlist_item_to_cart(request.user, product_uuid)
-        return Response({'detail': 'Product moved to cart.'}, status=status.HTTP_200_OK)
+        return Response(
+            {'detail': 'Product moved to cart.'},
+            status=status.HTTP_200_OK
+        )

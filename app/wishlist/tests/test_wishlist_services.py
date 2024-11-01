@@ -14,7 +14,7 @@ from wishlist.services import (
     move_wishlist_item_to_cart
 )
 from products.models import Product, Category
-from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.exceptions import ValidationError
 from cart.models import CartItem
 
 User = get_user_model()
@@ -23,7 +23,10 @@ User = get_user_model()
 class WishlistServiceTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(email="user@example.com", password="password123")
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            password="password123"
+        )
         self.category = Category.objects.create(
             name='Electronics',
             slug='electronics'
@@ -64,7 +67,10 @@ class WishlistServiceTest(TestCase):
     def test_move_wishlist_item_to_cart(self):
         add_product_to_wishlist(self.user, self.product.uuid)
         move_wishlist_item_to_cart(self.user, self.product.uuid)
-        self.assertTrue(CartItem.objects.filter(cart__user=self.user, product=self.product).exists())
+        self.assertTrue(CartItem.objects.filter(
+            cart__user=self.user,
+            product=self.product).exists()
+                        )
         wishlist = get_or_create_wishlist(self.user)
         self.assertEqual(wishlist.items.count(), 0)
 
@@ -73,15 +79,24 @@ class UnauthorizedWishlistAccessTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.category = Category.objects.create(name='Electronics', slug='electronics')
-        self.product = Product.objects.create(name='Test Product', price=100.0, stock=5, category=self.category)
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
+        self.product = Product.objects.create(
+            name='Test Product', price=100.0, stock=5,
+            category=self.category
+        )
 
     def test_unauthorized_access_to_wishlist(self):
         response = self.client.get(reverse('wishlist:wishlist-detail'))
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_unauthorized_add_to_wishlist(self):
-        response = self.client.post(reverse('wishlist:wishlist-add'), {'product_uuid': str(self.product.uuid)})
+        response = self.client.post(
+            reverse('wishlist:wishlist-add'),
+            {'product_uuid': str(self.product.uuid)}
+        )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -89,9 +104,19 @@ class WishlistNoStockTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(email="user@example.com", password="password123")
-        self.category = Category.objects.create(name='Electronics', slug='electronics')
-        self.product = Product.objects.create(name='Test Product', price=100.0, stock=5, category=self.category)
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            password="password123"
+        )
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
+        self.product = Product.objects.create(
+            name='Test Product',
+            price=100.0, stock=5,
+            category=self.category
+        )
 
     def test_add_product_with_no_stock_to_wishlist(self):
         wishlist = add_product_to_wishlist(self.user, self.product.uuid)
@@ -102,9 +127,19 @@ class WishlistNoStockTest(TestCase):
 class WishlistRemoveNonExistentItemTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(email="user@example.com", password="password123")
-        self.category = Category.objects.create(name='Electronics', slug='electronics')
-        self.product = Product.objects.create(name='Test Product', price=100.0, stock=5, category=self.category)
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            password="password123"
+        )
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
+        self.product = Product.objects.create(
+            name='Test Product',
+            price=100.0, stock=5,
+            category=self.category
+        )
 
     def test_remove_item_not_in_wishlist(self):
         # Remove a product that has never been added

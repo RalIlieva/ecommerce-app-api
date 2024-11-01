@@ -1,5 +1,3 @@
-# wishlist/tests/test_wishlist_models.py
-
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from wishlist.models import Wishlist, WishlistItem
@@ -11,7 +9,10 @@ User = get_user_model()
 class WishlistModelTest(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(email="user@example.com", password="password123")
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            password="password123"
+        )
 
         self.category = Category.objects.create(
             name='Electronics',
@@ -28,13 +29,22 @@ class WishlistModelTest(TestCase):
 
     def test_add_item_to_wishlist(self):
         wishlist = Wishlist.objects.create(user=self.user)
-        wishlist_item = WishlistItem.objects.create(wishlist=wishlist, product=self.product)
+        WishlistItem.objects.create(
+            wishlist=wishlist,
+            product=self.product
+        )
         self.assertEqual(wishlist.items.count(), 1)
         self.assertEqual(wishlist.items.first().product, self.product)
 
     def test_unique_items_in_wishlist(self):
         wishlist = Wishlist.objects.create(user=self.user)
-        WishlistItem.objects.create(wishlist=wishlist, product=self.product)
-
-        with self.assertRaises(Exception):  # Expecting IntegrityError
-            WishlistItem.objects.create(wishlist=wishlist, product=self.product)
+        WishlistItem.objects.create(
+            wishlist=wishlist,
+            product=self.product
+        )
+        # Expecting IntegrityError
+        with self.assertRaises(Exception):
+            WishlistItem.objects.create(
+                wishlist=wishlist,
+                product=self.product
+            )

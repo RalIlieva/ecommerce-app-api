@@ -14,7 +14,10 @@ class WishlistViewsTest(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(email="user@example.com", password="password123")
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            password="password123"
+        )
         self.category = Category.objects.create(
             name='Electronics',
             slug='electronics'
@@ -30,23 +33,38 @@ class WishlistViewsTest(TestCase):
         self.assertEqual(len(response.data['items']), 0)
 
     def test_add_product_to_wishlist(self):
-        response = self.client.post(reverse('wishlist:wishlist-add'), {'product_uuid': self.product.uuid})
+        response = self.client.post(
+            reverse('wishlist:wishlist-add'),
+            {'product_uuid': self.product.uuid}
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('detail', response.data)
 
     def test_remove_product_from_wishlist(self):
         # Add the product to wishlist first
-        self.client.post(reverse('wishlist:wishlist-add'), {'product_uuid': self.product.uuid})
+        self.client.post(
+            reverse('wishlist:wishlist-add'),
+            {'product_uuid': self.product.uuid}
+        )
 
         # Remove product from wishlist
-        response = self.client.delete(reverse('wishlist:wishlist-remove', args=[self.product.uuid]))
+        response = self.client.delete(
+            reverse('wishlist:wishlist-remove',
+                    args=[self.product.uuid])
+        )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_move_product_to_cart(self):
         # Add product to wishlist first
-        self.client.post(reverse('wishlist:wishlist-add'), {'product_uuid': self.product.uuid})
+        self.client.post(
+            reverse('wishlist:wishlist-add'),
+            {'product_uuid': self.product.uuid}
+        )
 
         # Move product to cart
-        response = self.client.post(reverse('wishlist:wishlist-move-to-cart'), {'product_uuid': self.product.uuid})
+        response = self.client.post(
+            reverse('wishlist:wishlist-move-to-cart'),
+            {'product_uuid': self.product.uuid}
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('detail', response.data)
