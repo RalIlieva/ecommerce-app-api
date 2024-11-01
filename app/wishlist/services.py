@@ -1,3 +1,7 @@
+"""
+Business logic - functions - write to db.
+"""
+
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError, NotFound
 from .models import Wishlist, WishlistItem
@@ -10,6 +14,9 @@ def get_or_create_wishlist(user):
 
 
 def add_product_to_wishlist(user, product_uuid):
+    """
+    Add a product to the user's wishlist.
+    """
     wishlist = get_or_create_wishlist(user)
     product = get_object_or_404(Product, uuid=product_uuid)
 
@@ -38,6 +45,9 @@ def remove_product_from_wishlist(user, product_uuid):
 
 
 def move_wishlist_item_to_cart(user, product_uuid):
+    """
+    Move a product from the user's wishlist to the cart.
+    """
     from cart.services import add_item_to_cart
 
     product = get_object_or_404(Product, uuid=product_uuid)
