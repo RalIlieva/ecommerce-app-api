@@ -13,6 +13,10 @@ from wishlist.services import (
     remove_product_from_wishlist,
     move_wishlist_item_to_cart
 )
+from core.exceptions import (
+    ProductAlreadyInWishlistException,
+    ProductNotInWishlistException
+)
 from products.models import Product, Category
 from cart.models import CartItem
 
@@ -70,8 +74,10 @@ class WishlistServiceTest(TestCase):
         - Attempts to add the same product again, expecting a ValidationError.
         """
         add_product_to_wishlist(self.user, self.product.uuid)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ProductAlreadyInWishlistException):
             add_product_to_wishlist(self.user, self.product.uuid)
+        # with self.assertRaises(ValidationError):
+        #     add_product_to_wishlist(self.user, self.product.uuid)
 
     def test_remove_product_from_wishlist(self):
         """
@@ -93,8 +99,11 @@ class WishlistServiceTest(TestCase):
         # Generate a valid UUID that doesn't exist in the database
         non_existent_uuid = uuid.uuid4()
 
-        with self.assertRaises(NotFound):
+        with self.assertRaises(ProductNotInWishlistException):
             remove_product_from_wishlist(self.user, non_existent_uuid)
+
+        # with self.assertRaises(NotFound):
+        #     remove_product_from_wishlist(self.user, non_existent_uuid)
 
     def test_move_wishlist_item_to_cart(self):
         """
@@ -211,6 +220,9 @@ class WishlistRemoveNonExistentItemTest(TestCase):
             category=self.category
         )
 
+        add_product_to_wishlist(self.user, self.product.uuid)
+
+
     def test_remove_item_not_in_wishlist(self):
         """
         Test removal of an item not in the wishlist:
@@ -218,5 +230,8 @@ class WishlistRemoveNonExistentItemTest(TestCase):
         expecting a NotFound exception.
         """
         # Remove a product that has never been added
-        with self.assertRaises(NotFound):
-            remove_product_from_wishlist(self.user, uuid.uuid4())
+        another_product = Product.objects.create(name='Another Product', price=150.0, stock=10, category=self.category)
+        with self.assertRaises(ProductNotInWishlistException):
+            remove_product_from_wishlist(self.user, another_product.uuid)
+        # with self.assertRaises(NotFound):
+        #     remove_product_from_wishlist(self.user, uuid.uuid4())

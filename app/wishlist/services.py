@@ -4,9 +4,12 @@ Business logic - functions - write to db.
 
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError, NotFound
-from .models import Wishlist, WishlistItem
 from products.models import Product
-
+from core.exceptions import (
+    ProductAlreadyInWishlistException,
+    ProductNotInWishlistException
+)
+from .models import Wishlist, WishlistItem
 
 def get_or_create_wishlist(user):
     wishlist, created = Wishlist.objects.get_or_create(user=user)
@@ -23,7 +26,8 @@ def add_product_to_wishlist(user, product_uuid):
     if WishlistItem.objects.filter(
             wishlist=wishlist, product=product
     ).exists():
-        raise ValidationError("Product is already in the wishlist.")
+        raise ProductAlreadyInWishlistException()
+        # raise ValidationError("Product is already in the wishlist.")
 
     WishlistItem.objects.create(wishlist=wishlist, product=product)
     return wishlist
@@ -37,7 +41,8 @@ def remove_product_from_wishlist(user, product_uuid):
     try:
         product = Product.objects.get(uuid=product_uuid)
     except Product.DoesNotExist:
-        raise NotFound("Product not found.")
+        raise ProductNotInWishlistException()
+        # raise NotFound("Product not found.")
 
     wishlist_item = wishlist.items.filter(product=product).first()
     if wishlist_item:
