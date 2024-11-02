@@ -44,4 +44,5 @@ urlpatterns = [
     path('payment/', include('payment.urls', namespace='payment')),
     path('cart/', include('cart.urls', namespace='cart')),
     path('checkout/', include('checkout.urls', namespace='checkout')),
+    path('wishlist/', include('wishlist.urls', namespace='wishlist')),
 ]

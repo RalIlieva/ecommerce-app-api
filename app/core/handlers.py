@@ -20,6 +20,8 @@ from .exceptions import (
     InsufficientStockError,
     PaymentFailedException,
     OrderAlreadyPaidException,
+    ProductAlreadyInWishlistException,
+    ProductNotInWishlistException,
 )
 
 
@@ -64,7 +66,7 @@ def drf_default_with_modifications_exception_handler(exc, context):
         return response
 
     if isinstance(exc, PaymentFailedException):
-        logger.warning(f"Duplicate slug error: {exc.detail}")
+        logger.warning(f"Payment failure error: {exc.detail}")
         response = Response(
             {"detail": exc.detail},
             status=exc.status_code
@@ -72,7 +74,23 @@ def drf_default_with_modifications_exception_handler(exc, context):
         return response
 
     if isinstance(exc, OrderAlreadyPaidException):
-        logger.warning(f"Duplicate slug error: {exc.detail}")
+        logger.warning(f"Order already paid error: {exc.detail}")
+        response = Response(
+            {"detail": exc.detail},
+            status=exc.status_code
+        )
+        return response
+
+    if isinstance(exc, ProductAlreadyInWishlistException):
+        logger.warning(f"Product in wishlist error: {exc.detail}")
+        response = Response(
+            {"detail": exc.detail},
+            status=exc.status_code
+        )
+        return response
+
+    if isinstance(exc, ProductNotInWishlistException):
+        logger.warning(f"Product wishlist error: {exc.detail}")
         response = Response(
             {"detail": exc.detail},
             status=exc.status_code
