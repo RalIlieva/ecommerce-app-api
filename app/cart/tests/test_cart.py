@@ -75,18 +75,11 @@ class CartTestCase(APITestCase):
         cart_item = CartItem.objects.create(
             cart=self.cart, product=self.product, quantity=1
         )
-        # print(f"Cart Item Created with UUID: {cart_item.uuid}")
 
         # Update the cart item quantity using its UUID
         url = reverse('cart:update-cart-item', kwargs={'uuid': cart_item.uuid})
         data = {'quantity': 5}
         response = self.client.patch(url, data, format='json')
-        # print(f"Update Cart Item URL: {url}")
-        # print(
-        # f"Update Cart Item Response Status Code:
-        # {response.status_code}"
-        # )
-        # print(f"Update Cart Item Response Data: {response.data}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         cart_item.refresh_from_db()
         self.assertEqual(cart_item.quantity, 5)
@@ -100,16 +93,10 @@ class CartTestCase(APITestCase):
         cart_item = CartItem.objects.create(
             cart=self.cart, product=self.product, quantity=1
         )
-        # print(f"Cart Item Created with UUID: {cart_item.uuid}")
 
         # Remove the cart item using its UUID
         url = reverse('cart:remove-cart-item', kwargs={'uuid': cart_item.uuid})
         response = self.client.delete(url)
-        # print(f"Remove Cart Item URL: {url}")
-        # print(
-        # f"Remove Cart Item Response Status Code:
-        # {response.status_code}"
-        # )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(CartItem.objects.count(), 0)
 
@@ -126,13 +113,6 @@ class CartTestCase(APITestCase):
         # Retrieve the cart details
         url = reverse('cart:cart-detail')
         response = self.client.get(url)
-        # print(
-        #     f"Retrieve Cart Details Response Status Code: "
-        #     f"{response.status_code}"
-        # )
-        # print(
-        #     f"Retrieve Cart Details Response Data: {response.data}"
-        # )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['items']), 1)
         self.assertEqual(response.data['items'][0]['quantity'], 3)
@@ -146,10 +126,6 @@ class CartTestCase(APITestCase):
         self.client.logout()
         url = reverse('cart:cart-detail')
         response = self.client.get(url)
-        # print(
-        #     f"Unauthorized Cart Access Response Status Code: "
-        #     f"{response.status_code}"
-        # )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_add_item_with_zero_quantity(self):
