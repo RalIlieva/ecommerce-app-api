@@ -34,7 +34,6 @@ class OrderStatusTestCase(TestCase):
         )
         self.client.force_authenticate(self.user)
         self.order = Order.objects.create(user=self.user)
-        # self.order_status_url = f'/api/orders/{self.order.uuid}/'
 
     def test_update_order_status_to_paid(self):
         """
@@ -78,7 +77,8 @@ class OrderStatusTestCase(TestCase):
         """
         Test updating the order status with an invalid UUID.
         """
-        invalid_uuid = uuid4()  # Generates a new UUID
+        # Generates a new UUID
+        invalid_uuid = uuid4()
         url = detail_url(invalid_uuid)
         payload = {'status': 'shipped'}
         response = self.client.patch(url, payload, format='json')

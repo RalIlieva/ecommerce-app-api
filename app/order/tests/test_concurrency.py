@@ -28,7 +28,6 @@ class OrderCreationTestCase(LiveServerTestCase):
 
         # Create a product with limited stock
         self.product = Product.objects.create(
-            # uuid="123e4567-e89b-12d3-a456-426614174000",  # example UUID
             name="Test Product",
             stock=10,  # Limited stock for concurrency test
             price=100.00,
@@ -77,7 +76,6 @@ class OrderCreationTestCase(LiveServerTestCase):
 
         # Assert that two orders were created
         order_count = Order.objects.count()
-        # print(f"Order count: {order_count}")
         self.assertEqual(order_count, 2)
 
         # Assert that the stock was correctly reduced to 0

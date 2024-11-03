@@ -76,7 +76,8 @@ class OrderListViewTests(TestCase):
 
     def test_list_orders_for_unauthenticated_user(self):
         """Test that an unauthenticated user cannot access the order list."""
-        self.client.force_authenticate(user=None)  # Unauthenticate the client
+        # Unauthenticate the client
+        self.client.force_authenticate(user=None)
         response = self.client.get(ORDERS_URL)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -115,7 +116,6 @@ class OrderCreateViewTests(TestCase):
         """
         Test that an authenticated user can create an order with valid data.
         """
-        # url = '/api/orders/create/'
         self.client.force_authenticate(self.user)
         print("Resolved ORDER_CREATE_URL:", ORDER_CREATE_URL)
         payload = {
