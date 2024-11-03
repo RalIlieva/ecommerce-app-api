@@ -77,16 +77,8 @@ class PaymentTestCase(APITestCase):
         url = reverse('payment:create-payment')
         data = {'order_id': self.order.id}
 
-        # Debug: Print to verify the order and request data
-        # print(f"Order ID: {self.order.id}")
-        # print(f"Request Data: {data}")
-
         # Send POST request to create payment intent
         response = self.client.post(url, data, format='json')
-
-        # Debug: Print response details for analysis
-        # print(f"Response Status Code: {response.status_code}")
-        # print(f"Response Data: {response.data}")
 
         # Ensure that the response status is 200 OK &
         # contains the client secret
@@ -104,9 +96,6 @@ class PaymentTestCase(APITestCase):
         Ensures that multiple payments are correctly listed
         when requested by the user.
         """
-        # Debug: Check if there are any existing payments before the test
-        # print(f"Existing Payments Before Test: {Payment.objects.count()}")
-
         # Create different orders to test multiple payments
         order2 = Order.objects.create(user=self.user, status=Order.PENDING)
 
@@ -130,12 +119,6 @@ class PaymentTestCase(APITestCase):
         # Access the 'results' key in response.data
         # to get the actual list of payments
         payment_results = response.data['results']
-
-        # Debug: Check the response data
-        # print(f"Response Data: {response.data}")
-
-        # Debug: Print the actual response to understand the output
-        # print(f"Payment Results: {payment_results}")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(payment_results), 2)
