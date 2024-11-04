@@ -17,7 +17,7 @@ services:
       - .env
     depends_on:
       - db
-#      - redis
+      - redis
 
   db:
     image: postgres:13-alpine
@@ -31,10 +31,10 @@ services:
       timeout: 5s
       retries: 5
 
-#  redis:
-#    image: redis:6.2.6
-#    ports:
-#      - "6379:6379"
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "6379:6379"
 
 volumes:
   dev-db-data:
