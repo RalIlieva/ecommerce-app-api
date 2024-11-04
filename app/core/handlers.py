@@ -1,5 +1,3 @@
-# core/handlers.py
-
 import logging
 
 from django.core.exceptions import (
@@ -32,7 +30,13 @@ def drf_default_with_modifications_exception_handler(exc, context):
     """
     Custom exception handler that ensures -
     all error responses have a 'detail' key.
-    Handles DuplicateSlugException and Django's ValidationError.
+    Handles the custom exceptions -  DuplicateSlugException,
+    InsufficientStockError,
+    PaymentFailedException,
+    OrderAlreadyPaidException,
+    ProductAlreadyInWishlistException,
+    ProductNotInWishlistException,
+    and Django's ValidationError.
     """
 
     # Convert Django exceptions to DRF exceptions
