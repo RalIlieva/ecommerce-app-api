@@ -226,3 +226,11 @@ STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
 # Session Configuration
 SESSION_COOKIE_AGE = 1800  # 30 minutes in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Celery Configuration Settings
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
