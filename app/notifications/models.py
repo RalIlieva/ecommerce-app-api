@@ -7,14 +7,24 @@
 #
 #
 # class Notification(UUIDModel, TimeStampedModel):
-#     """
-#     A model representing notifications sent to users.
-#     """
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+#     EMAIL = 'email'
+#     # TODO
+#     # IN_APP = 'in_app'
+#     # SMS = 'sms'
+#
+#     NOTIFICATION_TYPES = [
+#         (EMAIL, 'Email'),
+#         # TODO
+#         # (IN_APP, 'In-App'),
+#         # (SMS, 'SMS'),
+#     ]
+#
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notifications', on_delete=models.CASCADE)
+#     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default=EMAIL)
 #     subject = models.CharField(max_length=255)
-#     message = models.TextField()
-#     sent = models.BooleanField(default=False)
-#     notification_type = models.CharField(max_length=50)
+#     body = models.TextField()
+#     # False = Not Sent, True = Sent
+#     status = models.BooleanField(default=False)
 #
 #     def __str__(self):
-#         return f"Notification to {self.user.email}: {self.subject}"
+#         return f"Notification for {self.user.email} - {self.notification_type} - {self.subject}"
