@@ -6,6 +6,8 @@ from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.db import transaction
 from products.services import update_product_stock
 from products.models import Product
+from notifications.models import Notification
+from notifications.tasks import send_email_notification
 from .models import Order, OrderItem
 
 
@@ -46,6 +48,15 @@ def create_order(user, items_data):
                 quantity=quantity,
                 price=product.price
             )
+    # # Create and send notification
+    # notification = Notification.objects.create(
+    #     user=user,
+    #     subject=f"Order {order.id} Confirmation",
+    #     message=f"Thank you for your order {order.id}. We are preparing it for shipment!",
+    #     notification_type="Order Confirmation"
+    # )
+    # # Send the notification asynchronously using Celery
+    # send_email_notification.delay(notification.id)
 
     return order
 
