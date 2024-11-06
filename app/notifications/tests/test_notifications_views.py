@@ -39,7 +39,7 @@ class NotificationViewsTest(TestCase):
     def test_list_notifications(self):
         response = self.client.get(reverse('notifications:notification-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data['results']), 2)
 
     def test_retrieve_notification(self):
         response = self.client.get(reverse('notifications:notification-detail', args=[self.notification1.uuid]))
