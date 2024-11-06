@@ -46,3 +46,40 @@ class NotificationViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['subject'], "Test Subject 1")
         self.assertEqual(response.data['body'], "This is a test notification 1")
+
+
+class AdditionalNotificationViewsTest(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            email='user@example.com',
+            password='password123'
+        )
+        self.admin_user = User.objects.create_superuser(
+            email='admin@example.com',
+            password='adminpassword'
+        )
+        self.client.force_authenticate(user=self.user)
+        self.notification = Notification.objects.create(
+            user=self.user,
+            notification_type=Notification.EMAIL,
+            subject='Test Notification',
+            body='This is a test notification.',
+            status=True
+        )
+
+    def test_unauthenticated_access(self):
+        """Test that unauthenticated users cannot access notifications."""
+        self.client.logout()
+        url = reverse('notifications:notification-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_admin_access_to_notifications(self):
+        """Test that admin users can access notifications for any user."""
+        self.client.force_authenticate(user=self.admin_user)
+        url = reverse('notifications:notification-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
