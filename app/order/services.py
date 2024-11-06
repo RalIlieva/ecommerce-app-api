@@ -6,8 +6,8 @@ from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.db import transaction
 from products.services import update_product_stock
 from products.models import Product
-from notifications.models import Notification
-from notifications.tasks import send_email_notification
+# from notifications.models import Notification
+# from notifications.tasks import send_email_notification
 from .models import Order, OrderItem
 
 
