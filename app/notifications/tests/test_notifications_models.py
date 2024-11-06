@@ -6,6 +6,7 @@ from notifications.models import Notification
 
 User = get_user_model()
 
+
 class NotificationModelTest(TestCase):
 
     def setUp(self):
