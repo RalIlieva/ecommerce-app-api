@@ -4,40 +4,70 @@ from celery import shared_task
 from django.core.mail import send_mail
 from .models import Notification
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
-def send_order_confirmation_email(order_id, user_email):
+def send_order_confirmation_email(notification_uuid):
     """
-    Task to create a notification and send an order confirmation email.
+    Task to send an order confirmation email.
     """
-    # Create the Notification in the database
-    subject = f"Order Confirmation #{order_id}"
-    body = f"Your order with ID #{order_id} has been successfully placed!"
-
-    notification = Notification.objects.create(
-        user=user_email,  # Assuming user_email is actually user instance
-        notification_type=Notification.EMAIL,
-        subject=subject,
-        body=body,
-        status=False  # Not sent initially
-    )
-
-    # Attempt to send the email
     try:
+        # Get the notification by UUID
+        notification = Notification.objects.get(uuid=notification_uuid)
+
+        # Attempt to send the email
         send_mail(
-            subject=subject,
-            message=body,
+            subject=notification.subject,
+            message=notification.body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user_email],
+            recipient_list=[notification.user.email],
             fail_silently=False
         )
+
         # If email is sent successfully, update the notification status
         notification.status = True
         notification.save()
+
+    except Notification.DoesNotExist:
+        logger.error(f"Notification with UUID {notification_uuid} does not exist.")
     except Exception as e:
-        # If the email fails, it will automatically retry based on Celery's configuration
-        print(f"Failed to send email: {str(e)}")
+        logger.error(f"Failed to send email for notification {notification_uuid}: {str(e)}")
+
+# @shared_task
+# def send_order_confirmation_email(order_uuid, user_email):
+#     """
+#     Task to create a notification and send an order confirmation email.
+#     """
+#     # Create the Notification in the database
+#     subject = f"Order Confirmation #{order_uuid}"
+#     body = f"Your order with ID #{order_uuid} has been successfully placed!"
+#
+#     notification = Notification.objects.create(
+#         user=user_email,  # Assuming user_email is actually user instance
+#         notification_type=Notification.EMAIL,
+#         subject=subject,
+#         body=body,
+#         status=False  # Not sent initially
+#     )
+#
+#     # Attempt to send the email
+#     try:
+#         send_mail(
+#             subject=subject,
+#             message=body,
+#             from_email=settings.DEFAULT_FROM_EMAIL,
+#             recipient_list=[user_email],
+#             fail_silently=False
+#         )
+#         # If email is sent successfully, update the notification status
+#         notification.status = True
+#         notification.save()
+#     except Exception as e:
+#         # If the email fails, it will automatically retry based on Celery's configuration
+#         print(f"Failed to send email: {str(e)}")
 
 # Previous versions
 # from celery import shared_task
