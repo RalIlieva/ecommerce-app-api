@@ -1,34 +1,40 @@
-# from django.test import TestCase
-# from notifications.models import Notification
-# from notifications.services import handle_order_creation_notification
-# from django.contrib.auth import get_user_model
-#
-# User = get_user_model()
-#
-#
-# class NotificationServiceTests(TestCase):
-#
-#     def setUp(self):
-#         self.user = User.objects.create_user(
-#             email='user@example.com',
-#             password='password123'
-#         )
-#
-#     def test_create_notification(self):
-#         """
-#         Test the service function that creates a notification for a user.
-#         """
-#         subject = "Order Confirmation"
-#         body = "Your order has been confirmed!"
-#
-#         notification = handle_order_creation_notification(
-#             user=self.user,
-#             subject=subject,
-#             body=body
-#         )
-#
-#         self.assertIsInstance(notification, Notification)
-#         self.assertEqual(notification.user, self.user)
-#         self.assertEqual(notification.subject, subject)
-#         self.assertEqual(notification.body, body)
-#         self.assertFalse(notification.status)  # By default, status should be False (not sent)
+from django.test import TestCase
+from notifications.models import Notification
+from notifications.services import handle_order_creation_notification
+from django.contrib.auth import get_user_model
+from order.models import Order
+
+User = get_user_model()
+
+
+class NotificationServiceTests(TestCase):
+
+    def setUp(self):
+        """
+        Set up user and order instance for notification service tests.
+        """
+        self.user = User.objects.create_user(
+            email='user@example.com',
+            password='password123'
+        )
+        # Create an order instance to be passed to the notification service
+        self.order = Order.objects.create(
+            user=self.user,
+            status=Order.PENDING
+        )
+
+    def test_create_notification(self):
+        """
+        Test the service function that creates a notification for a user.
+        """
+        # Call the service function with the order instance
+        handle_order_creation_notification(order=self.order)
+
+        # Verify that a Notification object was created
+        notification = Notification.objects.filter(user=self.user).first()
+        self.assertIsNotNone(notification)
+
+        # Validate the notification details
+        self.assertEqual(notification.subject, f"Order Confirmation #{self.order.uuid}")
+        self.assertEqual(notification.body, f"Your order with ID #{self.order.uuid} has been successfully placed!")
+        self.assertFalse(notification.status)  # Initially, the notification status should be False
