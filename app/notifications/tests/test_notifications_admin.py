@@ -1,9 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.contrib.admin.sites import AdminSite
 from notifications.models import Notification
-from notifications.admin import NotificationAdmin
 
 User = get_user_model()
 
