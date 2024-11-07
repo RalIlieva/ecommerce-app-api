@@ -19,7 +19,9 @@ class NotificationSignalTest(TestCase):
         )
 
     @patch('notifications.tasks.send_order_confirmation_email.delay')
-    def test_notification_created_on_order_creation(self, mock_send_email_task):
+    def test_notification_created_on_order_creation(
+            self, mock_send_email_task
+    ):
         # Create an order to trigger the signal
         order = Order.objects.create(user=self.user)
 

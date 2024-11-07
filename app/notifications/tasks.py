@@ -37,5 +37,6 @@ def send_order_confirmation_email(notification_uuid):
         )
     except Exception as e:
         logger.error(
-            f"Failed to send email for notification {notification_uuid}: {str(e)}"
+            f"Failed to send email for notification\
+            {notification_uuid}: {str(e)}"
         )

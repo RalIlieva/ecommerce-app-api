@@ -14,7 +14,7 @@ app = Celery('app')
 # CELERY_ prefixed variables in settings.py will be used for configuration.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# Celery will automatically discover tasks from all registered Django app configs.
+# Celery automatically discovers tasks from all registered Django app configs.
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
 
