@@ -1,5 +1,3 @@
-# notifications/tests/test_notifications_model.py
-
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from notifications.models import Notification
@@ -8,8 +6,14 @@ User = get_user_model()
 
 
 class NotificationModelTest(TestCase):
+    """Test cases for the Notification model."""
 
     def setUp(self):
+        """
+        Set up a user for the tests.
+        Creates a user instance to be used to create Notification
+        objects in subsequent tests.
+        """
         # Set up a user for the tests
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -17,6 +21,11 @@ class NotificationModelTest(TestCase):
         )
 
     def test_notification_creation(self):
+        """
+        Test the creation of a Notification instance.
+        This test verifies that a notification is created correctly
+        with the given attributes, and its default status is set to False.
+        """
         # Create a notification manually
         notification = Notification.objects.create(
             user=self.user,
