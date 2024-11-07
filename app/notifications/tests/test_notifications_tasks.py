@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from notifications.models import Notification
 from notifications.tasks import send_order_confirmation_email
 from django.core import mail
-from uuid import uuid4
+
 
 User = get_user_model()
 
@@ -43,7 +43,10 @@ class NotificationTaskTest(TestCase):
         self.notification.refresh_from_db()
         self.assertTrue(self.notification.status)
 
-    @patch('notifications.tasks.send_mail', side_effect=Exception('SMTP server error'))
+    @patch(
+        'notifications.tasks.send_mail',
+        side_effect=Exception('SMTP server error')
+    )
     def test_send_email_failure(self, mock_send_mail):
         """
         Test email sending failure to ensure it's handled properly.
@@ -51,10 +54,11 @@ class NotificationTaskTest(TestCase):
         """
         # Call the send_order_confirmation_email task
         send_order_confirmation_email(self.notification.uuid)
-#
+
         # Refresh the notification from the database to get the updated status
         self.notification.refresh_from_db()
 
-        # Check that the notification status is still False (email was not sent successfully)
+        # Check that the notification status is still False
+        # (email was not sent successfully)
         # Email sending failed, so the status should be False
         self.assertFalse(self.notification.status)

@@ -31,8 +31,11 @@ class NotificationEdgeCaseTests(TestCase):
         # Delete the user
         self.user.delete()
 
-        # Refresh the queryset to confirm that no notifications exist for a deleted user
-        notification_count = Notification.objects.filter(subject="Test Notification").count()
+        # Refresh the queryset to confirm
+        # no notifications exist for a deleted user
+        notification_count = Notification.objects.filter(
+            subject="Test Notification"
+        ).count()
 
         # Since the user is deleted, no notification should exist
         self.assertEqual(notification_count, 0)
@@ -47,4 +50,5 @@ class NotificationEdgeCaseTests(TestCase):
             status=True
         )
         notifications = Notification.objects.filter(user=self.user)
-        self.assertEqual(len(notifications), 2)  # Ensure both notifications were created correctly
+        # Ensure both notifications were created correctly
+        self.assertEqual(len(notifications), 2)

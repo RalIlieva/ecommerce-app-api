@@ -35,7 +35,8 @@ class Notification(UUIDModel, TimeStampedModel):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Notification for {self.user.email} - {self.notification_type} - {self.subject}"
+        return f"Notification for {self.user.email} -" \
+               f" {self.notification_type} - {self.subject}"
 
     class Meta:
         # Orders notifications by `created` field in descending order

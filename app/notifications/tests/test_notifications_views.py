@@ -42,10 +42,22 @@ class NotificationViewsTest(TestCase):
         self.assertEqual(len(response.data['results']), 2)
 
     def test_retrieve_notification(self):
-        response = self.client.get(reverse('notifications:notification-detail', args=[self.notification1.uuid]))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['subject'], "Test Subject 1")
-        self.assertEqual(response.data['body'], "This is a test notification 1")
+        response = self.client.get(
+            reverse(
+                'notifications:notification-detail',
+                args=[self.notification1.uuid]
+            )
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK
+        )
+        self.assertEqual(
+            response.data['subject'], "Test Subject 1"
+        )
+        self.assertEqual(
+            response.data['body'],
+            "This is a test notification 1"
+        )
 
 
 class AdditionalNotificationViewsTest(TestCase):

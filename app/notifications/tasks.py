@@ -32,6 +32,10 @@ def send_order_confirmation_email(notification_uuid):
         notification.save()
 
     except Notification.DoesNotExist:
-        logger.error(f"Notification with UUID {notification_uuid} does not exist.")
+        logger.error(
+            f"Notification with UUID {notification_uuid} does not exist."
+        )
     except Exception as e:
-        logger.error(f"Failed to send email for notification {notification_uuid}: {str(e)}")
+        logger.error(
+            f"Failed to send email for notification {notification_uuid}: {str(e)}"
+        )

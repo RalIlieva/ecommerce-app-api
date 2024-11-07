@@ -32,5 +32,7 @@ urlpatterns = [
     path('cart/', include('cart.urls', namespace='cart')),
     path('checkout/', include('checkout.urls', namespace='checkout')),
     path('wishlist/', include('wishlist.urls', namespace='wishlist')),
-    path('notifications/', include('notifications.urls', namespace='notifications'))
+    path('notifications/', include(
+        'notifications.urls', namespace='notifications')
+         )
 ]

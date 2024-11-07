@@ -35,6 +35,13 @@ class NotificationServiceTests(TestCase):
         self.assertIsNotNone(notification)
 
         # Validate the notification details
-        self.assertEqual(notification.subject, f"Order Confirmation #{self.order.uuid}")
-        self.assertEqual(notification.body, f"Your order with ID #{self.order.uuid} has been successfully placed!")
-        self.assertFalse(notification.status)  # Initially, the notification status should be False
+        self.assertEqual(
+            notification.subject,
+            f"Order Confirmation #{self.order.uuid}"
+        )
+        self.assertEqual(
+            notification.body,
+            f"Your order with ID #{self.order.uuid} has been successfully placed!"
+        )
+        # Initially, the notification status should be False
+        self.assertFalse(notification.status)

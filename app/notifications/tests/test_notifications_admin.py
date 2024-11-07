@@ -10,7 +10,10 @@ class NotificationAdminTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(
-            email='admin@example.com', password='password123', is_staff=True, is_superuser=True
+            email='admin@example.com',
+            password='password123',
+            is_staff=True,
+            is_superuser=True
         )
         self.client.force_login(self.user)
         self.notification = Notification.objects.create(
@@ -28,8 +31,13 @@ class NotificationAdminTest(TestCase):
         self.assertContains(response, 'Test Notification')
 
     def test_notification_detail_admin_page(self):
-        """Test that notification detail page is accessible in the admin panel."""
-        url = reverse('admin:notifications_notification_change', args=[self.notification.id])
+        """
+        Test that notification detail page is accessible in the admin panel.
+        """
+        url = reverse(
+            'admin:notifications_notification_change',
+            args=[self.notification.id]
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test Notification')
