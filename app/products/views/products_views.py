@@ -29,12 +29,14 @@ from ..pagination import CustomPagination
             OpenApiParameter(
                 'name',
                 OpenApiTypes.STR,
-                description='Filter products by name. Search is case insensitive.'
+                description='Filter products by name. '
+                            'Search is case insensitive.'
             ),
             OpenApiParameter(
                 'tags',
                 OpenApiTypes.STR,
-                description='Comma separated list of tag IDs to filter products by tags.'
+                description='Comma separated list of tag IDs '
+                            'to filter products by tags.'
             ),
             OpenApiParameter(
                 'category',
@@ -62,7 +64,8 @@ from ..pagination import CustomPagination
                 description='Filter products by maximum average rating.'
             ),
         ],
-        description="Retrieve a list of products. Filter by name, tags, category, price range, and average rating."
+        description="Retrieve a list of products. "
+                    "Filter by name, tags, category, price range, avg rating."
     )
 )
 class ProductListView(generics.ListAPIView):
