@@ -1,7 +1,12 @@
 """
 Views for the products API.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
@@ -18,6 +23,48 @@ from ..pagination import CustomPagination
 
 
 # Product Views
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'name',
+                OpenApiTypes.STR,
+                description='Filter products by name. Search is case insensitive.'
+            ),
+            OpenApiParameter(
+                'tags',
+                OpenApiTypes.STR,
+                description='Comma separated list of tag IDs to filter products by tags.'
+            ),
+            OpenApiParameter(
+                'category',
+                OpenApiTypes.STR,
+                description='Filter products by category slug.'
+            ),
+            OpenApiParameter(
+                'min_price',
+                OpenApiTypes.FLOAT,
+                description='Filter products by minimum price.'
+            ),
+            OpenApiParameter(
+                'max_price',
+                OpenApiTypes.FLOAT,
+                description='Filter products by maximum price.'
+            ),
+            OpenApiParameter(
+                'min_avg_rating',
+                OpenApiTypes.FLOAT,
+                description='Filter products by minimum average rating.'
+            ),
+            OpenApiParameter(
+                'max_avg_rating',
+                OpenApiTypes.FLOAT,
+                description='Filter products by maximum average rating.'
+            ),
+        ],
+        description="Retrieve a list of products. Filter by name, tags, category, price range, and average rating."
+    )
+)
 class ProductListView(generics.ListAPIView):
     """
     GET: View to list all products.
