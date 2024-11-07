@@ -1,5 +1,3 @@
-# notifications/tests/test_notifications_views.py
-
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -11,8 +9,14 @@ User = get_user_model()
 
 
 class NotificationViewsTest(TestCase):
+    """Test cases for Notification views."""
 
     def setUp(self):
+        """
+        Set up test data for notifications.
+        Creates a user, authenticates them, and creates 2 notifications
+        for testing list and retrieve functionality.
+        """
         self.client = APIClient()
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -37,11 +41,17 @@ class NotificationViewsTest(TestCase):
         )
 
     def test_list_notifications(self):
+        """
+        Test listing all notifications for the authenticated user.
+        """
         response = self.client.get(reverse('notifications:notification-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 2)
 
     def test_retrieve_notification(self):
+        """
+        Test retrieving a single notification by UUID.
+        """
         response = self.client.get(
             reverse(
                 'notifications:notification-detail',
@@ -61,8 +71,15 @@ class NotificationViewsTest(TestCase):
 
 
 class AdditionalNotificationViewsTest(TestCase):
+    """
+    Additional test cases for edge cases & admin access in Notification views.
+    """
 
     def setUp(self):
+        """
+        Set up test data for additional tests.
+        Creates a regular user, an admin user, a sample notification.
+        """
         self.client = APIClient()
         self.user = User.objects.create_user(
             email='user@example.com',
