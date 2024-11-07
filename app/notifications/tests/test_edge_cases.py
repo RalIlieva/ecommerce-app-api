@@ -6,10 +6,15 @@ User = get_user_model()
 
 
 class NotificationEdgeCaseTests(TestCase):
+    """
+    Test cases for handling edge scenarios related to Notification model.
+    """
 
     def setUp(self):
         """
         Set up user and notification instance for edge case tests.
+        Creates a user and a notification instance, which are used to test
+        different edge scenarios,e.g., user deletion & multiple notifications.
         """
         self.user = User.objects.create_user(
             email='user@example.com',
@@ -27,6 +32,8 @@ class NotificationEdgeCaseTests(TestCase):
     def test_notification_for_deleted_user(self):
         """
         Test to check if a notification can be accessed for a deleted user.
+        This test deletes the user and then confirms that the corresponding
+        notification is no longer available.
         """
         # Delete the user
         self.user.delete()
@@ -41,7 +48,11 @@ class NotificationEdgeCaseTests(TestCase):
         self.assertEqual(notification_count, 0)
 
     def test_multiple_notifications_for_user(self):
-        """Test creating multiple notifications for a single user."""
+        """
+        Test creating multiple notifications for a single user.
+        Verifies that multiple notifications can be successfully created for
+        a user and checks the total count to ensure correctness.
+        """
         Notification.objects.create(
             user=self.user,
             notification_type=Notification.EMAIL,
