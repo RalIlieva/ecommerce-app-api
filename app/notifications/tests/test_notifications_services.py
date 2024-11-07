@@ -46,8 +46,8 @@ class NotificationServiceTests(TestCase):
         )
         self.assertEqual(
             notification.body,
-            f"Your order with ID #{self.order.uuid}\
-             has been successfully placed!"
+            f"Your order with ID #{self.order.uuid} "
+            f"has been successfully placed!"
         )
         # Initially, the notification status should be False
         self.assertFalse(notification.status)
