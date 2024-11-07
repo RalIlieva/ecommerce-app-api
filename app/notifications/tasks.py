@@ -55,3 +55,6 @@ def send_order_confirmation_email(notification_uuid):
             f"Failed to send email for notification\
             {notification_uuid}: {str(e)}"
         )
+
+        # # Retry the task in case of a temporary failure
+        # raise self.retry(exc=e, countdown=60)

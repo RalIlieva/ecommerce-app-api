@@ -1,10 +1,12 @@
 """
 Business logic - functions - write to db.
 """
+from django.db import transaction
 from notifications.models import Notification
 from notifications.tasks import send_order_confirmation_email
 
 
+@transaction.atomic
 def handle_order_creation_notification(order):
     """
     Handles the creation of a notification when an order is created.
@@ -18,6 +20,9 @@ def handle_order_creation_notification(order):
         body=f"Your order with ID #{order.uuid} has been successfully placed!",
         status=False  # Not sent initially
     )
+
+    # The notification is saved before triggering the Celery task
+    notification.save()
 
     # Call Celery task to send the email
     send_order_confirmation_email.delay(notification.uuid)
