@@ -10,8 +10,15 @@ User = get_user_model()
 
 
 class NotificationTaskTest(TestCase):
+    """
+    Test cases for Notification-related Celery tasks.
+    """
 
     def setUp(self):
+        """
+        Set up user and notification for testing tasks.
+        Creates a test user & corresponding notification instance.
+        """
         # Set up a user for the test
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -27,6 +34,11 @@ class NotificationTaskTest(TestCase):
         )
 
     def test_send_email_task(self):
+        """
+        Test successful sending of an email via Celery task.
+        Ensures that an email is successfully sent and that the notification
+        status is updated to True.
+        """
         # Run the Celery task
         send_order_confirmation_email(self.notification.uuid)
 
@@ -48,7 +60,8 @@ class NotificationTaskTest(TestCase):
     def test_send_email_failure(self, mock_send_mail):
         """
         Test email sending failure to ensure it's handled properly.
-        This test will patch the `send_mail` function to raise an exception.
+        Mocks the `send_mail` function to raise an exception & checks
+        the notification status remains False after a failure.
         """
         # Call the send_order_confirmation_email task
         send_order_confirmation_email(self.notification.uuid)
