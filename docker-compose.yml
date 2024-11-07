@@ -17,6 +17,8 @@ services:
       - .env
     depends_on:
       - db
+      - redis
+      - celery
 
   db:
     image: postgres:13-alpine
@@ -30,8 +32,35 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "6379:6379"
+
+  celery:
+    build:
+      context: .
+    command: celery -A app worker -l info
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+
+  celery-beat:
+    build:
+      context: .
+    command: celery -A app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+
 volumes:
   dev-db-data:
   dev-static-data:
-
-version: "3.9"
