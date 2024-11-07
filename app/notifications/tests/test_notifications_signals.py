@@ -10,8 +10,15 @@ User = get_user_model()
 
 
 class NotificationSignalTest(TestCase):
+    """
+    Test cases for signals in the notifications app.
+    """
 
     def setUp(self):
+        """
+        Set up user instance for testing signals.
+        Creates a test user to trigger order creation signals.
+        """
         # Set up a user and other necessary test data
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -22,6 +29,12 @@ class NotificationSignalTest(TestCase):
     def test_notification_created_on_order_creation(
             self, mock_send_email_task
     ):
+        """
+        Test that a notification is created when an order is created.
+        This test checks if the signal properly triggers:
+        - Ensures that the notification is created upon order creation.
+        - Verifies that the corresponding Celery task is enqueued.
+        """
         # Create an order to trigger the signal
         order = Order.objects.create(user=self.user)
 
