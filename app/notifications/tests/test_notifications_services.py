@@ -8,10 +8,13 @@ User = get_user_model()
 
 
 class NotificationServiceTests(TestCase):
+    """Test cases for the notification service functions."""
 
     def setUp(self):
         """
         Set up user and order instance for notification service tests.
+        Creates a test user and an associated order instance to use
+        in testing the notification creation service.
         """
         self.user = User.objects.create_user(
             email='user@example.com',
@@ -26,6 +29,8 @@ class NotificationServiceTests(TestCase):
     def test_create_notification(self):
         """
         Test the service function that creates a notification for a user.
+        This test checks if the service creates a Notification object with
+        the correct details when an order is created.
         """
         # Call the service function with the order instance
         handle_order_creation_notification(order=self.order)
