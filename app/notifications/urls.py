@@ -1,3 +1,7 @@
+"""
+URL mappings for the notification app.
+"""
+
 from django.urls import path
 from .views import NotificationListView, NotificationDetailView
 

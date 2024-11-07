@@ -1,4 +1,6 @@
-# notifications/serializers.py
+"""
+Notification serializers.
+"""
 
 from rest_framework import serializers
 from .models import Notification

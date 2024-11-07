@@ -1,4 +1,6 @@
-# notifications/services.py
+"""
+Business logic - functions - write to db.
+"""
 from notifications.models import Notification
 from notifications.tasks import send_order_confirmation_email
 

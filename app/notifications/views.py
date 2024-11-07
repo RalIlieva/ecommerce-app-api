@@ -1,4 +1,6 @@
-# notifications/views.py
+"""
+Views for notification app.
+"""
 from rest_framework.exceptions import NotFound
 from rest_framework import generics, permissions
 from .models import Notification
