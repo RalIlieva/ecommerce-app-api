@@ -107,29 +107,6 @@ class OrderDetailView(generics.RetrieveAPIView):
         except Order.DoesNotExist:
             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
-# class OrderDetailView(generics.RetrieveAPIView):
-#     """
-#     API view to retrieve an order for the authenticated user.
-#     """
-#     permission_classes = [permissions.IsAuthenticated]
-#     serializer_class = OrderSerializer
-#
-#     def get_queryset(self):
-#         # Only retrieve orders of the authenticated user
-#         # order_uuid = self.kwargs.get('order_uuid')
-#         return Order.objects.filter(
-#             # uuid=order_uuid,
-#             user=self.request.user
-#         )
-#
-#     def get(self, request, *args, **kwargs):
-#         try:
-#             order = self.get_queryset().get(uuid=kwargs['order_uuid'])
-#             serializer = self.get_serializer(order)
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         except Order.DoesNotExist:
-#             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-
 
 @extend_schema(
     description="Allow a customer to cancel a pending or paid order that has not been shipped.",

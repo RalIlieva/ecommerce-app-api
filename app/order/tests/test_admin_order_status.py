@@ -1,5 +1,5 @@
 """
-Tests for order status.
+Tests for order status - admin.
 """
 
 from django.contrib.auth import get_user_model
