@@ -1,5 +1,5 @@
 """
-Test for Order views.
+Test for Order views (customer-facing).
 """
 
 from django.test import TestCase
@@ -226,34 +226,3 @@ class OrderDetailViewTests(TestCase):
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    # def test_update_order_status_with_valid_uuid(self):
-    #     """
-    #     Test updating the order status with a valid UUID to 'shipped'.
-    #     """
-    #     url = detail_url(self.order.uuid)
-    #     response = self.client.patch(url, {'status': 'shipped'})
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     self.order.refresh_from_db()
-    #     self.assertEqual(self.order.status, 'shipped')
-
-    # def test_update_order_status_with_invalid_uuid(self):
-    #     """
-    #     Test updating the order status with invalid UUID returns 404.
-    #     """
-    #     invalid_uuid = uuid4()  # Generates a new UUID
-    #     url = detail_url(invalid_uuid)
-    #     response = self.client.patch(url, {'status': 'shipped'})
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    # def test_update_order_status_forbidden_to_other_user(self):
-    #     """
-    #     Test that another user cannot update someone else's order status.
-    #     """
-    #     self.client.force_authenticate(self.other_user)
-    #     url = detail_url(self.order.uuid)
-    #     response = self.client.patch(url, {'status': 'shipped'})
-    #
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
