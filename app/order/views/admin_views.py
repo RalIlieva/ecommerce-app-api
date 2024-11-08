@@ -25,16 +25,6 @@ class AdminOrderListView(generics.ListAPIView):
     serializer_class = OrderSerializer
 
 
-# class AdminOrderDetailView(generics.RetrieveUpdateAPIView):
-#     """
-#     API view for admins to retrieve and update specific order details.
-#     Admins can update order statuses like 'SHIPPED' or 'CANCELLED'.
-#     """
-#     permission_classes = [IsAdminUser]
-#     serializer_class = OrderSerializer
-#     queryset = Order.objects.all()
-#     lookup_field = 'uuid'
-
 class AdminOrderDetailView(generics.RetrieveUpdateAPIView):
     """
     Admin View to retrieve or update an order.
