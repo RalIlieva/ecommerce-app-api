@@ -6,7 +6,10 @@ from django.urls import path
 from .views import (
     OrderListView,
     OrderCreateView,
-    OrderDetailView
+    OrderDetailView,
+    OrderCancelView,
+    AdminOrderListView,
+    AdminOrderDetailView,
 )
 
 # A namespace for the order app
