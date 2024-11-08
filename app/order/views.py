@@ -98,6 +98,12 @@ class OrderCreateView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    retrieve=extend_schema(
+        description="Retrieve a specific order using its UUID. \
+            The authenticated user can only retrieve their own orders."
+    ),
+)
 class OrderDetailView(generics.RetrieveUpdateAPIView):
     """
     API view to retrieve or update an order for the authenticated user.
