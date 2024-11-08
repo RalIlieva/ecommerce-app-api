@@ -1,4 +1,11 @@
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import (
+    generics,
+    permissions,
+    status
+)
 from rest_framework.permissions import IsAdminUser
 from drf_spectacular.utils import extend_schema
 from order.serializers import OrderSerializer
@@ -18,12 +25,55 @@ class AdminOrderListView(generics.ListAPIView):
     serializer_class = OrderSerializer
 
 
+# class AdminOrderDetailView(generics.RetrieveUpdateAPIView):
+#     """
+#     API view for admins to retrieve and update specific order details.
+#     Admins can update order statuses like 'SHIPPED' or 'CANCELLED'.
+#     """
+#     permission_classes = [IsAdminUser]
+#     serializer_class = OrderSerializer
+#     queryset = Order.objects.all()
+#     lookup_field = 'uuid'
+
 class AdminOrderDetailView(generics.RetrieveUpdateAPIView):
     """
-    API view for admins to retrieve and update specific order details.
-    Admins can update order statuses like 'SHIPPED' or 'CANCELLED'.
+    Admin View to retrieve or update an order.
+    Only accessible to admin users.
     """
-    permission_classes = [IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
     lookup_field = 'uuid'
+    lookup_url_kwarg = 'order_uuid'
+
+    def partial_update(self, request, *args, **kwargs):
+        """Handle PATCH requests to update the order status."""
+        order = get_object_or_404(Order, uuid=kwargs.get('order_uuid'))
+        new_status = request.data.get('status')
+
+        if new_status not in [choice[0] for choice in Order.STATUS_CHOICES]:
+            return Response(
+                {"detail": "Invalid status."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        order.status = new_status
+        order.save()
+        serializer = self.get_serializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # def patch(self, request, *args, **kwargs):
+    #     """Patch method to update the order status."""
+    #     order = get_object_or_404(Order, uuid=kwargs.get('order_uuid'))
+    #     new_status = request.data.get('status')
+    #
+    #     if new_status not in [choice[0] for choice in Order.STATUS_CHOICES]:
+    #         return Response(
+    #             {"detail": "Invalid status."},
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #
+    #     order.status = new_status
+    #     order.save()
+    #     serializer = self.get_serializer(order)
+    #     return Response(serializer.data, status=status.HTTP_200_OK)

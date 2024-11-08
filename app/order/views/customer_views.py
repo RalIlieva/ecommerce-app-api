@@ -4,8 +4,9 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from order.models import Order
@@ -76,15 +77,58 @@ class OrderDetailView(generics.RetrieveAPIView):
     """
     API view to retrieve an order for the authenticated user.
     """
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = OrderSerializer
 
-    def get_queryset(self):
+    def get_object(self):
+        # Retrieve the order based on the provided UUID
         order_uuid = self.kwargs.get('order_uuid')
-        return Order.objects.filter(
-            uuid=order_uuid,
-            user=self.request.user
-        )
+        # Use get_object_or_404 to get the order or return a 404 error if not found
+        order = get_object_or_404(Order, uuid=order_uuid)
+
+        # Check if the authenticated user is the owner of the order
+        if order.user != self.request.user:
+            # If the authenticated user is not the owner of the order, raise a 403
+            self.permission_denied(
+                self.request,
+                message="You do not have permission to access this order.",
+                code=status.HTTP_403_FORBIDDEN
+            )
+
+        # If permission is granted, return the order
+        return order
+
+    def get(self, request, *args, **kwargs):
+        # Call the parent get method which uses get_object
+        try:
+            order = self.get_object()
+            serializer = self.get_serializer(order)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Order.DoesNotExist:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+
+# class OrderDetailView(generics.RetrieveAPIView):
+#     """
+#     API view to retrieve an order for the authenticated user.
+#     """
+#     permission_classes = [permissions.IsAuthenticated]
+#     serializer_class = OrderSerializer
+#
+#     def get_queryset(self):
+#         # Only retrieve orders of the authenticated user
+#         # order_uuid = self.kwargs.get('order_uuid')
+#         return Order.objects.filter(
+#             # uuid=order_uuid,
+#             user=self.request.user
+#         )
+#
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             order = self.get_queryset().get(uuid=kwargs['order_uuid'])
+#             serializer = self.get_serializer(order)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         except Order.DoesNotExist:
+#             return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
 
 
 @extend_schema(
