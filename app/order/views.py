@@ -34,7 +34,8 @@ from .services import (
             )
         ],
         description="Retrieve a list of orders for the authenticated user. "
-                    "Filter orders by status (pending, paid, shipped, cancelled)."
+                    "Filter orders by status "
+                    "(pending, paid, shipped, cancelled)."
     )
 )
 class OrderListView(generics.ListAPIView):
@@ -49,6 +50,39 @@ class OrderListView(generics.ListAPIView):
         return get_user_orders(self.request.user)
 
 
+@extend_schema_view(
+    create=extend_schema(
+        description="Create a new order for the authenticated user. \
+            The request includes `items` field with "
+                    "a list of products & quantities.",
+        request={
+            'type': 'object',
+            'properties': {
+                'items': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'product': {
+                                'type': 'string',
+                                'description':
+                                    'UUID of the product to be ordered.'
+                            },
+                            'quantity': {
+                                'type': 'integer',
+                                'description':
+                                    'Quantity of the product to be ordered.'
+                            }
+                        },
+                        'required': ['product', 'quantity']
+                    }
+                }
+            },
+            'required': ['items']
+        },
+        responses={201: OrderSerializer}
+    )
+)
 class OrderCreateView(generics.CreateAPIView):
     """
     API view to create a new order for the authenticated user.
