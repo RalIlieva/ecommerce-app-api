@@ -2,6 +2,12 @@
 Views for Order Api.
 """
 
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -17,6 +23,20 @@ from .services import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'status',
+                OpenApiTypes.STR,
+                enum=['pending', 'paid', 'shipped', 'cancelled'],
+                description='Filter orders by their current status.'
+            )
+        ],
+        description="Retrieve a list of orders for the authenticated user. "
+                    "Filter orders by status (pending, paid, shipped, cancelled)."
+    )
+)
 class OrderListView(generics.ListAPIView):
     """
     API view to retrieve a list of orders for the authenticated user.
