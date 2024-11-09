@@ -97,6 +97,29 @@ class AddCartItemView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    patch=extend_schema(
+        summary="Update Cart Item Quantity",
+        description="Update the quantity of a specific item in the authenticated user's cart.",
+        parameters=[
+            OpenApiParameter(
+                name='uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='path',
+                description="The UUID of the cart item to update."
+            ),
+            OpenApiParameter(
+                name='quantity',
+                type=OpenApiTypes.INT,
+                required=True,
+                location='query',
+                description="The new quantity to set for the cart item."
+            ),
+        ],
+        responses={200: CartItemSerializer}
+    )
+)
 class UpdateCartItemView(generics.UpdateAPIView):
     """
     Update the quantity of a specific item in the authenticated user's cart.
@@ -127,6 +150,22 @@ class UpdateCartItemView(generics.UpdateAPIView):
         return Response(serializer.data)
 
 
+@extend_schema_view(
+    delete=extend_schema(
+        summary="Remove Item from Cart",
+        description="Remove a specific item from the authenticated user's cart by providing the cart item UUID.",
+        parameters=[
+            OpenApiParameter(
+                name='uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='path',
+                description="The UUID of the cart item to remove."
+            ),
+        ],
+        responses={204: None}
+    )
+)
 class RemoveCartItemView(generics.DestroyAPIView):
     """
     Remove a specific item from the authenticated user's cart.
@@ -150,6 +189,13 @@ class RemoveCartItemView(generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(
+    delete=extend_schema(
+        summary="Clear User's Cart",
+        description="Remove all items from the authenticated user's cart.",
+        responses={204: None}
+    )
+)
 class ClearCartView(APIView):
     """
     Clear all items from the authenticated user's cart.
