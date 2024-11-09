@@ -2,7 +2,10 @@
 Business logic - functions - write to db.
 """
 
-from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.exceptions import (
+    ValidationError,
+    NotFound
+)
 from django.shortcuts import get_object_or_404
 from .models import Cart, CartItem
 from products.models import Product

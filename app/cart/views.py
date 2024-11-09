@@ -1,7 +1,12 @@
 """
 Views for cart app.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +20,12 @@ from .services import (
 )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Retrieve User's Cart",
+        description="Retrieve all items in the authenticated user's cart.",
+    )
+)
 class CartDetailView(generics.RetrieveAPIView):
     """
     Retrieve the details of the authenticated user's cart.
@@ -33,6 +44,31 @@ class CartDetailView(generics.RetrieveAPIView):
         return get_or_create_cart(self.request.user)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Add Item to Cart",
+        description="Add a product to the authenticated user's cart by providing "
+                    "the product ID and an optional quantity.",
+        parameters=[
+            OpenApiParameter(
+                name='product_id',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='query',
+                description="The UUID of the product to add to the cart."
+            ),
+            OpenApiParameter(
+                name='quantity',
+                type=OpenApiTypes.INT,
+                required=False,
+                default=1,
+                location='query',
+                description="The quantity of the product to add (default is 1)."
+            ),
+        ],
+        responses={201: CartItemSerializer}
+    )
+)
 class AddCartItemView(generics.CreateAPIView):
     """
     Add a product to the authenticated user's cart.
