@@ -86,7 +86,7 @@ class AddCartItemView(generics.CreateAPIView):
         """
         Add a product to the cart with specified quantity.
         Args:
-            request: HTTP request containing `product_uuid` and `quantity` data.
+            request: HTTP request containing `product_uuid` & `quantity` data.
         Returns:
             HTTP 201 CREATED with serialized cart item data on success.
         """

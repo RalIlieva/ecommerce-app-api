@@ -162,7 +162,8 @@ class CartTestCase(APITestCase):
         Ensures that a validation error response is returned.
         """
         url = reverse('cart:add-cart-item')
-        data = {'product_uuid': self.product.uuid, 'quantity': 101}  # Stock is 100
+        # Stock is 100
+        data = {'product_uuid': self.product.uuid, 'quantity': 101}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
