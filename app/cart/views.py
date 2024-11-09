@@ -47,8 +47,8 @@ class CartDetailView(generics.RetrieveAPIView):
 @extend_schema_view(
     post=extend_schema(
         summary="Add Item to Cart",
-        description="Add a product to the authenticated user's cart by providing "
-                    "the product ID and an optional quantity.",
+        description="Add a product to the authenticated user's cart by "
+                    "providing the product ID and an optional quantity.",
         parameters=[
             OpenApiParameter(
                 name='product_id',
@@ -63,7 +63,7 @@ class CartDetailView(generics.RetrieveAPIView):
                 required=False,
                 default=1,
                 location='query',
-                description="The quantity of the product to add (default is 1)."
+                description="Quantity of the product to add (default is 1)."
             ),
         ],
         responses={201: CartItemSerializer}
@@ -100,7 +100,8 @@ class AddCartItemView(generics.CreateAPIView):
 @extend_schema_view(
     patch=extend_schema(
         summary="Update Cart Item Quantity",
-        description="Update the quantity of a specific item in the authenticated user's cart.",
+        description="Update the quantity of a specific item"
+                    " in the authenticated user's cart.",
         parameters=[
             OpenApiParameter(
                 name='uuid',
@@ -153,7 +154,8 @@ class UpdateCartItemView(generics.UpdateAPIView):
 @extend_schema_view(
     delete=extend_schema(
         summary="Remove Item from Cart",
-        description="Remove a specific item from the authenticated user's cart by providing the cart item UUID.",
+        description="Remove a specific item from the authenticated user's "
+                    "cart by providing the cart item UUID.",
         parameters=[
             OpenApiParameter(
                 name='uuid',
