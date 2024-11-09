@@ -83,12 +83,14 @@ class OrderDetailView(generics.RetrieveAPIView):
     def get_object(self):
         # Retrieve the order based on the provided UUID
         order_uuid = self.kwargs.get('order_uuid')
-        # Use get_object_or_404 to get the order or return a 404 error if not found
+        # Use get_object_or_404 to get the order or
+        # return a 404 error if not found
         order = get_object_or_404(Order, uuid=order_uuid)
 
         # Check if the authenticated user is the owner of the order
         if order.user != self.request.user:
-            # If the authenticated user is not the owner of the order, raise a 403
+            # If the authenticated user is not the owner of the order,
+            # raise a 403
             self.permission_denied(
                 self.request,
                 message="You do not have permission to access this order.",
@@ -105,11 +107,15 @@ class OrderDetailView(generics.RetrieveAPIView):
             serializer = self.get_serializer(order)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 @extend_schema(
-    description="Allow a customer to cancel a pending or paid order that has not been shipped.",
+    description="Allow a customer to cancel "
+                "a pending or paid order that has not been shipped.",
     responses={204: 'Order canceled successfully', 400: 'Cannot cancel order'}
 )
 class OrderCancelView(APIView):
