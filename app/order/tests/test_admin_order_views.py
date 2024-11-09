@@ -8,9 +8,9 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-from order.models import Order
 from products.models import Product, Category
 from order.services import create_order
+
 
 def admin_detail_url(order_uuid):
     """
@@ -72,7 +72,8 @@ class AdminOrderDetailViewTests(TestCase):
         """
         Test that a non-admin user cannot update an order status.
         """
-        self.client.force_authenticate(self.user)  # Authenticate as a non-admin user
+        # Authenticate as a non-admin user
+        self.client.force_authenticate(self.user)
         url = admin_detail_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
