@@ -436,7 +436,7 @@ class CheckoutTestCase(APITestCase):
         with self.assertRaises(ValidationError) as context:
             add_item_to_cart(
                 user=self.user,
-                product_id=self.product.id,
+                product_uuid=self.product.uuid,
                 quantity=0
             )
 
@@ -452,7 +452,7 @@ class CheckoutTestCase(APITestCase):
         with self.assertRaises(ValidationError) as context_neg:
             add_item_to_cart(
                 user=self.user,
-                product_id=self.product.id,
+                product_uuid=self.product.uuid,
                 quantity=-1
             )
 

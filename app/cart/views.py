@@ -51,7 +51,7 @@ class CartDetailView(generics.RetrieveAPIView):
                     "providing the product ID and an optional quantity.",
         parameters=[
             OpenApiParameter(
-                name='product_id',
+                name='product_uuid',
                 type=OpenApiTypes.UUID,
                 required=True,
                 location='query',
@@ -74,7 +74,7 @@ class AddCartItemView(generics.CreateAPIView):
     Add a product to the authenticated user's cart.
 
     This view allows users to add a product to their cart by providing
-    the product ID and an optional quantity. If the item already exists
+    the product UUID and an optional quantity. If the item already exists
     in the cart,the quantity will be updated.
     Serializer:
         - CartItemSerializer: Serializes the added cart item.
@@ -86,13 +86,13 @@ class AddCartItemView(generics.CreateAPIView):
         """
         Add a product to the cart with specified quantity.
         Args:
-            request: HTTP request containing `product_id` and `quantity` data.
+            request: HTTP request containing `product_uuid` and `quantity` data.
         Returns:
             HTTP 201 CREATED with serialized cart item data on success.
         """
-        product_id = request.data.get('product_id')
+        product_uuid = request.data.get('product_uuid')
         quantity = request.data.get('quantity', 1)
-        cart_item = add_item_to_cart(request.user, product_id, quantity)
+        cart_item = add_item_to_cart(request.user, product_uuid, quantity)
         serializer = self.get_serializer(cart_item)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

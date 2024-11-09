@@ -66,4 +66,4 @@ def move_wishlist_item_to_cart(user, product_uuid):
         raise InsufficientStockError()
 
     remove_product_from_wishlist(user, product_uuid)
-    add_item_to_cart(user, product.id, quantity=1)
+    add_item_to_cart(user, product.uuid, quantity=1)
