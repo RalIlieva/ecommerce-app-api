@@ -57,6 +57,22 @@ class CreatePaymentView(generics.GenericAPIView):
             )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Retrieve Payment Details",
+        description="Retrieve payment details by providing the UUID of the payment. "
+                    "Requires authentication.",
+        parameters=[
+            OpenApiParameter(
+                name='uuid',
+                type=OpenApiTypes.UUID,
+                location='path',
+                description="UUID of the payment to retrieve."
+            )
+        ],
+        responses={200: PaymentSerializer}
+    )
+)
 class PaymentDetailView(generics.RetrieveAPIView):
     """
     API view to retrieve payment details.
