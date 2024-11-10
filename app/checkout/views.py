@@ -147,6 +147,22 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Complete a Checkout Session",
+        description="Complete the checkout session by validating the payment status "
+                    "with Stripe and updating order status.",
+        parameters=[
+            OpenApiParameter(
+                'checkout_session_uuid',
+                OpenApiTypes.UUID,
+                location='path',
+                description="UUID of the checkout session to complete."
+            )
+        ],
+        responses={200: OpenApiTypes.OBJECT}
+    )
+)
 class CompleteCheckoutView(APIView):
     """
     API endpoint to complete a checkout session.
@@ -208,7 +224,6 @@ class CompleteCheckoutView(APIView):
                 checkout_session.payment.stripe_payment_intent_id
             )
             # Validate payment intent status
-            # if payment_intent.status != 'succeeded':
             if payment_intent['status'] != 'succeeded':
                 checkout_session.status = 'FAILED'
                 checkout_session.payment.status = Payment.FAILED
