@@ -1,7 +1,12 @@
 """
 Views for checkout app.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -23,6 +28,16 @@ from order.models import Order
 from django.db import transaction
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Start a Checkout Session",
+        description="Create a checkout session for the authenticated user's cart. "
+                    "Validates that the cart is not empty, creates an order, "
+                    "and initiates a payment intent.",
+        responses={201: CheckoutSessionSerializer},
+        request=CheckoutSessionSerializer,
+    )
+)
 class StartCheckoutSessionView(generics.CreateAPIView):
     """
     API endpoint to start a checkout session.
