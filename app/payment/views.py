@@ -1,7 +1,12 @@
 """
 Views for payment app.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,13 +17,25 @@ import stripe
 from django.conf import settings
 from .services import create_payment_intent, update_payment_status
 from .models import Payment
-from .serializers import PaymentSerializer
+from .serializers import (
+    PaymentSerializer,
+    CreatePaymentSerializer
+)
 from .selectors import get_payment_by_uuid, get_user_payments
 from .filters import PaymentFilter
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Create Payment Intent",
+        description="Create a Stripe payment intent for an order "
+                    "by providing the order ID.",
+        request=CreatePaymentSerializer,
+        responses={201: OpenApiTypes.OBJECT}
+    )
+)
 class CreatePaymentView(generics.GenericAPIView):
     """
     API view to create a payment intent with Stripe.
