@@ -105,23 +105,6 @@ class PaymentListView(generics.ListAPIView):
         return get_user_payments(self.request.user)
 
 
-@extend_schema_view(
-    get=extend_schema(
-        summary="List All Payments",
-        description="List all payments associated with authenticated user. "
-                    "Supports filtering by status.",
-        parameters=[
-            OpenApiParameter(
-                name='status',
-                type=OpenApiTypes.STR,
-                location='query',
-                description="Filter payments by status "
-                            "(pending, success, failed)."
-            ),
-        ],
-        responses={200: PaymentSerializer(many=True)}
-    )
-)
 @csrf_exempt
 def stripe_webhook(request):
     """
