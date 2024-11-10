@@ -48,7 +48,7 @@ class CartDetailView(generics.RetrieveAPIView):
     post=extend_schema(
         summary="Add Item to Cart",
         description="Add a product to the authenticated user's cart by "
-                    "providing the product ID and an optional quantity.",
+                    "providing the product UUID and an optional quantity.",
         parameters=[
             OpenApiParameter(
                 name='product_uuid',
