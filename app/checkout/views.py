@@ -31,7 +31,7 @@ from django.db import transaction
 @extend_schema_view(
     post=extend_schema(
         summary="Start a Checkout Session",
-        description="Create a checkout session for the authenticated user's cart. "
+        description="Create checkout session for authenticated user's cart. "
                     "Validates that the cart is not empty, creates an order, "
                     "and initiates a payment intent.",
         responses={201: CheckoutSessionSerializer},
@@ -150,8 +150,8 @@ class StartCheckoutSessionView(generics.CreateAPIView):
 @extend_schema_view(
     post=extend_schema(
         summary="Complete a Checkout Session",
-        description="Complete the checkout session by validating the payment status "
-                    "with Stripe and updating order status.",
+        description="Complete the checkout session by validating the  "
+                    "payment status with Stripe and updating order status.",
         parameters=[
             OpenApiParameter(
                 'checkout_session_uuid',
