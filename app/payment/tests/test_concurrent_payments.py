@@ -75,7 +75,7 @@ class PaymentTestCase(APITestCase):
         client_b.force_authenticate(user=self.user)
 
         url = reverse('payment:create-payment')
-        data = {'order_id': self.order.id}
+        data = {'order_uuid': self.order.uuid}
 
         # Simulate concurrent requests
         response_a = client_a.post(url, data, format='json')

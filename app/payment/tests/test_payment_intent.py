@@ -75,7 +75,7 @@ class PaymentTestCase(APITestCase):
 
         # Define the URL for creating the payment intent
         url = reverse('payment:create-payment')
-        data = {'order_id': self.order.id}
+        data = {'order_uuid': self.order.uuid}
 
         # Send POST request to create payment intent
         response = self.client.post(url, data, format='json')
@@ -205,7 +205,7 @@ class PaymentTestCase(APITestCase):
 
         # Attempt to create a payment for an already paid order
         url = reverse('payment:create-payment')
-        data = {'order_id': self.order.id}
+        data = {'order_uuid': self.order.uuid}
         response = self.client.post(url, data, format='json')
 
         # Expect a 400 Bad Request since the order is already paid
@@ -246,7 +246,7 @@ class PaymentTestCase(APITestCase):
             "Something went wrong"
         )
         url = reverse('payment:create-payment')
-        data = {'order_id': self.order.id}
+        data = {'order_uuid': self.order.uuid}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('error', response.data)
@@ -305,7 +305,7 @@ class PaymentTestCase(APITestCase):
         and its details can be retrieved.
         """
         url = reverse('payment:create-payment')
-        data = {'order_id': self.order.id}
+        data = {'order_uuid': self.order.uuid}
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

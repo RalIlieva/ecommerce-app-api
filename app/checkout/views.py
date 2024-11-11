@@ -130,7 +130,7 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         # Create payment intent for checkout & attach it to a payment object
         try:
             payment_secret = create_payment_intent(
-                order_id=order.id, user=request.user
+                order_uuid=order.uuid, user=request.user
             )
             payment = Payment.objects.get(order=order)
             checkout_session.payment = payment

@@ -99,9 +99,9 @@ class CheckoutTestCase(APITestCase):
         mock_payment_intent_create.assert_called_once_with(
             amount=int(order.total_amount * 100),  # Amount in cents
             currency='usd',
-            metadata={'order_id': order.id},
+            metadata={'order_uuid': order.uuid},
             payment_method_types=['card'],
-            idempotency_key=f"order_{order.id}_payment"
+            idempotency_key=f"order_{order.uuid}_payment"
         )
 
         # Verify that a Payment object was created
@@ -539,7 +539,7 @@ class CheckoutTestCase(APITestCase):
         ])
 
         # Create a payment intent for that order
-        create_payment_intent(order_id=order.id, user=other_user)
+        create_payment_intent(order_uuid=order.uuid, user=other_user)
 
         # Retrieve the payment object associated with the order
         payment = Payment.objects.get(order=order)

@@ -15,9 +15,11 @@ from core.exceptions import (
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def create_payment_intent(order_id, user):
+# def create_payment_intent(order_id, user):
+def create_payment_intent(order_uuid, user):
     try:
-        order = Order.objects.get(id=order_id, user=user)
+        # order = Order.objects.get(id=order_id, user=user)
+        order = Order.objects.get(uuid=order_uuid, user=user)
     except Order.DoesNotExist:
         raise ValidationError("Order does not exist.")
 
@@ -41,9 +43,11 @@ def create_payment_intent(order_id, user):
         intent = stripe.PaymentIntent.create(
             amount=int(total_amount * 100),  # Stripe uses cents
             currency='usd',
-            metadata={'order_id': order.id},
+            metadata={'order_uuid': order.uuid},
+            # metadata={'order_id': order.id},
             payment_method_types=['card'],
-            idempotency_key=f"order_{order.id}_payment"  # Ensure uniqueness
+            idempotency_key=f"order_{order.uuid}_payment"  # Ensure uniqueness
+            # idempotency_key=f"order_{order.id}_payment"  # Ensure uniqueness
         )
     except stripe.error.StripeError as e:
         # If Stripe raises an error, raise a custom PaymentFailedException
