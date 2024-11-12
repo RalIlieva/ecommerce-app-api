@@ -14,7 +14,7 @@ urlpatterns = [
         name='notification-list'
     ),
     path(
-        'notifications/<uuid:pk>/',
+        'notifications/<uuid:uuid>/',
         NotificationDetailView.as_view(),
         name='notification-detail'
     ),
