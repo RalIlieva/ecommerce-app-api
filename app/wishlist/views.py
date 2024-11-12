@@ -2,6 +2,12 @@
 Views for wishlist app.
 """
 
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,6 +20,14 @@ from .services import (
 )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Retrieve User's Wishlist",
+        description="Retrieve the current user's wishlist. "
+                    "Creates a new wishlist if one does not exist.",
+        responses={200: WishlistSerializer}
+    )
+)
 class WishlistView(generics.RetrieveAPIView):
     """
     Retrieve the current user's wishlist.
