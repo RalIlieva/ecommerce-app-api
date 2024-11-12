@@ -127,6 +127,25 @@ class RemoveFromWishlistView(generics.DestroyAPIView):
         )
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Move Product from Wishlist to Cart",
+        description="Move a product from the wishlist to "
+                    "the cart for the authenticated user.",
+        request=WishlistItemSerializer,
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='body',
+                description="The UUID of the product to move to the cart."
+            )
+        ],
+        responses={200: "Product moved to cart.", 404: "Product not found"
+                                                       " in wishlist or insufficient stock."}
+    )
+)
 class MoveToCartView(generics.CreateAPIView):
     """
     Move a product from the wishlist to the cart.
