@@ -31,7 +31,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
     post=extend_schema(
         summary="Create Payment Intent",
         description="Create a Stripe payment intent for an order "
-                    "by providing the order ID.",
+                    "by providing the order UUID.",
         request=CreatePaymentSerializer,
         responses={201: OpenApiTypes.OBJECT}
     )
