@@ -29,11 +29,11 @@ urlpatterns = [
          name='token_refresh'),
     path('api/products/', include('products.urls', namespace='products')),
     path('api/orders/', include('order.urls', namespace='order')),
-    path('payment/', include('payment.urls', namespace='payment')),
-    path('cart/', include('cart.urls', namespace='cart')),
-    path('checkout/', include('checkout.urls', namespace='checkout')),
-    path('wishlist/', include('wishlist.urls', namespace='wishlist')),
-    path('notifications/', include(
+    path('api/payment/', include('payment.urls', namespace='payment')),
+    path('api/cart/', include('cart.urls', namespace='cart')),
+    path('api/checkout/', include('checkout.urls', namespace='checkout')),
+    path('api/wishlist/', include('wishlist.urls', namespace='wishlist')),
+    path('api/notifications/', include(
         'notifications.urls', namespace='notifications')
          )
 ]
