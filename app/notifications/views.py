@@ -16,7 +16,8 @@ from .serializers import NotificationSerializer
 @extend_schema_view(
     get=extend_schema(
         summary="Retrieve Notifications for User",
-        description="Retrieve a list of all notifications for the authenticated user.",
+        description="Retrieve a list of all notifications for "
+                    "the authenticated user.",
         tags=["Notifications"],
         responses={200: NotificationSerializer(many=True)},
     )
@@ -37,7 +38,8 @@ class NotificationListView(generics.ListAPIView):
 @extend_schema_view(
     get=extend_schema(
         summary="Retrieve Notification by UUID",
-        description="Retrieve a specific notification by UUID for the authenticated user.",
+        description="Retrieve a specific notification by UUID "
+                    "for the authenticated user.",
         tags=["Notifications"],
         parameters=[
             OpenApiParameter(
