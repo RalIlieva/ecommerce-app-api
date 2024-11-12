@@ -48,6 +48,24 @@ class WishlistView(generics.RetrieveAPIView):
         return get_or_create_wishlist(self.request.user)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Add Product to Wishlist",
+        description="Add a product to the authenticated user's wishlist "
+                    "by providing the product UUID.",
+        request=WishlistItemSerializer,
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='body',
+                description="The UUID of the product to add to the wishlist."
+            )
+        ],
+        responses={201: WishlistItemSerializer, 400: "Product already in wishlist."}
+    )
+)
 class AddToWishlistView(generics.CreateAPIView):
     """
     Add a product to the user's wishlist.
