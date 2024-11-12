@@ -1,4 +1,3 @@
-import stripe
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
@@ -6,7 +5,6 @@ from django.contrib.auth import get_user_model
 from products.models import Product, Category
 from order.models import Order, OrderItem
 from payment.models import Payment
-from unittest.mock import patch
 
 
 class PaymentTestCase(APITestCase):
