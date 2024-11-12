@@ -252,50 +252,6 @@ class PaymentTestCase(APITestCase):
         self.assertIn('error', response.data)
         self.assertIn('Something went wrong', response.data['error'])
 
-    # # Test concurrent payment handling (simulate race condition)
-    # def test_create_concurrent_payments_for_same_order(self):
-    #     """
-    #     Test handling concurrent payment requests for the same order.
-    #
-    #     Simulates two clients attempting to create payments for the same order
-    #     at the same time and ensures that only one succeeds.
-    #     """
-    #     # Create two clients to simulate two users making requests concurrently
-    #     client_a = APIClient()
-    #     client_b = APIClient()
-    #     client_a.force_authenticate(user=self.user)
-    #     client_b.force_authenticate(user=self.user)
-    #
-    #     url = reverse('payment:create-payment')
-    #     data = {'order_id': self.order.id}
-    #
-    #     # Simulate concurrent requests
-    #     response_a = client_a.post(url, data, format='json')
-    #     response_b = client_b.post(url, data, format='json')
-    #
-    #     # Ensure only one payment is successful
-    #     successful_response = (
-    #         response_a if response_a.status_code == status.HTTP_201_CREATED
-    #         else response_b
-    #     )
-    #     self.assertEqual(
-    #         successful_response.status_code, status.HTTP_201_CREATED
-    #     )
-    #
-    #     # The other response is 400 Bad Request due to payment already existing
-    #     failed_response = (
-    #         response_a if response_a != successful_response
-    #         else response_b)
-    #
-    #     self.assertEqual(
-    #         failed_response.status_code, status.HTTP_400_BAD_REQUEST
-    #     )
-    #     self.assertIn('error', failed_response.data)
-    #     self.assertIn(
-    #         'Payment already exists for this order',
-    #         failed_response.data['error']
-    #     )
-
     # Full end-to-end payment creation and retrieval test
     def test_full_payment_flow(self):
         """
