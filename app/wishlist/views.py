@@ -88,6 +88,23 @@ class AddToWishlistView(generics.CreateAPIView):
         )
 
 
+@extend_schema_view(
+    delete=extend_schema(
+        summary="Remove Product from Wishlist",
+        description="Remove a product from the authenticated user's wishlist "
+                    "by providing the product UUID in the URL.",
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='path',
+                description="The UUID of the product to remove from the wishlist."
+            )
+        ],
+        responses={204: "Product removed from wishlist.", 404: "Product not found in wishlist."}
+    )
+)
 class RemoveFromWishlistView(generics.DestroyAPIView):
     """
     Remove a product from the user's wishlist.
