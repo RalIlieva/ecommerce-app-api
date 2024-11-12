@@ -43,12 +43,10 @@ class CreatePaymentView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        # order_id = request.data.get('order_id')
         order_uuid = request.data.get('order_uuid')
         try:
             # Create a payment intent for the given order
             client_secret = create_payment_intent(order_uuid, request.user)
-            # client_secret = create_payment_intent(order_id, request.user)
             return Response(
                 {'client_secret': client_secret},
                 status=status.HTTP_201_CREATED
