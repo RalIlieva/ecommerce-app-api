@@ -171,6 +171,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'products.pagination.CustomPagination',
     'PAGE_SIZE': 10,
     'EXCEPTION_HANDLER': 'core.handlers.drf_default_with_modifications_exception_handler',
+    # Versioning settings
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1'],
+}
+
+SPECTACULAR_SETTINGS = {
+    # API version displayed in Swagger UI
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 SIMPLE_JWT = {
