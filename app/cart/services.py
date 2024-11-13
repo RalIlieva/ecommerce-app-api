@@ -2,7 +2,10 @@
 Business logic - functions - write to db.
 """
 
-from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.exceptions import (
+    ValidationError,
+    NotFound
+)
 from django.shortcuts import get_object_or_404
 from .models import Cart, CartItem
 from products.models import Product
@@ -22,7 +25,7 @@ def get_or_create_cart(user):
     return cart
 
 
-def add_item_to_cart(user, product_id, quantity=1):
+def add_item_to_cart(user, product_uuid, quantity=1):
     """
     Add a specified quantity of a product to the user's cart.
 
@@ -31,7 +34,7 @@ def add_item_to_cart(user, product_id, quantity=1):
 
     Args:
         user: The user adding the product to their cart.
-        product_id: ID of the product to be added.
+        product_uuid: UUID of the product to be added.
         quantity: Number of units to add (default is 1).
 
     Raises:
@@ -42,7 +45,7 @@ def add_item_to_cart(user, product_id, quantity=1):
         CartItem: The updated or newly created cart item instance.
     """
     cart = get_or_create_cart(user)
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(Product, uuid=product_uuid)
 
     # Check stock availability
     if quantity > product.stock:

@@ -1,7 +1,12 @@
 """
 Views for the products' reviews API.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
@@ -17,6 +22,29 @@ from ..filters import ReviewFilter
 from ..pagination import CustomPagination
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'rating',
+                OpenApiTypes.INT,
+                description='Filter reviews by exact rating.'
+            ),
+            OpenApiParameter(
+                'min_rating',
+                OpenApiTypes.INT,
+                description='Filter reviews by minimum rating value.'
+            ),
+            OpenApiParameter(
+                'max_rating',
+                OpenApiTypes.INT,
+                description='Filter reviews by maximum rating value.'
+            ),
+        ],
+        description="Retrieve a list of reviews for a specific product. "
+                    "Filter by rating."
+    )
+)
 class ReviewListView(generics.ListAPIView):
     """
     GET: List all reviews for a specific product. (user-facing)

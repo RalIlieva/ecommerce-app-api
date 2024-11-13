@@ -74,7 +74,7 @@ class CheckoutSessionDeletionTestCase(APITestCase):
         ])
         # This now uses the mocked function
         self.payment_secret = create_payment_intent(
-            order_id=self.order.id, user=self.user
+            order_uuid=self.order.uuid, user=self.user
         )
         self.payment = Payment.objects.get(
             order=self.order

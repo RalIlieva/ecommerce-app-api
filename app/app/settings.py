@@ -171,6 +171,16 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'products.pagination.CustomPagination',
     'PAGE_SIZE': 10,
     'EXCEPTION_HANDLER': 'core.handlers.drf_default_with_modifications_exception_handler',
+    # Versioning settings
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.URLPathVersioning',
+    'DEFAULT_VERSION': 'v1',
+    'ALLOWED_VERSIONS': ['v1'],
+}
+
+SPECTACULAR_SETTINGS = {
+    # API version displayed in Swagger UI
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 SIMPLE_JWT = {
@@ -199,25 +209,74 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler', # Sends emails to admins for errors
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/django/django.log',  # Path to the log file inside the Docker container
+            'maxBytes': 10240,  # Max log file size in bytes (10MB)
+            'backupCount': 5,  # Number of backup logs to keep
+            'formatter': 'verbose',
+        },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG',
+        'level': 'DEBUG' if DEBUG else 'ERROR',  # In production, log errors and higher
     },
     'loggers': {
         'django': {  # Django's internal logs
-            'handlers': ['console'],
-            'level': 'DEBUG',
+            'handlers': ['console', 'mail_admins', 'file'] if not DEBUG else ['console'],
+            'level': 'DEBUG' if DEBUG else 'ERROR',
             'propagate': True,
         },
-        'products': {  # Products app's logger
-            'handlers': ['console'],
-            'level': 'DEBUG',
+        'products': {  # Example: Products app's logger
+            'handlers': ['console', 'file'] if not DEBUG else ['console'],
+            'level': 'DEBUG' if DEBUG else 'ERROR',
             'propagate': False,
         },
         # TO DO - define other loggers as needed
     },
 }
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',
+#     },
+#     'loggers': {
+#         'django': {  # Django's internal logs
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'products': {  # Products app's logger
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#         # TO DO - define other loggers as needed
+#     },
+# }
 
 # Stripe Settings
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
@@ -235,6 +294,11 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
+
+
+# Email settings for sending error notifications to
+# List of admin emails
+ADMINS = [(os.getenv('ADMIN_NAME'), os.getenv('ADMIN_EMAIL'))]
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

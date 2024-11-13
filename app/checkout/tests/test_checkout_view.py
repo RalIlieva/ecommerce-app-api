@@ -70,7 +70,7 @@ class CompleteCheckoutViewTestCase(APITestCase):
 
         # Use create_payment_intent to create a payment & attach to the order
         self.payment_secret = create_payment_intent(
-            order_id=self.order.id, user=self.user
+            order_uuid=self.order.uuid, user=self.user
         )
         self.payment = Payment.objects.get(order=self.order)
 

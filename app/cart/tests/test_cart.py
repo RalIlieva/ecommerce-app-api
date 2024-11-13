@@ -58,7 +58,7 @@ class CartTestCase(APITestCase):
         Confirms successful creation with correct quantity.
         """
         url = reverse('cart:add-cart-item')
-        data = {'product_id': self.product.id, 'quantity': 2}
+        data = {'product_uuid': self.product.uuid, 'quantity': 2}
         response = self.client.post(url, data, format='json')
         print(f"Create Cart Item Response Status Code: {response.status_code}")
         print(f"Create Cart Item Response Data: {response.data}")
@@ -134,7 +134,7 @@ class CartTestCase(APITestCase):
         Confirms a validation error response with HTTP 400 Bad Request.
         """
         url = reverse('cart:add-cart-item')
-        data = {'product_id': self.product.id, 'quantity': 0}
+        data = {'product_uuid': self.product.uuid, 'quantity': 0}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
@@ -148,7 +148,7 @@ class CartTestCase(APITestCase):
         Confirms a validation error response with HTTP 400 Bad Request.
         """
         url = reverse('cart:add-cart-item')
-        data = {'product_id': self.product.id, 'quantity': -1}
+        data = {'product_uuid': self.product.uuid, 'quantity': -1}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
@@ -162,7 +162,8 @@ class CartTestCase(APITestCase):
         Ensures that a validation error response is returned.
         """
         url = reverse('cart:add-cart-item')
-        data = {'product_id': self.product.id, 'quantity': 101}  # Stock is 100
+        # Stock is 100
+        data = {'product_uuid': self.product.uuid, 'quantity': 101}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
@@ -176,7 +177,7 @@ class CartTestCase(APITestCase):
         Confirms the item quantity is updated instead of creating a duplicate.
         """
         url = reverse('cart:add-cart-item')
-        data = {'product_id': self.product.id, 'quantity': 2}
+        data = {'product_uuid': self.product.uuid, 'quantity': 2}
 
         # Add item to cart
         response = self.client.post(url, data, format='json')

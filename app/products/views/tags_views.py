@@ -1,7 +1,12 @@
 """
 Views for the products' tags API.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
@@ -21,6 +26,19 @@ from ..pagination import CustomPagination
 
 
 # Tag Views
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                'name',
+                OpenApiTypes.STR,
+                description='Filter tags by name. '
+                            'Search is case insensitive.'
+            ),
+        ],
+        description="Retrieve a list of tags. Search tags by their name."
+    )
+)
 class TagListView(generics.ListAPIView):
     """
     GET: View to list all tags. (user-facing)

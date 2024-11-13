@@ -1,7 +1,12 @@
 """
 Views for cart app.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework.views import APIView
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +20,12 @@ from .services import (
 )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Retrieve User's Cart",
+        description="Retrieve all items in the authenticated user's cart.",
+    )
+)
 class CartDetailView(generics.RetrieveAPIView):
     """
     Retrieve the details of the authenticated user's cart.
@@ -33,12 +44,37 @@ class CartDetailView(generics.RetrieveAPIView):
         return get_or_create_cart(self.request.user)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Add Item to Cart",
+        description="Add a product to the authenticated user's cart by "
+                    "providing the product UUID and an optional quantity.",
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='query',
+                description="The UUID of the product to add to the cart."
+            ),
+            OpenApiParameter(
+                name='quantity',
+                type=OpenApiTypes.INT,
+                required=False,
+                default=1,
+                location='query',
+                description="Quantity of the product to add (default is 1)."
+            ),
+        ],
+        responses={201: CartItemSerializer}
+    )
+)
 class AddCartItemView(generics.CreateAPIView):
     """
     Add a product to the authenticated user's cart.
 
     This view allows users to add a product to their cart by providing
-    the product ID and an optional quantity. If the item already exists
+    the product UUID and an optional quantity. If the item already exists
     in the cart,the quantity will be updated.
     Serializer:
         - CartItemSerializer: Serializes the added cart item.
@@ -50,17 +86,41 @@ class AddCartItemView(generics.CreateAPIView):
         """
         Add a product to the cart with specified quantity.
         Args:
-            request: HTTP request containing `product_id` and `quantity` data.
+            request: HTTP request containing `product_uuid` & `quantity` data.
         Returns:
             HTTP 201 CREATED with serialized cart item data on success.
         """
-        product_id = request.data.get('product_id')
+        product_uuid = request.data.get('product_uuid')
         quantity = request.data.get('quantity', 1)
-        cart_item = add_item_to_cart(request.user, product_id, quantity)
+        cart_item = add_item_to_cart(request.user, product_uuid, quantity)
         serializer = self.get_serializer(cart_item)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    patch=extend_schema(
+        summary="Update Cart Item Quantity",
+        description="Update the quantity of a specific item"
+                    " in the authenticated user's cart.",
+        parameters=[
+            OpenApiParameter(
+                name='uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='path',
+                description="The UUID of the cart item to update."
+            ),
+            OpenApiParameter(
+                name='quantity',
+                type=OpenApiTypes.INT,
+                required=True,
+                location='query',
+                description="The new quantity to set for the cart item."
+            ),
+        ],
+        responses={200: CartItemSerializer}
+    )
+)
 class UpdateCartItemView(generics.UpdateAPIView):
     """
     Update the quantity of a specific item in the authenticated user's cart.
@@ -91,6 +151,23 @@ class UpdateCartItemView(generics.UpdateAPIView):
         return Response(serializer.data)
 
 
+@extend_schema_view(
+    delete=extend_schema(
+        summary="Remove Item from Cart",
+        description="Remove a specific item from the authenticated user's "
+                    "cart by providing the cart item UUID.",
+        parameters=[
+            OpenApiParameter(
+                name='uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='path',
+                description="The UUID of the cart item to remove."
+            ),
+        ],
+        responses={204: None}
+    )
+)
 class RemoveCartItemView(generics.DestroyAPIView):
     """
     Remove a specific item from the authenticated user's cart.
@@ -114,6 +191,13 @@ class RemoveCartItemView(generics.DestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@extend_schema_view(
+    delete=extend_schema(
+        summary="Clear User's Cart",
+        description="Remove all items from the authenticated user's cart.",
+        responses={204: None}
+    )
+)
 class ClearCartView(APIView):
     """
     Clear all items from the authenticated user's cart.

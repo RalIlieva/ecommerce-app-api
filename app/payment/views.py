@@ -1,7 +1,12 @@
 """
 Views for payment app.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,13 +17,25 @@ import stripe
 from django.conf import settings
 from .services import create_payment_intent, update_payment_status
 from .models import Payment
-from .serializers import PaymentSerializer
+from .serializers import (
+    PaymentSerializer,
+    CreatePaymentSerializer
+)
 from .selectors import get_payment_by_uuid, get_user_payments
 from .filters import PaymentFilter
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Create Payment Intent",
+        description="Create a Stripe payment intent for an order "
+                    "by providing the order UUID.",
+        request=CreatePaymentSerializer,
+        responses={201: OpenApiTypes.OBJECT}
+    )
+)
 class CreatePaymentView(generics.GenericAPIView):
     """
     API view to create a payment intent with Stripe.
@@ -26,10 +43,10 @@ class CreatePaymentView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        order_id = request.data.get('order_id')
+        order_uuid = request.data.get('order_uuid')
         try:
             # Create a payment intent for the given order
-            client_secret = create_payment_intent(order_id, request.user)
+            client_secret = create_payment_intent(order_uuid, request.user)
             return Response(
                 {'client_secret': client_secret},
                 status=status.HTTP_201_CREATED
@@ -40,6 +57,23 @@ class CreatePaymentView(generics.GenericAPIView):
             )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Retrieve Payment Details",
+        description="Retrieve payment details by providing the "
+                    "UUID of the payment. "
+                    "Requires authentication.",
+        parameters=[
+            OpenApiParameter(
+                name='uuid',
+                type=OpenApiTypes.UUID,
+                location='path',
+                description="UUID of the payment to retrieve."
+            )
+        ],
+        responses={200: PaymentSerializer}
+    )
+)
 class PaymentDetailView(generics.RetrieveAPIView):
     """
     API view to retrieve payment details.

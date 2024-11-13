@@ -1,5 +1,5 @@
 """
-Tests for order status.
+Tests for order status - admin.
 """
 
 from django.contrib.auth import get_user_model
@@ -15,7 +15,7 @@ def detail_url(order_uuid):
     """
     Create and return an order detail URL with UUID.
     """
-    return reverse('order:order-detail', args=[order_uuid])
+    return reverse('order:admin-order-detail', args=[order_uuid])
 
 
 class OrderStatusTestCase(TestCase):
@@ -32,8 +32,16 @@ class OrderStatusTestCase(TestCase):
             email='testuser@example.com',
             password='password123'
         )
-        self.client.force_authenticate(self.user)
+        # self.client.force_authenticate(self.user)
         self.order = Order.objects.create(user=self.user)
+
+        # Create admin user for testing updates
+        self.admin_user = get_user_model().objects.create_superuser(
+            email="admin@example.com",
+            password="adminpassword"
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.admin_user)
 
     def test_update_order_status_to_paid(self):
         """

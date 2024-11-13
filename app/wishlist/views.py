@@ -2,6 +2,12 @@
 Views for wishlist app.
 """
 
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -14,6 +20,14 @@ from .services import (
 )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Retrieve User's Wishlist",
+        description="Retrieve the current user's wishlist. "
+                    "Creates a new wishlist if one does not exist.",
+        responses={200: WishlistSerializer}
+    )
+)
 class WishlistView(generics.RetrieveAPIView):
     """
     Retrieve the current user's wishlist.
@@ -34,6 +48,25 @@ class WishlistView(generics.RetrieveAPIView):
         return get_or_create_wishlist(self.request.user)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Add Product to Wishlist",
+        description="Add a product to the authenticated user's wishlist "
+                    "by providing the product UUID.",
+        request=WishlistItemSerializer,
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='body',
+                description="The UUID of the product to add to the wishlist."
+            )
+        ],
+        responses={201: WishlistItemSerializer,
+                   400: "Product already in wishlist."}
+    )
+)
 class AddToWishlistView(generics.CreateAPIView):
     """
     Add a product to the user's wishlist.
@@ -56,6 +89,25 @@ class AddToWishlistView(generics.CreateAPIView):
         )
 
 
+@extend_schema_view(
+    delete=extend_schema(
+        summary="Remove Product from Wishlist",
+        description="Remove a product from the authenticated user's wishlist "
+                    "by providing the product UUID in the URL.",
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='path',
+                description="The UUID of the product to remove "
+                            "from the wishlist."
+            )
+        ],
+        responses={204: "Product removed from wishlist.",
+                   404: "Product not found in wishlist."}
+    )
+)
 class RemoveFromWishlistView(generics.DestroyAPIView):
     """
     Remove a product from the user's wishlist.
@@ -78,6 +130,25 @@ class RemoveFromWishlistView(generics.DestroyAPIView):
         )
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Move Product from Wishlist to Cart",
+        description="Move a product from the wishlist to "
+                    "the cart for the authenticated user.",
+        request=WishlistItemSerializer,
+        parameters=[
+            OpenApiParameter(
+                name='product_uuid',
+                type=OpenApiTypes.UUID,
+                required=True,
+                location='body',
+                description="The UUID of the product to move to the cart."
+            )
+        ],
+        responses={200: "Product moved to cart.", 404: "Product not found"
+                        " in wishlist or insufficient stock."}
+    )
+)
 class MoveToCartView(generics.CreateAPIView):
     """
     Move a product from the wishlist to the cart.

@@ -7,6 +7,7 @@ from products.models import Product, Category
 from payment.models import Payment
 from cart.models import Cart, CartItem
 from checkout.models import CheckoutSession
+import uuid
 
 
 class CompleteCheckoutFlowTestCase(APITestCase):
@@ -73,16 +74,21 @@ class CompleteCheckoutFlowTestCase(APITestCase):
             - The product stock decreases by the purchased quantity
             - Stripe's PaymentIntent.retrieve method should be called correctly
         """
+        # Generate a UUID to use for the mocked order and payment
+        order_uuid = uuid.uuid4()
+
         # Mock PaymentIntent.create to return a fake PaymentIntent
         mock_payment_intent_create.return_value = {
             'id': 'pi_complete_flow',
-            'client_secret': 'complete_flow_secret'
+            'client_secret': 'complete_flow_secret',
+            'metadata': {'order_uuid': str(order_uuid)}
         }
 
         # Mock PaymentIntent.retrieve to return a succeeded PaymentIntent
         mock_payment_intent_retrieve.return_value = {
             'id': 'pi_complete_flow',
-            'status': 'succeeded'
+            'status': 'succeeded',
+            'metadata': {'order_uuid': str(order_uuid)}
         }
 
         # Step 1: Initiate Checkout

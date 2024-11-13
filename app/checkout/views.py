@@ -1,7 +1,12 @@
 """
 Views for checkout app.
 """
-
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes
+)
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -23,6 +28,16 @@ from order.models import Order
 from django.db import transaction
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Start a Checkout Session",
+        description="Create checkout session for authenticated user's cart. "
+                    "Validates that the cart is not empty, creates an order, "
+                    "and initiates a payment intent.",
+        responses={201: CheckoutSessionSerializer},
+        request=CheckoutSessionSerializer,
+    )
+)
 class StartCheckoutSessionView(generics.CreateAPIView):
     """
     API endpoint to start a checkout session.
@@ -115,7 +130,7 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         # Create payment intent for checkout & attach it to a payment object
         try:
             payment_secret = create_payment_intent(
-                order_id=order.id, user=request.user
+                order_uuid=order.uuid, user=request.user
             )
             payment = Payment.objects.get(order=order)
             checkout_session.payment = payment
@@ -132,6 +147,22 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    post=extend_schema(
+        summary="Complete a Checkout Session",
+        description="Complete the checkout session by validating the  "
+                    "payment status with Stripe and updating order status.",
+        parameters=[
+            OpenApiParameter(
+                'checkout_session_uuid',
+                OpenApiTypes.UUID,
+                location='path',
+                description="UUID of the checkout session to complete."
+            )
+        ],
+        responses={200: OpenApiTypes.OBJECT}
+    )
+)
 class CompleteCheckoutView(APIView):
     """
     API endpoint to complete a checkout session.
@@ -193,7 +224,6 @@ class CompleteCheckoutView(APIView):
                 checkout_session.payment.stripe_payment_intent_id
             )
             # Validate payment intent status
-            # if payment_intent.status != 'succeeded':
             if payment_intent['status'] != 'succeeded':
                 checkout_session.status = 'FAILED'
                 checkout_session.payment.status = Payment.FAILED
