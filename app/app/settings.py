@@ -209,25 +209,74 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler', # Sends emails to admins for errors
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/django/django.log',  # Path to the log file inside the Docker container
+            'maxBytes': 10240,  # Max log file size in bytes (10MB)
+            'backupCount': 5,  # Number of backup logs to keep
+            'formatter': 'verbose',
+        },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'DEBUG',
+        'level': 'DEBUG' if DEBUG else 'ERROR',  # In production, log errors and higher
     },
     'loggers': {
         'django': {  # Django's internal logs
-            'handlers': ['console'],
-            'level': 'DEBUG',
+            'handlers': ['console', 'mail_admins', 'file'] if not DEBUG else ['console'],
+            'level': 'DEBUG' if DEBUG else 'ERROR',
             'propagate': True,
         },
-        'products': {  # Products app's logger
-            'handlers': ['console'],
-            'level': 'DEBUG',
+        'products': {  # Example: Products app's logger
+            'handlers': ['console', 'file'] if not DEBUG else ['console'],
+            'level': 'DEBUG' if DEBUG else 'ERROR',
             'propagate': False,
         },
         # TO DO - define other loggers as needed
     },
 }
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'verbose': {
+#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '{levelname} {message}',
+#             'style': '{',
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'simple',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',
+#     },
+#     'loggers': {
+#         'django': {  # Django's internal logs
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'products': {  # Products app's logger
+#             'handlers': ['console'],
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#         # TO DO - define other loggers as needed
+#     },
+# }
 
 # Stripe Settings
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
