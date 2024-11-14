@@ -5,4 +5,6 @@ class IsVendor(permissions.BasePermission):
     """Custom permission for vendors."""
 
     def has_permission(self, request, view):
-        return bool(request.user and request.user.groups.filter(name='vendor').exists())
+        return bool(request.user and request.user.groups.filter(
+            name='vendor'
+        ).exists())
