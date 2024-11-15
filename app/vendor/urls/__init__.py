@@ -6,4 +6,5 @@ app_name = 'vendor'
 # Include submodules explicitly
 urlpatterns = [
     path('products/', include('vendor.urls.products_urls', namespace='products')),
+    path('categories/', include('vendor.urls.category_urls', namespace='products')),
 ]

@@ -41,7 +41,7 @@ from products.pagination import CustomPagination
                     "Search categories by their name."
     )
 )
-class CategoryListView(generics.ListAPIView):
+class VendorCategoryListView(generics.ListAPIView):
     """
     GET: View to list all categories.
     """
@@ -74,7 +74,7 @@ class VendorCategoryCreateView(generics.CreateAPIView):
             raise e
 
 
-class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+class VendorCategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
     PUT/PATCH: View to retrieve, update, or
     DELETE: delete a new category.
@@ -107,7 +107,7 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
             raise e
 
 
-class CategoryDetailView(generics.RetrieveAPIView):
+class VendorCategoryDetailView(generics.RetrieveAPIView):
     """
     GET: Retrieve category details.
     """
