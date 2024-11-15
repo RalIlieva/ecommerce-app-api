@@ -37,5 +37,6 @@ urlpatterns = [
     path('api/v1/wishlist/', include('wishlist.urls', namespace='wishlist')),
     path('api/v1/notifications/', include(
         'notifications.urls', namespace='notifications')
-         )
+         ),
+    path('api/v1/vendor/', include('vendor.urls', namespace='vendor')),
 ]
