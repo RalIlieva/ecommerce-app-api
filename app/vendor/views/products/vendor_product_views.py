@@ -114,7 +114,7 @@ class VendorProductCreateView(generics.CreateAPIView):
     """
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
 
 class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -125,7 +125,7 @@ class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
     def get_object(self):
         uuid = self.kwargs.get('uuid')

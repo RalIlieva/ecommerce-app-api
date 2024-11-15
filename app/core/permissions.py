@@ -9,6 +9,6 @@ class IsVendor(permissions.BasePermission):
             name='vendor'
         ).exists())
 
-    def has_object_permission(self, request, view, obj):
-        # Vendors can only manage their own products
-        return obj.vendor == request.user
+    # def has_object_permission(self, request, view, obj):
+    #     # Vendors can only manage their own products
+    #     return obj.vendor == request.user

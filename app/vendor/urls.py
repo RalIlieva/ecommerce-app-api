@@ -1,8 +1,8 @@
-# vendor/urls.py
-from django.urls import path, include
-
-app_name = 'vendor'
-
-urlpatterns = [
-    path('products/', include('vendor.urls.products_urls', namespace='products')),
-]
+# # vendor/urls.py
+# from django.urls import path, include
+#
+# app_name = 'vendor'
+#
+# urlpatterns = [
+#     path('', include(('vendor.urls.products_urls', 'vendor_products'), namespace='products')),
+# ]
