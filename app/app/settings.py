@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'checkout',
     'wishlist',
     'notifications',
+    'vendor',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
