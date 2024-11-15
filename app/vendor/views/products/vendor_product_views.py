@@ -81,7 +81,7 @@ class VendorProductListView(generics.ListAPIView):
     filterset_class = ProductFilter
     search_fields = ['name', 'description']  # Fields to search by
     pagination_class = CustomPagination
-    permission_classes = [permissions.IsAuthenticated, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
 
 
 class VendorProductDetailView(generics.RetrieveAPIView):
@@ -114,7 +114,7 @@ class VendorProductCreateView(generics.CreateAPIView):
     """
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    permission_classes = [permissions.IsAuthenticated, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
 
 
 class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -125,7 +125,7 @@ class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    permission_classes = [permissions.IsAuthenticated, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
 
     def get_object(self):
         uuid = self.kwargs.get('uuid')
