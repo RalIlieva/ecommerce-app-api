@@ -23,10 +23,3 @@ urlpatterns = [
          name='vendor-product-list'
          ),
 ]
-
-# urlpatterns = [
-#     path('products/', vendor_product_views.VendorProductListCreateView.as_view(), name='vendor-product-list-create'),
-#     path('products/<uuid:uuid>/<slug:slug>/',
-#     vendor_product_views.VendorProductDetailUpdateDeleteView.as_view(),
-#     name='vendor-product-detail-update-delete'),
-# ]

@@ -51,7 +51,7 @@ class VendorCategoryListView(generics.ListAPIView):
     filterset_class = CategoryFilter
     search_fields = ['name']  # Fields to search by
     pagination_class = CustomPagination
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
 
 class VendorCategoryCreateView(generics.CreateAPIView):
@@ -61,7 +61,7 @@ class VendorCategoryCreateView(generics.CreateAPIView):
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
     def perform_create(self, serializer):
         try:
@@ -82,7 +82,7 @@ class VendorCategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'uuid'
 
@@ -115,4 +115,4 @@ class VendorCategoryDetailView(generics.RetrieveAPIView):
     serializer_class = CategoryDetailSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]

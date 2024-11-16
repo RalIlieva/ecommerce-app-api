@@ -19,7 +19,7 @@ class VendorProductImageUploadView(generics.CreateAPIView):
     """
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
     def perform_create(self, serializer):
         uuid = self.kwargs.get('uuid')
@@ -39,7 +39,7 @@ class VendorProductImageDeleteView(generics.DestroyAPIView):
     Only superusers and administrators, vendors can access the view.
     """
     queryset = ProductImage.objects.all()
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
     lookup_field = 'id'
     lookup_url_kwarg = 'image_id'
 
