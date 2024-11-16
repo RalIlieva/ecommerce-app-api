@@ -207,11 +207,11 @@ class CategoryUpdateDeleteViewTest(TestCase):
             slug='old-category'
         )
         self.url = reverse(
-            'products:category-manage',
+            'vendor:categories:vendor-category-manage',
             args=[self.category.uuid]
         )
 
-    def test_update_category_as_admin(self):
+    def test_update_category_as_vendor(self):
         """
         Test updating a category as a vendor
         """
@@ -222,7 +222,7 @@ class CategoryUpdateDeleteViewTest(TestCase):
         self.category.refresh_from_db()
         self.assertEqual(self.category.name, 'Updated Category')
 
-    def test_delete_category_as_admin(self):
+    def test_delete_category_as_vendor(self):
         """
         Test deleting a category as a vendor
         """
@@ -230,7 +230,7 @@ class CategoryUpdateDeleteViewTest(TestCase):
         res = self.client.delete(self.url)
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_update_delete_category_as_non_admin(self):
+    def test_update_delete_category_as_non_vendor(self):
         """
         Test updating or deleting a category as a non-vendor
         """
@@ -248,7 +248,10 @@ class CategoryUpdateDeleteViewTest(TestCase):
         self.client.force_authenticate(user=self.vendor_user)
         # Generate a random UUID
         invalid_uuid = uuid.uuid4()
-        invalid_url = reverse('products:category-manage', args=[invalid_uuid])
+        invalid_url = reverse(
+            'vendor:products:vendor-product-manage',
+            args=[invalid_uuid]
+        )
         update_res = self.client.patch(
             invalid_url,
             {'name': 'Invalid Category'},
