@@ -38,5 +38,6 @@ urlpatterns = [
     path('api/v1/notifications/', include(
         'notifications.urls', namespace='notifications')
          ),
-    path('api/v1/vendor/', include(('vendor.urls', 'vendor'), namespace='vendor')),
+    path('api/v1/vendor/', include(('vendor.urls', 'vendor'),
+                                   namespace='vendor')),
 ]

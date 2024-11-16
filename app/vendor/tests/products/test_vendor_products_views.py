@@ -34,19 +34,28 @@ def detail_url(product_uuid, slug):
     """
     Create and return a product detail URL with UUID and slug.
     """
-    return reverse('vendor:products:vendor-product-detail', args=[product_uuid, slug])
+    return reverse(
+        'vendor:products:vendor-product-detail',
+        args=[product_uuid, slug]
+    )
 
 
 def manage_url(product_uuid):
     """Manage - update, delete a product detail URL."""
-    return reverse('vendor:products:vendor-product-manage', args=[product_uuid])
+    return reverse(
+        'vendor:products:vendor-product-manage',
+        args=[product_uuid]
+    )
 
 
 def image_upload_url(product_uuid, slug):
     """
     Create and return a product image upload URL with UUID and slug.
     """
-    return reverse('vendor:images:product-image-upload', args=[product_uuid, slug])
+    return reverse(
+        'vendor:images:product-image-upload',
+        args=[product_uuid, slug]
+    )
 
 
 def image_delete_url(product_uuid, slug, image_id):
@@ -84,8 +93,12 @@ def create_product(category=None, slug=None, **params):
     product = Product.objects.create(**defaults)
     return product
 
+
 def create_vendor_user(**params):
-    """Create and return a new vendor user, ensuring they belong to the 'vendor' group."""
+    """
+    Create and return a new vendor user,
+    ensuring they belong to the 'vendor' group.
+    """
     user = get_user_model().objects.create_user(**params)
     vendor_group, created = Group.objects.get_or_create(name='vendor')
     user.groups.add(vendor_group)
