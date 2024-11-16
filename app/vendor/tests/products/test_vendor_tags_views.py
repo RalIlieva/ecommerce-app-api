@@ -116,7 +116,9 @@ class TagListViewTest(TestCase):
         self.tag2 = Tag.objects.create(name="Tag 2")
 
     def test_list_all_tags(self):
-        """Test listing all tags"""
+        """
+        Test listing all tags
+        """
         res = self.client.get(TAG_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data['results']), 2)

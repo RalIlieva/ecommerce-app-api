@@ -50,7 +50,7 @@ class VendorTagListView(generics.ListAPIView):
     filterset_class = TagFilter
     search_fields = ['name']  # Fields to search by
     pagination_class = CustomPagination
-    permission_classes = [permissions.IsAuthenticated, IsVendor]
+    permission_classes = [permissions.AllowAny]
 
 
 class VendorTagCreateView(generics.CreateAPIView):
