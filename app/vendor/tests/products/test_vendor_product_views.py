@@ -1,5 +1,5 @@
 """
-Test API views for products.
+Test API views for products - for vendors.
 """
 import uuid
 from random import randint
