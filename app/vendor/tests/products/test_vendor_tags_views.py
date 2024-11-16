@@ -207,7 +207,10 @@ class TagUpdateDeleteViewTest(TestCase):
             name='Old Tag',
             slug='old-tag'
         )
-        self.url = reverse('vendor:tags:vendor-tag-manage', args=[self.tag.uuid])
+        self.url = reverse(
+            'vendor:tags:vendor-tag-manage',
+            args=[self.tag.uuid]
+        )
 
     def test_update_tag_as_admin(self):
         """
@@ -245,7 +248,10 @@ class TagUpdateDeleteViewTest(TestCase):
         """
         self.client.force_authenticate(user=self.vendor_user)
         invalid_uuid = uuid.uuid4()
-        invalid_url = reverse('vendor:tags:vendor-tag-manage', args=[invalid_uuid])
+        invalid_url = reverse(
+            'vendor:tags:vendor-tag-manage',
+            args=[invalid_uuid]
+        )
         update_res = self.client.patch(
             invalid_url,
             {'name': 'Invalid Tag'},
