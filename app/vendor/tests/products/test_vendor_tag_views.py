@@ -42,26 +42,6 @@ def manage_url(product_uuid):
     )
 
 
-def image_upload_url(product_uuid, slug):
-    """
-    Create and return a product image upload URL with UUID and slug.
-    """
-    return reverse(
-        'vendor:images:vendor-product-image-upload',
-        args=[product_uuid, slug]
-    )
-
-
-def image_delete_url(product_uuid, slug, image_id):
-    """
-    Create and return a product image delete URL with UUID, slug, and image_id.
-    """
-    return reverse(
-        'vendor:images:vendor-product-image-delete',
-        args=[product_uuid, slug, image_id]
-    )
-
-
 def create_product(category=None, slug=None, **params):
     """Create and return a sample product."""
     if category is None:
