@@ -50,7 +50,7 @@ class VendorTagListView(generics.ListAPIView):
     filterset_class = TagFilter
     search_fields = ['name']  # Fields to search by
     pagination_class = CustomPagination
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
 
 class VendorTagCreateView(generics.CreateAPIView):
@@ -60,7 +60,7 @@ class VendorTagCreateView(generics.CreateAPIView):
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
     def perform_create(self, serializer):
         try:
@@ -82,7 +82,7 @@ class VendorTagDetailView(generics.RetrieveAPIView):
     serializer_class = TagDetailSerializer
     lookup_field = 'slug'
     lookup_url_kwarg = 'slug'
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
 
 
 class VendorTagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
@@ -93,7 +93,7 @@ class VendorTagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser, IsVendor]
+    permission_classes = [permissions.IsAuthenticated, IsVendor]
     lookup_field = 'uuid'
     lookup_url_kwarg = 'uuid'
 

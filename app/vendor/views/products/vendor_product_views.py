@@ -142,7 +142,10 @@ class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 #
 #     def get(self, request):
 #         # Vendors should only get a list of their own products
-#         products = Product.objects.filter(vendor=request.user, is_active=True)
+#         products = Product.objects.filter(
+#         vendor=request.user,
+#         is_active=True
+#         )
 #         serializer = ProductMiniSerializer(products, many=True)
 #         return Response(serializer.data)
 #
@@ -152,7 +155,10 @@ class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 #         if serializer.is_valid():
 #             serializer.save(vendor=request.user)
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(
+#         serializer.errors,
+#         status=status.HTTP_400_BAD_REQUEST
+#         )
 #
 #
 # class VendorProductDetailUpdateDeleteView(APIView):
@@ -165,22 +171,42 @@ class VendorProductUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 #
 #     def get(self, request, uuid, slug):
 #         # Vendors can view their product details
-#         product = get_object_or_404(Product, uuid=uuid, slug=slug, vendor=request.user)
+#         product = get_object_or_404(
+#         Product, uuid=uuid,
+#         slug=slug,
+#         vendor=request.user
+#         )
 #         serializer = ProductDetailSerializer(product)
 #         return Response(serializer.data)
 #
 #     def patch(self, request, uuid, slug):
 #         # Vendors can update their own products
-#         product = get_object_or_404(Product, uuid=uuid, slug=slug, vendor=request.user)
-#         serializer = ProductDetailSerializer(product, data=request.data, partial=True)
+#         product = get_object_or_404(
+#         Product,
+#         uuid=uuid,
+#         slug=slug,
+#         vendor=request.user
+#         )
+#         serializer = ProductDetailSerializer(
+#         product,
+#         data=request.data,
+#         partial=True
+#         )
 #         if serializer.is_valid():
 #             serializer.save()
 #             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(
+#         serializer.errors,
+#         status=status.HTTP_400_BAD_REQUEST
+#         )
 #
 #     def delete(self, request, uuid, slug):
 #         # Vendors can delete their own products
-#         product = get_object_or_404(Product, uuid=uuid, slug=slug, vendor=request.user)
+#         product = get_object_or_404(
+#         Product, uuid=uuid,
+#         slug=slug,
+#         vendor=request.user
+#         )
 #         product.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
 #
