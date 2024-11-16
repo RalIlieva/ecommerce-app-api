@@ -15,7 +15,7 @@ from products.serializers import (
 class VendorProductImageUploadView(generics.CreateAPIView):
     """
     POST: View to upload an image to a product.
-    Only superusers and administrators, vendors can access this view.
+    Only vendors can access this view.
     """
     queryset = ProductImage.objects.all()
     serializer_class = ProductImageSerializer
@@ -44,7 +44,9 @@ class VendorProductImageDeleteView(generics.DestroyAPIView):
     lookup_url_kwarg = 'image_id'
 
     def get_queryset(self):
-        """Filter to only allow deletion of images related to the product."""
+        """
+        Filter to only allow deletion of images related to the product.
+        """
         uuid = self.kwargs.get('uuid')
         slug = self.kwargs.get('slug')
         return self.queryset.filter(product__uuid=uuid, product__slug=slug)
