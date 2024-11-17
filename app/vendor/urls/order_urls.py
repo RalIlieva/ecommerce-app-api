@@ -1,7 +1,7 @@
 # vendor/urls/order_urls.py
 
 from django.urls import path
-from vendor.views.order import (
+from vendor.views.order.vendor_order_views import (
     VendorOrderListView,
     VendorOrderDetailView,
     VendorOrderStatusUpdateView

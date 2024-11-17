@@ -12,11 +12,19 @@ from products.models import Product, Category
 from order.services import create_order
 from django.contrib.auth.models import Group
 
+
 def vendor_detail_url(order_uuid):
     """
     Create and return an order detail URL for vendor with UUID.
     """
     return reverse('vendor:orders:vendor-order-detail', args=[order_uuid])
+
+
+def vendor_status_update_url(order_uuid):
+    """
+    Create and return an order status update URL for vendor with UUID.
+    """
+    return reverse('vendor:orders:vendor-order-status-update', args=[order_uuid])
 
 
 class VendorOrderDetailViewTests(TestCase):
@@ -57,7 +65,8 @@ class VendorOrderDetailViewTests(TestCase):
         """
         Test updating the order status with a valid UUID to 'shipped' by vendor.
         """
-        url = vendor_detail_url(self.order.uuid)
+        # url = vendor_detail_url(self.order.uuid)
+        url = vendor_status_update_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -69,7 +78,8 @@ class VendorOrderDetailViewTests(TestCase):
         Test updating the order status with an invalid UUID returns 404.
         """
         invalid_uuid = uuid4()  # Generates a new UUID
-        url = vendor_detail_url(invalid_uuid)
+        # url = vendor_detail_url(invalid_uuid)
+        url = vendor_status_update_url(invalid_uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -92,7 +102,8 @@ class VendorOrderDetailViewTests(TestCase):
         """
         Test canceling an order as a vendor.
         """
-        url = vendor_detail_url(self.order.uuid)
+        # url = vendor_detail_url(self.order.uuid)
+        url = vendor_status_update_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'cancelled'})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
