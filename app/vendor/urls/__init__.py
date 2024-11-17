@@ -21,4 +21,8 @@ urlpatterns = [
         'vendor.urls.tags_urls',
         namespace='tags')
          ),
+    path('orders/', include(
+        'vendor.urls.order_urls',
+        namespace='orders')
+    ),
 ]
