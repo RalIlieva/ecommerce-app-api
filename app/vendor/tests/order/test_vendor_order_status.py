@@ -11,6 +11,7 @@ from rest_framework import status
 from uuid import uuid4
 from django.contrib.auth.models import Group
 
+
 def vendor_detail_url(order_uuid):
     """
     Create and return an order detail URL with UUID for vendor.
