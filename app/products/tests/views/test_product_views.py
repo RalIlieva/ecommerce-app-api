@@ -4,11 +4,6 @@ Test API views for products.
 import uuid
 from random import randint
 
-# import tempfile
-# import os
-#
-# from PIL import Image
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -285,7 +280,6 @@ class ProductCreateViewTest(TestCase):
 
         res = self.client.post(CREATE_PRODUCTS_URL, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # product = Product.objects.get(id=res.data['id'])
         product = Product.objects.get(uuid=res.data['uuid'])
         self.assertEqual(product.name, "Test Product")
         self.assertEqual(product.category.slug, "new-category")
@@ -321,7 +315,6 @@ class ProductDetailViewTest(TestCase):
         """Test get product detail."""
         product = create_product()
 
-        # url = detail_url(product.id)
         url = detail_url(product.uuid, product.slug)
         res = self.client.get(url)
         serializer = ProductDetailSerializer(product)
@@ -391,7 +384,6 @@ class ProductUpdateDeleteViewTest(TestCase):
         )
 
         payload = {'name': 'Updated Test Name'}
-        # url = manage_url(product.id)
         url = manage_url(product.uuid)
         res = self.client.patch(url, payload)
 
@@ -429,7 +421,6 @@ class ProductUpdateDeleteViewTest(TestCase):
             # 'tags': [],
             'is_active': True
         }
-        # url = manage_url(product.id)
         url = manage_url(product.uuid)
         res = self.client.put(url, payload, format='json')
 
@@ -444,12 +435,10 @@ class ProductUpdateDeleteViewTest(TestCase):
     def test_delete_product(self):
         """Test deleting a product successful."""
         product = create_product()
-        # url = manage_url(product.id)
         url = manage_url(product.uuid)
         res = self.client.delete(url)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        # self.assertFalse(Product.objects.filter(id=product.id).exists())
         self.assertFalse(Product.objects.filter(uuid=product.uuid).exists())
 
     def test_adding_tags_to_product_first(self):
