@@ -17,14 +17,20 @@ def vendor_detail_url(order_uuid):
     """
     Create and return an order detail URL for vendor with UUID.
     """
-    return reverse('vendor:orders:vendor-order-detail', args=[order_uuid])
+    return reverse(
+        'vendor:orders:vendor-order-detail',
+        args=[order_uuid]
+    )
 
 
 def vendor_status_update_url(order_uuid):
     """
     Create and return an order status update URL for vendor with UUID.
     """
-    return reverse('vendor:orders:vendor-order-status-update', args=[order_uuid])
+    return reverse(
+        'vendor:orders:vendor-order-status-update',
+        args=[order_uuid]
+    )
 
 
 class VendorOrderDetailViewTests(TestCase):
@@ -63,7 +69,7 @@ class VendorOrderDetailViewTests(TestCase):
 
     def test_update_order_status_with_valid_uuid(self):
         """
-        Test updating the order status with a valid UUID to 'shipped' by vendor.
+        Test updating order status with a valid UUID to 'shipped' by vendor.
         """
         # url = vendor_detail_url(self.order.uuid)
         url = vendor_status_update_url(self.order.uuid)
@@ -77,8 +83,8 @@ class VendorOrderDetailViewTests(TestCase):
         """
         Test updating the order status with an invalid UUID returns 404.
         """
-        invalid_uuid = uuid4()  # Generates a new UUID
-        # url = vendor_detail_url(invalid_uuid)
+        # Generates a new UUID
+        invalid_uuid = uuid4()
         url = vendor_status_update_url(invalid_uuid)
         response = self.client.patch(url, {'status': 'shipped'})
 
