@@ -16,7 +16,10 @@ def vendor_detail_url(order_uuid):
     """
     Create and return an order detail URL with UUID for vendor.
     """
-    return reverse('vendor:orders:vendor-order-status-update', args=[order_uuid])
+    return reverse(
+        'vendor:orders:vendor-order-status-update',
+        args=[order_uuid]
+    )
 
 
 class VendorOrderStatusTestCase(TestCase):
