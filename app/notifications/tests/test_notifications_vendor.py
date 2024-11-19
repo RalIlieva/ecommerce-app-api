@@ -41,5 +41,11 @@ class VendorOrderNotificationTest(TestCase):
         ).first()
 
         self.assertIsNotNone(vendor_notification)
-        self.assertEqual(vendor_notification.notification_type, Notification.EMAIL)
-        self.assertIn("A new order with ID", vendor_notification.body)
+        self.assertEqual(
+            vendor_notification.notification_type,
+            Notification.EMAIL
+        )
+        self.assertIn(
+            "A new order with ID",
+            vendor_notification.body
+        )
