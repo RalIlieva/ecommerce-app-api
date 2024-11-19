@@ -1,7 +1,7 @@
 # vendor/views/wishlist.py
 
 from rest_framework import generics, permissions
-from core.permission import IsVendor
+from core.permissions import IsVendor
 from wishlist.models import WishlistItem
 from wishlist.serializers import WishlistItemSerializer
 
