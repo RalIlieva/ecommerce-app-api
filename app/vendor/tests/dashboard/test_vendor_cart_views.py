@@ -43,14 +43,19 @@ class VendorCartViewTests(TestCase):
             stock=15,
             slug='test-product'
         )
-        self.cart = Cart.objects.create(user=self.vendor_user)
+        # Create a test user
+        self.user = get_user_model().objects.create_user(
+            email="testuser@example.com",
+            password="password123"
+        )
+        self.cart = Cart.objects.create(user=self.user)
+
         # Create a CartItem for this Cart
         CartItem.objects.create(
             cart=self.cart,
             product=self.product,
             quantity=1
         )
-        # self.cart.products.add(self.product)
 
     def test_vendor_cart_list(self):
         """
