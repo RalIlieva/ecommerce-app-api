@@ -43,14 +43,22 @@ class VendorDashboardOverviewTests(TestCase):
             stock=10,
             slug='test-product'
         )
-        self.order = Order.objects.create(user=self.vendor_user)
 
-        # # Sample payment for test revenue calculation
-        # Payment.objects.create(
-        #     order=self.order,
-        #     amount=200.00,
-        #     status='completed'
-        # )
+        # Create a test user
+        self.user = get_user_model().objects.create_user(
+            email="testuser@example.com",
+            password="password123"
+        )
+
+        self.order = Order.objects.create(user=self.user)
+
+        # Sample payment for test revenue calculation
+        Payment.objects.create(
+            order=self.order,
+            user=self.user,
+            amount=200.00,
+            status='completed'
+        )
 
     def test_vendor_dashboard_overview(self):
         """
@@ -63,12 +71,12 @@ class VendorDashboardOverviewTests(TestCase):
         expected_keys = [
             'total_products',
             'total_orders',
-            # 'total_revenue'
+            'total_revenue'
         ]
         for key in expected_keys:
             self.assertIn(key, response.data)
 
-        # # Optionally, you could also check the specific values
-        # self.assertEqual(response.data['total_products'], 1)
-        # self.assertEqual(response.data['total_orders'], 1)
-        # self.assertEqual(response.data['total_revenue'], 200.00)
+        # Optionally, you could also check the specific values
+        self.assertEqual(response.data['total_products'], 1)
+        self.assertEqual(response.data['total_orders'], 1)
+        self.assertEqual(response.data['total_revenue'], 200.00)

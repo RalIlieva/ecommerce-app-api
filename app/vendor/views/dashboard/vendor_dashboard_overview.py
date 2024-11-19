@@ -1,5 +1,6 @@
 # vendor/views/dashboard/vendor_dashboard_overview.py
 
+from django.db.models import Sum
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -24,14 +25,15 @@ class VendorDashboardView(APIView):
         # Calculating totals for the vendor's dashboard overview
         total_products = Product.objects.count()
         total_orders = Order.objects.count()
-        # total_revenue = Payment.objects.filter(status="completed").aggregate(
-        #     total_revenue=models.Sum('amount')
-        # )['total_revenue'] or 0.0
+        # Calculate total revenue by summing the amount for all completed payments
+        total_revenue = Payment.objects.filter(status="completed").aggregate(
+            total_revenue=Sum('amount')
+        )['total_revenue'] or 0.0
 
         response_data = {
             'total_products': total_products,
             'total_orders': total_orders,
-            # 'total_revenue': total_revenue,
+            'total_revenue': total_revenue,
             'products': Product.objects.all().values('id', 'uuid', 'name', 'price', 'slug', 'category'),
             'orders': Order.objects.all().values('id', 'uuid', 'user', 'status', 'created', 'modified'),
             'payments': Payment.objects.filter(status="completed").values('id', 'uuid', 'order', 'amount', 'status'),
