@@ -39,6 +39,7 @@ class VendorDashboardOverviewTests(TestCase):
             name='Test Product',
             price=100.00,
             category=self.category,
+            stock=10,
             slug='test-product'
         )
         self.order = Order.objects.create(user=self.vendor_user)
