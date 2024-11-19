@@ -25,4 +25,9 @@ urlpatterns = [
         'vendor.urls.order_urls',
         namespace='orders')
     ),
+    path('dashboard/', include(
+        'vendor.urls.dashboard_urls',
+        namespace='dashboard'
+    )
+         ),
 ]
