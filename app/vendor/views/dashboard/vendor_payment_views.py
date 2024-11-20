@@ -1,5 +1,4 @@
 from rest_framework import generics, permissions
-from django.contrib.auth.models import Group
 from core.permissions import IsVendor
 from payment.models import Payment
 from payment.serializers import PaymentSerializer
