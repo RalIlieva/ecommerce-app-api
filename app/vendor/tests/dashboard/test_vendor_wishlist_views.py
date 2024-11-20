@@ -58,11 +58,6 @@ class VendorWishlistViewTests(TestCase):
             product=self.product,
         )
 
-        # self.wishlist = Wishlist.objects.create(
-        #     user=self.vendor_user
-        # )
-        # self.wishlist.products.add(self.product)
-
     def test_vendor_wishlist_list(self):
         """
         Test retrieving a list of products on the wishlist.
@@ -70,4 +65,7 @@ class VendorWishlistViewTests(TestCase):
         response = self.client.get(WISHLIST_LIST_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['product']['name'], 'Test Product')
+        self.assertEqual(
+            response.data['results'][0]['product']['name'],
+            'Test Product'
+        )
