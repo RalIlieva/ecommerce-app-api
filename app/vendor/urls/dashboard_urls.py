@@ -9,8 +9,20 @@ from vendor.views.dashboard.vendor_cart_views import VendorCartInfoView
 app_name = 'vendor_dashboard'
 
 urlpatterns = [
-    path('dashboard/', VendorDashboardView.as_view(), name='dashboard-overview'),
-    path('payments/', VendorPaymentListView.as_view(), name='payment-list'),
-    path('wishlist/', VendorWishlistView.as_view(), name='wishlist-list'),
-    path('cart/', VendorCartInfoView.as_view(), name='cart-list'),
+    path(
+        'dashboard/', VendorDashboardView.as_view(),
+        name='dashboard-overview'
+    ),
+    path(
+        'payments/', VendorPaymentListView.as_view(),
+        name='payment-list'
+    ),
+    path(
+        'wishlist/', VendorWishlistView.as_view(),
+        name='wishlist-list'
+    ),
+    path(
+        'cart/', VendorCartInfoView.as_view(),
+        name='cart-list'
+    ),
 ]

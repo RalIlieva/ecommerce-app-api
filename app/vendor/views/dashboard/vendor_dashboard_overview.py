@@ -21,7 +21,7 @@ class VendorDashboardView(APIView):
         # Calculating totals for the vendor's dashboard overview
         total_products = Product.objects.count()
         total_orders = Order.objects.count()
-        # Calculate total revenue by summing the amount for all completed payments
+        # Calculate total revenue for all completed payments
         total_revenue = Payment.objects.filter(status="completed").aggregate(
             total_revenue=Sum('amount')
         )['total_revenue'] or 0.0
