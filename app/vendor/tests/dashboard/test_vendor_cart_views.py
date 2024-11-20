@@ -64,4 +64,7 @@ class VendorCartViewTests(TestCase):
         response = self.client.get(CART_INFO_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
-        self.assertEqual(response.data['results'][0]['product']['name'], 'Test Product')
+        self.assertEqual(
+            response.data['results'][0]['product']['name'],
+            'Test Product'
+        )
