@@ -47,6 +47,7 @@ class VendorOrderStatusUpdateView(generics.UpdateAPIView):
     """
     permission_classes = [permissions.IsAuthenticated, IsVendor]
     serializer_class = OrderSerializer
+    queryset = Order.objects.all()
     lookup_field = 'uuid'
     lookup_url_kwarg = 'order_uuid'
 
