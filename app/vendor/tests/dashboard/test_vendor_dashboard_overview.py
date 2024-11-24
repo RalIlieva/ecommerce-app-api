@@ -76,7 +76,6 @@ class VendorDashboardOverviewTests(TestCase):
         for key in expected_keys:
             self.assertIn(key, response.data)
 
-        # Optionally, you could also check the specific values
         self.assertEqual(response.data['total_products'], 1)
         self.assertEqual(response.data['total_orders'], 1)
         self.assertEqual(response.data['total_revenue'], 200.00)
