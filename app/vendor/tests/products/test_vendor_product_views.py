@@ -281,7 +281,6 @@ class ProductCreateViewTest(TestCase):
 
         res = self.client.post(CREATE_PRODUCTS_URL, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        # product = Product.objects.get(id=res.data['id'])
         product = Product.objects.get(uuid=res.data['uuid'])
         self.assertEqual(product.name, "Test Product")
         self.assertEqual(product.category.slug, "new-category")
