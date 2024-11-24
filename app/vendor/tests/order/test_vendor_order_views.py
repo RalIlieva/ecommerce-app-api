@@ -108,7 +108,6 @@ class VendorOrderDetailViewTests(TestCase):
         """
         Test canceling an order as a vendor.
         """
-        # url = vendor_detail_url(self.order.uuid)
         url = vendor_status_update_url(self.order.uuid)
         response = self.client.patch(url, {'status': 'cancelled'})
 
