@@ -387,7 +387,6 @@ class ProductUpdateDeleteViewTest(TestCase):
         )
 
         payload = {'name': 'Updated Test Name'}
-        # url = manage_url(product.id)
         url = manage_url(product.uuid)
         res = self.client.patch(url, payload)
 
