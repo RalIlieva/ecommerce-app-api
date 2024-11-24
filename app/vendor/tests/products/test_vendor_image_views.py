@@ -213,5 +213,5 @@ class ImageUploadTests(TestCase):
             ).exists()
         )
 
-        # Step 5: Optionally check the file deleted from the file system
+        # Step 5: Check the file deleted from the file system
         self.assertFalse(os.path.exists(product_image.image.path))
