@@ -40,4 +40,8 @@ urlpatterns = [
          ),
     path('api/v1/vendor/', include(('vendor.urls', 'vendor'),
                                    namespace='vendor')),
+
+    # Djoser URLs for Authentication
+    path('api/v1/auth/', include('djoser.urls')),  # Djoser auth endpoints
+    path('api/v1/auth/', include('djoser.urls.jwt')),  # Djoser JWT endpoints
 ]
