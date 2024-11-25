@@ -196,7 +196,16 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
+    'SEND_CONFIRMATION_EMAIL': False,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'HIDE_USERS': True,
     'SERIALIZERS': {},
+    # 'PERMISSIONS': {
+    #     'user_create': ['rest_framework.permissions.AllowAny'],
+    #     'user_delete': ['rest_framework.permissions.IsAdminUser'],
+    #     'user': ['rest_framework.permissions.IsAuthenticated'],
+    # },
 }
 
 LOGGING = {
