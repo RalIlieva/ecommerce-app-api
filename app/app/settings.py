@@ -201,6 +201,10 @@ DJOSER = {
     'LOGOUT_ON_PASSWORD_CHANGE': True,
     'HIDE_USERS': True,
     'SERIALIZERS': {},
+    'EMAIL': {
+        'password_reset': 'djoser.email.PasswordResetEmail',
+        'activation': 'djoser.email.ActivationEmail',
+    }
     # 'PERMISSIONS': {
     #     'user_create': ['rest_framework.permissions.AllowAny'],
     #     'user_delete': ['rest_framework.permissions.IsAdminUser'],
