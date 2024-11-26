@@ -203,7 +203,7 @@ DJOSER = {
     'SERIALIZERS': {},
     'EMAIL': {
         'password_reset': 'djoser.email.PasswordResetEmail',
-        'activation': 'djoser.email.ActivationEmail',
+        # 'activation': 'djoser.email.ActivationEmail',
     }
     # 'PERMISSIONS': {
     #     'user_create': ['rest_framework.permissions.AllowAny'],
