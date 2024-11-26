@@ -30,4 +30,6 @@ class PasswordResetTests(APITestCase):
         Ensure we get an appropriate response when an invalid email is used.
         """
         response = self.client.post(self.password_reset_url, {'email': 'nonexistent@example.com'})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        # Done intentionally to avoid exposing information for valid and invalid e-mails
+        # Djoser best practices
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
