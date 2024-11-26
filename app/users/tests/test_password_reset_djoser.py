@@ -22,14 +22,19 @@ class PasswordResetTests(APITestCase):
         """
         Ensure we can send a password reset request for an existing user.
         """
-        response = self.client.post(self.password_reset_url, {'email': self.user.email})
+        response = self.client.post(
+            self.password_reset_url, {'email': self.user.email}
+        )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_password_reset_request_invalid_email(self):
         """
         Ensure we get an appropriate response when an invalid email is used.
         """
-        response = self.client.post(self.password_reset_url, {'email': 'nonexistent@example.com'})
-        # Done intentionally to avoid exposing information for valid and invalid e-mails
+        response = self.client.post(
+            self.password_reset_url, {'email': 'nonexistent@example.com'}
+        )
+        # Done intentionally to avoid exposing information
+        # for valid and invalid e-mails
         # Djoser best practices
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
