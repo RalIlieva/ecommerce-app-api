@@ -15,8 +15,8 @@ class PasswordResetTests(APITestCase):
             password='testpassword123'
         )
         # Construct the password reset URL dynamically
-        # self.password_reset_url = reverse('password-reset')
-        self.password_reset_url = '/api/v1/auth/users/reset_password/'
+        self.password_reset_url = reverse('user-reset-password')
+        # self.password_reset_url = '/api/v1/auth/users/reset_password/'
 
     def test_password_reset_request_successful(self):
         """
