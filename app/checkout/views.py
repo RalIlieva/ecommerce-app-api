@@ -122,20 +122,29 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         order = create_order(user=request.user, items_data=items_data)
 
         # Create payment intent for checkout & attach it to a payment object
-        try:
-            payment_secret = create_payment_intent(
-                order_uuid=order.uuid, user=request.user
-            )
-            payment = Payment.objects.get(order=order)
-            checkout_session.payment = payment
-            # Attach 'payment_secret' dynamically to checkout_session instance
-            setattr(checkout_session, 'payment_secret', payment_secret)
-            checkout_session.save()
-        except Exception as e:
-            return Response(
-                {'detail': f"Failed to create payment intent: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        payment_secret = create_payment_intent(
+            order_uuid=order.uuid, user=request.user
+        )
+        payment = Payment.objects.get(order=order)
+        checkout_session.payment = payment
+        # Attach 'payment_secret' dynamically to checkout_session instance
+        setattr(checkout_session, 'payment_secret', payment_secret)
+        checkout_session.save()
+
+        # try:
+        #     payment_secret = create_payment_intent(
+        #         order_uuid=order.uuid, user=request.user
+        #     )
+        #     payment = Payment.objects.get(order=order)
+        #     checkout_session.payment = payment
+        #     # Attach 'payment_secret' dynamically to checkout_session instance
+        #     setattr(checkout_session, 'payment_secret', payment_secret)
+        #     checkout_session.save()
+        # except Exception as e:
+        #     return Response(
+        #         {'detail': f"Failed to create payment intent: {str(e)}"},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
 
         serializer = self.get_serializer(checkout_session)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
