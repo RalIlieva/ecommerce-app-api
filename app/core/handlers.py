@@ -15,7 +15,7 @@ from rest_framework.serializers import as_serializer_error
 
 from .exceptions import (
     DuplicateSlugException,
-    InsufficientStockError,
+    InsufficientStockException,
     PaymentFailedException,
     OrderAlreadyPaidException,
     ProductAlreadyInWishlistException,
@@ -52,7 +52,7 @@ def drf_default_with_modifications_exception_handler(exc, context):
     # Call DRF's default exception handler first
     response = exception_handler(exc, context)
 
-    if isinstance(exc, InsufficientStockError):
+    if isinstance(exc, InsufficientStockException):
         logger.warning(f"Insufficient stock error: {exc.detail}")
         response = Response(
             {"detail": exc.detail},

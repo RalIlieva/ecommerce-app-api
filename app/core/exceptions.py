@@ -12,7 +12,7 @@ class DuplicateSlugException(APIException):
     default_code = 'duplicate_slug'
 
 
-class InsufficientStockError(APIException):
+class InsufficientStockException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Not enough stock available"
     default_code = 'insufficient_stock'

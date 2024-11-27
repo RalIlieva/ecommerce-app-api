@@ -11,7 +11,7 @@ from .models import (
     Tag,
     Category
 )
-from core.exceptions import InsufficientStockError
+from core.exceptions import InsufficientStockException
 
 
 def get_or_create_category(data):
@@ -127,7 +127,7 @@ def update_product_stock(product_uuid, quantity):
     """Reduce stock for a given product by quantity."""
     product = Product.objects.select_for_update().get(uuid=product_uuid)
     if product.stock < quantity:
-        raise InsufficientStockError("Not enough stock available")
+        raise InsufficientStockException("Not enough stock available")
         # raise ValueError("Not enough stock available")
     product.stock -= quantity
     product.save()

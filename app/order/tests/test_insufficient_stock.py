@@ -3,13 +3,13 @@ from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 from rest_framework.views import APIView
 from rest_framework import status
-from core.exceptions import InsufficientStockError
+from core.exceptions import InsufficientStockException
 
 
 # Temporary view to simulate an insufficient stock scenario
 class MockStockView(APIView):
     def get(self, request):
-        raise InsufficientStockError("Not enough stock available")
+        raise InsufficientStockException("Not enough stock available")
 
 
 # Test case for InsufficientStockError handling
