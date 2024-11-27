@@ -7,6 +7,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,6 +27,10 @@ from payment.services import (
 from payment.models import Payment
 from order.models import Order
 from django.db import transaction
+from core.exceptions import (
+    InvalidCheckoutSessionException,
+    PaymentFailedException
+)
 
 
 @extend_schema_view(
@@ -169,48 +174,23 @@ class CompleteCheckoutView(APIView):
     """
     permission_classes = [IsAuthenticated]
 
-    @transaction.atomic
     def post(self, request, *args, **kwargs):
-        """
-        Completes a checkout session by validating payment status with Stripe.
-
-        This method locks the checkout session to ensure consistency
-        while verifying the payment intent & updating the payment status.
-        If successful, it marks the order & checkout session as completed.
-
-        Args:
-            request (Request): The request object containing user information.
-            *args: Variable length argument list.
-            **kwargs:
-            Arbitrary keyword arguments containing checkout session UUID.
-
-        Returns:
-            Response:
-            JSON response indicating success or failure of checkout process.
-        """
         checkout_session_uuid = kwargs['checkout_session_uuid']
-        try:
-            checkout_session = CheckoutSession.objects.select_for_update().get(
+        with transaction.atomic():
+            checkout_session = get_object_or_404(
+                CheckoutSession.objects.select_for_update(),
                 uuid=checkout_session_uuid,
                 user=request.user
             )
-        except CheckoutSession.DoesNotExist:
-            return Response(
-                {"detail": "Checkout session not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
 
-        if checkout_session.status != 'IN_PROGRESS':
-            return Response(
-                {"detail": "Checkout session is no longer valid."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            if checkout_session.status != 'IN_PROGRESS':
+                raise InvalidCheckoutSessionException()
 
             # Retrieve the payment intent from Stripe
-        try:
             payment_intent = stripe.PaymentIntent.retrieve(
                 checkout_session.payment.stripe_payment_intent_id
             )
+
             # Validate payment intent status
             if payment_intent['status'] != 'succeeded':
                 checkout_session.status = 'FAILED'
@@ -218,44 +198,172 @@ class CompleteCheckoutView(APIView):
                 checkout_session.save()
                 checkout_session.payment.save()
 
+                # Use transaction.on_commit to delay raising the exception
+                def raise_exception():
+                    raise PaymentFailedException()
+
+                transaction.on_commit(raise_exception)
                 return Response(
-                    {"detail":
-                        "Payment failed. Checkout could not be completed."
-                     },
+                    {"detail": "Payment could not be processed"},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        except stripe_error.InvalidRequestError as e:
-            return Response(
-                {"detail": f"Stripe payment retrieval failed: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        try:
+
+            # Proceed with successful payment handling
             update_payment_status(
                 checkout_session.payment.stripe_payment_intent_id,
                 'COMPLETED'
             )
-        except Exception as e:
-            return Response(
-                {"detail": f"Failed to update payment status: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
 
-        # Update the checkout session and order status
-        checkout_session.status = 'COMPLETED'
-        checkout_session.payment.status = Payment.SUCCESS
+            checkout_session.status = 'COMPLETED'
+            checkout_session.payment.status = Payment.SUCCESS
 
-        order = checkout_session.payment.order
-        order.status = Order.PAID
+            order = checkout_session.payment.order
+            order.status = Order.PAID
 
-        checkout_session.save()
-        checkout_session.payment.save()
-        order.save()
+            checkout_session.save()
+            checkout_session.payment.save()
+            order.save()
 
         return Response(
-            {"detail": "Checkout completed successfully.",
-             "order_id": checkout_session.payment.order.uuid},
+            {
+                "detail": "Checkout completed successfully.",
+                "order_id": checkout_session.payment.order.uuid
+            },
             status=status.HTTP_200_OK
         )
+
+    # @transaction.atomic
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     Completes a checkout session by validating payment status with Stripe.
+    #
+    #     This method locks the checkout session to ensure consistency
+    #     while verifying the payment intent & updating the payment status.
+    #     If successful, it marks the order & checkout session as completed.
+    #
+    #     Args:
+    #         request (Request): The request object containing user information.
+    #         *args: Variable length argument list.
+    #         **kwargs:
+    #         Arbitrary keyword arguments containing checkout session UUID.
+    #
+    #     Returns:
+    #         Response:
+    #         JSON response indicating success or failure of checkout process.
+    #     """
+    #     checkout_session_uuid = kwargs['checkout_session_uuid']
+    #     checkout_session = get_object_or_404(
+    #         CheckoutSession.objects.select_for_update(),
+    #         uuid=checkout_session_uuid,
+    #         user=request.user
+    #     )
+    #     if checkout_session.status != 'IN_PROGRESS':
+    #         raise InvalidCheckoutSessionException()
+    #
+    #     # Retrieve the payment intent from Stripe
+    #     payment_intent = stripe.PaymentIntent.retrieve(
+    #         checkout_session.payment.stripe_payment_intent_id
+    #     )
+    #     # Validate payment intent status
+    #     if payment_intent['status'] != 'succeeded':
+    #         checkout_session.status = 'FAILED'
+    #         checkout_session.payment.status = Payment.FAILED
+    #         checkout_session.save()
+    #         checkout_session.payment.save()
+    #         raise PaymentFailedException()
+    #
+    #     # Update the payment status
+    #     update_payment_status(
+    #         checkout_session.payment.stripe_payment_intent_id,
+    #         'COMPLETED'
+    #     )
+    #
+    #     # Update the checkout session and order status
+    #     checkout_session.status = 'COMPLETED'
+    #     checkout_session.payment.status = Payment.SUCCESS
+    #
+    #     order = checkout_session.payment.order
+    #     order.status = Order.PAID
+    #
+    #     checkout_session.save()
+    #     checkout_session.payment.save()
+    #     order.save()
+    #
+    #     return Response(
+    #         {
+    #             "detail": "Checkout completed successfully.",
+    #             "order_id": checkout_session.payment.order.uuid
+    #         },
+    #         status=status.HTTP_200_OK
+    #     )
+
+        # try:
+        #     checkout_session = CheckoutSession.objects.select_for_update().get(
+        #         uuid=checkout_session_uuid,
+        #         user=request.user
+        #     )
+        # except CheckoutSession.DoesNotExist:
+        #     return Response(
+        #         {"detail": "Checkout session not found."},
+        #         status=status.HTTP_404_NOT_FOUND
+        #     )
+
+        # if checkout_session.status != 'IN_PROGRESS':
+        #     return Response(
+        #         {"detail": "Checkout session is no longer valid."},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        #
+        #     # Retrieve the payment intent from Stripe
+        # try:
+        #     payment_intent = stripe.PaymentIntent.retrieve(
+        #         checkout_session.payment.stripe_payment_intent_id
+        #     )
+        #     # Validate payment intent status
+        #     if payment_intent['status'] != 'succeeded':
+        #         checkout_session.status = 'FAILED'
+        #         checkout_session.payment.status = Payment.FAILED
+        #         checkout_session.save()
+        #         checkout_session.payment.save()
+        #
+        #         return Response(
+        #             {"detail":
+        #                 "Payment failed. Checkout could not be completed."
+        #              },
+        #             status=status.HTTP_400_BAD_REQUEST
+        #         )
+        # except stripe_error.InvalidRequestError as e:
+        #     return Response(
+        #         {"detail": f"Stripe payment retrieval failed: {str(e)}"},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        # try:
+        #     update_payment_status(
+        #         checkout_session.payment.stripe_payment_intent_id,
+        #         'COMPLETED'
+        #     )
+        # except Exception as e:
+        #     return Response(
+        #         {"detail": f"Failed to update payment status: {str(e)}"},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+        #
+        # # Update the checkout session and order status
+        # checkout_session.status = 'COMPLETED'
+        # checkout_session.payment.status = Payment.SUCCESS
+        #
+        # order = checkout_session.payment.order
+        # order.status = Order.PAID
+        #
+        # checkout_session.save()
+        # checkout_session.payment.save()
+        # order.save()
+        #
+        # return Response(
+        #     {"detail": "Checkout completed successfully.",
+        #      "order_id": checkout_session.payment.order.uuid},
+        #     status=status.HTTP_200_OK
+        # )
 
         # # Verify if the payment-successful via the frontend-not secure
         # Assume frontend sends payment status

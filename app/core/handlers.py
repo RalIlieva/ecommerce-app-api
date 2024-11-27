@@ -11,7 +11,8 @@ from rest_framework import exceptions
 from rest_framework.response import Response
 from rest_framework.serializers import as_serializer_error
 
-# from rest_framework import status
+from rest_framework import status
+import stripe.error as stripe_error
 
 from .exceptions import (
     DuplicateSlugException,
@@ -20,6 +21,7 @@ from .exceptions import (
     OrderAlreadyPaidException,
     ProductAlreadyInWishlistException,
     ProductNotInWishlistException,
+    InvalidCheckoutSessionException,
 )
 
 
@@ -77,6 +79,11 @@ def drf_default_with_modifications_exception_handler(exc, context):
         )
         return response
 
+    if isinstance(exc, InvalidCheckoutSessionException):
+        logger.warning(f"Invalid checkout session: {exc.detail}")
+        response = Response({"detail": exc.detail}, status=exc.status_code)
+        return response
+
     if isinstance(exc, OrderAlreadyPaidException):
         logger.warning(f"Order already paid error: {exc.detail}")
         response = Response(
@@ -100,6 +107,13 @@ def drf_default_with_modifications_exception_handler(exc, context):
             status=exc.status_code
         )
         return response
+
+    elif isinstance(exc, stripe_error.StripeError):
+        logger.error(f"Stripe error: {exc}", exc_info=True)
+        return Response(
+            {"detail": "An error occurred with the payment service."},
+            status=status.HTTP_502_BAD_GATEWAY
+        )
 
     # If response is None, it's an unhandled exception
     if response is None:

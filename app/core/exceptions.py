@@ -40,3 +40,15 @@ class ProductNotInWishlistException(APIException):
     status_code = status.HTTP_404_NOT_FOUND
     default_detail = "The product is not in your wishlist."
     default_code = 'product_not_in_wishlist'
+
+
+class InvalidCheckoutSessionException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "Checkout session is no longer valid."
+    default_code = 'invalid_checkout_session'
+
+
+# class PaymentFailedException(APIException):
+#     status_code = status.HTTP_400_BAD_REQUEST
+#     default_detail = "Payment failed. Checkout could not be completed."
+#     default_code = 'payment_failed'
