@@ -119,13 +119,15 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         ]
 
         # Create an order from the cart
-        try:
-            order = create_order(user=request.user, items_data=items_data)
-        except Exception as e:
-            return Response(
-                {'detail': f"Failed to create order: {str(e)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # try:
+        #     order = create_order(user=request.user, items_data=items_data)
+        # except Exception as e:
+        #     return Response(
+        #         {'detail': f"Failed to create order: {str(e)}"},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+
+        order = create_order(user=request.user, items_data=items_data)
 
         # Create payment intent for checkout & attach it to a payment object
         try:
