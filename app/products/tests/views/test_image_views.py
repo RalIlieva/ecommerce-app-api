@@ -117,7 +117,6 @@ class ImageUploadTests(TestCase):
 
     def test_upload_image(self):
         """Test uploading an image to a product."""
-        # url = image_upload_url(self.product.id)
         url = image_upload_url(self.product.uuid, self.product.slug)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as image_file:
             img = Image.new('RGB', (10, 10))
@@ -139,7 +138,6 @@ class ImageUploadTests(TestCase):
 
     def test_upload_image_bad_request(self):
         """Test uploading invalid image."""
-        # url = image_upload_url(self.product.id)
         url = image_upload_url(self.product.uuid, self.product.slug)
         payload = {'image': 'notanimage'}
         res = self.client.post(url, payload, format='multipart')
@@ -196,5 +194,5 @@ class ImageUploadTests(TestCase):
             ).exists()
         )
 
-        # Step 5: Optionally check the file deleted from the file system
+        # Step 5: Check the file deleted from the file system
         self.assertFalse(os.path.exists(product_image.image.path))
