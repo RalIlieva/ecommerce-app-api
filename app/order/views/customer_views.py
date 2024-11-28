@@ -102,15 +102,19 @@ class OrderDetailView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         # Call the parent get method which uses get_object
-        try:
-            order = self.get_object()
-            serializer = self.get_serializer(order)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Order.DoesNotExist:
-            return Response(
-                {"detail": "Not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+        order = self.get_object()
+        serializer = self.get_serializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # try:
+        #     order = self.get_object()
+        #     serializer = self.get_serializer(order)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
+        # except Order.DoesNotExist:
+        #     return Response(
+        #         {"detail": "Not found."},
+        #         status=status.HTTP_404_NOT_FOUND
+        #     )
 
 
 @extend_schema(
