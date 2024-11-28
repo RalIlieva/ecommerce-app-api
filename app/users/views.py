@@ -3,7 +3,6 @@ Views for the User API.
 """
 
 from rest_framework import generics, permissions
-from rest_framework.exceptions import NotFound
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -83,7 +82,3 @@ class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
         """Retrieve and return the customer profile based on UUID."""
         profile_uuid = self.kwargs.get('profile_uuid')
         return CustomerProfile.objects.get(uuid=profile_uuid)
-        # try:
-        #     return CustomerProfile.objects.get(uuid=profile_uuid)
-        # except CustomerProfile.DoesNotExist:
-        #     raise NotFound("Customer Profile not found")
