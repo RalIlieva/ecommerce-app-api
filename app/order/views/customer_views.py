@@ -106,16 +106,6 @@ class OrderDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-        # try:
-        #     order = self.get_object()
-        #     serializer = self.get_serializer(order)
-        #     return Response(serializer.data, status=status.HTTP_200_OK)
-        # except Order.DoesNotExist:
-        #     return Response(
-        #         {"detail": "Not found."},
-        #         status=status.HTTP_404_NOT_FOUND
-        #     )
-
 
 @extend_schema(
     description="Allow a customer to cancel "
