@@ -65,8 +65,11 @@ class NotificationDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        try:
-            obj = queryset.get(uuid=self.kwargs.get(self.lookup_field))
-        except Notification.DoesNotExist:
-            raise NotFound('Notification not found.')
+        obj = queryset.get(uuid=self.kwargs.get(self.lookup_field))
         return obj
+
+        # try:
+        #     obj = queryset.get(uuid=self.kwargs.get(self.lookup_field))
+        # except Notification.DoesNotExist:
+        #     raise NotFound('Notification not found.')
+        # return obj
