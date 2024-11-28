@@ -125,17 +125,28 @@ class OrderCancelView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, order_uuid, *args, **kwargs):
-        try:
-            order = get_order_details(order_uuid)
-            if order.user != request.user:
-                return Response(status=status.HTTP_403_FORBIDDEN)
-            if order.status not in [Order.PENDING, Order.PAID]:
-                return Response(
-                    {"detail": "Only pending or paid orders can be canceled."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            update_order_status(order, Order.CANCELLED)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        order = get_order_details(order_uuid)
+        if order.user != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        if order.status not in [Order.PENDING, Order.PAID]:
+            return Response(
+                {"detail": "Only pending or paid orders can be canceled."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        update_order_status(order, Order.CANCELLED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-        except Order.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        # try:
+        #     order = get_order_details(order_uuid)
+        #     if order.user != request.user:
+        #         return Response(status=status.HTTP_403_FORBIDDEN)
+        #     if order.status not in [Order.PENDING, Order.PAID]:
+        #         return Response(
+        #             {"detail": "Only pending or paid orders can be canceled."},
+        #             status=status.HTTP_400_BAD_REQUEST
+        #         )
+        #     update_order_status(order, Order.CANCELLED)
+        #     return Response(status=status.HTTP_204_NO_CONTENT)
+        #
+        # except Order.DoesNotExist:
+        #     return Response(status=status.HTTP_404_NOT_FOUND)
