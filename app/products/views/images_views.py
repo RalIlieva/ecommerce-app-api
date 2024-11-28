@@ -25,13 +25,6 @@ class ProductImageUploadView(generics.CreateAPIView):
         slug = self.kwargs.get('slug')
         product = Product.objects.get(uuid=uuid, slug=slug)
         serializer.save(product=product)
-        # try:
-        #     product = Product.objects.get(uuid=uuid, slug=slug)
-        # except Product.DoesNotExist:
-        #     raise serializers.ValidationError(
-        #         {"product_id": "Product does not exist."}
-        #     )
-        # serializer.save(product=product)
 
 
 class ProductImageDeleteView(generics.DestroyAPIView):
