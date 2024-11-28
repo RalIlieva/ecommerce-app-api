@@ -82,7 +82,8 @@ class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         """Retrieve and return the customer profile based on UUID."""
         profile_uuid = self.kwargs.get('profile_uuid')
-        try:
-            return CustomerProfile.objects.get(uuid=profile_uuid)
-        except CustomerProfile.DoesNotExist:
-            raise NotFound("Customer Profile not found")
+        return CustomerProfile.objects.get(uuid=profile_uuid)
+        # try:
+        #     return CustomerProfile.objects.get(uuid=profile_uuid)
+        # except CustomerProfile.DoesNotExist:
+        #     raise NotFound("Customer Profile not found")
