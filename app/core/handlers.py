@@ -22,6 +22,7 @@ from .exceptions import (
     ProductAlreadyInWishlistException,
     ProductNotInWishlistException,
     InvalidCheckoutSessionException,
+    UserProfileNotFoundException,
 )
 
 
@@ -36,6 +37,7 @@ EXCEPTION_HANDLERS = {
     ProductAlreadyInWishlistException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
     ProductNotInWishlistException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
     InvalidCheckoutSessionException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
+    UserProfileNotFoundException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
 }
 
 

@@ -2,6 +2,7 @@
 Tests for the API user who is customer and has a profile.
 """
 
+import uuid
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -12,7 +13,11 @@ from rest_framework import status
 from users.models import CustomerProfile
 
 PROFILE_URL = reverse('users:customer_profile')
+# PROFILE_UUID_URL = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': 'some-uuid'})
 
+# Generate a valid UUID for testing
+valid_uuid = uuid.uuid4()
+PROFILE_UUID_URL = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': valid_uuid})
 
 def create_user(**params):
     """Helper function."""
@@ -98,14 +103,16 @@ class PrivateCustomerProfileApiTests(TestCase):
         # self.assertIn('phone_number', res.data)
 
     def test_get_object_user_profile_not_found(self):
-        """Test that UserProfileNotFoundException is raised if profile does not exist."""
+        """
+        Test that UserProfileNotFoundException is raised if profile does not exist.
+        """
 
         # Ensure that there is no CustomerProfile for the user
         if CustomerProfile.objects.filter(user=self.user).exists():
             CustomerProfile.objects.filter(user=self.user).delete()
 
         # Make a GET request to retrieve the profile
-        res = self.client.get(PROFILE_URL)
+        res = self.client.get(PROFILE_UUID_URL)
 
         # Check that the status code is 400 Bad Request
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

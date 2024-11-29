@@ -50,3 +50,10 @@ class InvalidCheckoutSessionException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Checkout session is no longer valid."
     default_code = 'invalid_checkout_session'
+
+
+# Users-related exceptions
+class UserProfileNotFoundException(APIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    default_detail = "Customer profile not found."
+    default_code = 'invalid_checkout_session'
