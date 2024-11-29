@@ -13,11 +13,11 @@ from rest_framework import status
 from users.models import CustomerProfile
 
 PROFILE_URL = reverse('users:customer_profile')
-# PROFILE_UUID_URL = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': 'some-uuid'})
 
 # Generate a valid UUID for testing
 valid_uuid = uuid.uuid4()
 PROFILE_UUID_URL = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': valid_uuid})
+
 
 def create_user(**params):
     """Helper function."""
@@ -100,7 +100,6 @@ class PrivateCustomerProfileApiTests(TestCase):
         # Check that the error message is returned in the 'detail' field
         self.assertIn('phone_number', res.data['detail'])
         self.assertEqual(res.data['detail']['phone_number'][0], 'The phone number entered is not valid.')
-        # self.assertIn('phone_number', res.data)
 
     def test_get_object_user_profile_not_found(self):
         """
