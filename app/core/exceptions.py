@@ -6,6 +6,7 @@ from rest_framework.exceptions import APIException
 from rest_framework import status
 
 
+# Stock-related exceptions
 class DuplicateSlugException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = 'An object with this slug already exists.'
@@ -18,6 +19,7 @@ class InsufficientStockException(APIException):
     default_code = 'insufficient_stock'
 
 
+# Payment-related exceptions
 class PaymentFailedException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Payment could not be processed"
@@ -30,6 +32,7 @@ class OrderAlreadyPaidException(APIException):
     default_code = 'order_already_paid'
 
 
+# Wishlist-related exceptions
 class ProductAlreadyInWishlistException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "The product is already in your wishlist."
@@ -42,6 +45,7 @@ class ProductNotInWishlistException(APIException):
     default_code = 'product_not_in_wishlist'
 
 
+# Checkout-related exceptions
 class InvalidCheckoutSessionException(APIException):
     status_code = status.HTTP_400_BAD_REQUEST
     default_detail = "Checkout session is no longer valid."
