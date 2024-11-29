@@ -16,7 +16,10 @@ PROFILE_URL = reverse('users:customer_profile')
 
 # Generate a valid UUID for testing
 valid_uuid = uuid.uuid4()
-PROFILE_UUID_URL = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': valid_uuid})
+PROFILE_UUID_URL = reverse(
+    'users:customer_profile_uuid',
+    kwargs={'profile_uuid': valid_uuid}
+)
 
 
 def create_user(**params):
@@ -99,11 +102,15 @@ class PrivateCustomerProfileApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         # Check that the error message is returned in the 'detail' field
         self.assertIn('phone_number', res.data['detail'])
-        self.assertEqual(res.data['detail']['phone_number'][0], 'The phone number entered is not valid.')
+        self.assertEqual(
+            res.data['detail']['phone_number'][0],
+            'The phone number entered is not valid.'
+        )
 
     def test_get_object_user_profile_not_found(self):
         """
-        Test that UserProfileNotFoundException is raised if profile does not exist.
+        Test that UserProfileNotFoundException is raised
+        if profile does not exist.
         """
 
         # Ensure that there is no CustomerProfile for the user
