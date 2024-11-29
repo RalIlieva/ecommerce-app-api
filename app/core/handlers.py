@@ -30,25 +30,38 @@ logger = logging.getLogger(__name__)
 
 
 EXCEPTION_HANDLERS = {
-    InsufficientStockException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    DuplicateSlugException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    PaymentFailedException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    OrderAlreadyPaidException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    ProductAlreadyInWishlistException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    ProductNotInWishlistException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    InvalidCheckoutSessionException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
-    UserProfileNotFoundException: lambda exc: Response({"detail": exc.detail}, status=exc.status_code),
+    InsufficientStockException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    DuplicateSlugException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    PaymentFailedException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    OrderAlreadyPaidException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    ProductAlreadyInWishlistException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    ProductNotInWishlistException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    InvalidCheckoutSessionException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
+    UserProfileNotFoundException: lambda exc: Response(
+        {"detail": exc.detail}, status=exc.status_code),
 }
 
 
 def drf_default_with_modifications_exception_handler(exc, context):
     """
-    Custom exception handler that ensures all error responses have a 'detail' key.
+    Custom exception handler - ensures all error responses have a 'detail' key.
     """
     if isinstance(exc, (DjangoValidationError, Http404, PermissionDenied)):
-        exc = exceptions.ValidationError(as_serializer_error(exc)) if isinstance(exc, DjangoValidationError) else exc
+        exc = exceptions.ValidationError(
+            as_serializer_error(exc)) if isinstance(
+            exc, DjangoValidationError
+        ) else exc
         exc = exceptions.NotFound() if isinstance(exc, Http404) else exc
-        exc = exceptions.PermissionDenied() if isinstance(exc, PermissionDenied) else exc
+        exc = exceptions.PermissionDenied() if isinstance(
+            exc, PermissionDenied
+        ) else exc
 
     # Call DRF's default exception handler first
     response = exception_handler(exc, context)
@@ -70,7 +83,10 @@ def drf_default_with_modifications_exception_handler(exc, context):
     # If no handler found, return the default response
     if response is None:
         logger.error(f"Unhandled exception: {exc}", exc_info=True)
-        return Response({"detail": "An unexpected error occurred."}, status=500)
+        return Response(
+            {"detail": "An unexpected error occurred."},
+            status=500
+        )
 
     # Ensure 'detail' key is present in the response data
     if 'detail' not in response.data:
