@@ -97,12 +97,17 @@ class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'uuid'
 
     def get_object(self):
+        """
+        Retrieve and return the tag based on UUID.
+        """
         uuid = self.kwargs.get('uuid')
         tag = get_object_or_404(Tag, uuid=uuid)
         return tag
 
-    # TO DECIDE - shorter or longer perform_update
     def perform_update(self, serializer):
+        """
+        Perform update on a tag instance and handle unique constraint violations.
+        """
         try:
             serializer.save()
         except IntegrityError as e:
