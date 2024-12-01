@@ -9,11 +9,9 @@ from drf_spectacular.utils import (
 )
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
-from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
 from ..models import Category
 from ..serializers import (
@@ -92,7 +90,6 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         category = get_object_or_404(Category, uuid=uuid)
         return category
 
-    # TO DECIDE - longer or shorter perform_update
     def perform_update(self, serializer):
         try:
             serializer.save()
