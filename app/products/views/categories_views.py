@@ -96,16 +96,17 @@ class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         try:
             serializer.save()
-        except ValidationError as ve:
-            raise serializers.ValidationError(ve.detail)
-        except DuplicateSlugException as dse:
-            raise dse
+        # except ValidationError as ve:
+        #     raise serializers.ValidationError(ve.detail)
+        # except DuplicateSlugException as dse:
+        #     raise dse
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
                 raise DuplicateSlugException(
                     'Category with this slug already exists.'
                 )
-            raise e
+            # raise e
+            raise
 
 
 class CategoryDetailView(generics.RetrieveAPIView):
