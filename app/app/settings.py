@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     'checkout',
     'wishlist',
     'notifications',
+    'vendor',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
     'phonenumber_field',
     'django_filters',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +69,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -190,6 +193,26 @@ SIMPLE_JWT = {
     'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.MyTokenObtainPairSerializer',
 }
 
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_CONFIRMATION_EMAIL': False,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'LOGOUT_ON_PASSWORD_CHANGE': True,
+    'HIDE_USERS': True,
+    'SERIALIZERS': {},
+    'EMAIL': {
+        'password_reset': 'djoser.email.PasswordResetEmail',
+        # 'activation': 'djoser.email.ActivationEmail',
+    }
+    # 'PERMISSIONS': {
+    #     'user_create': ['rest_framework.permissions.AllowAny'],
+    #     'user_delete': ['rest_framework.permissions.IsAdminUser'],
+    #     'user': ['rest_framework.permissions.IsAuthenticated'],
+    # },
+}
 
 LOGGING = {
     'version': 1,
@@ -211,7 +234,7 @@ LOGGING = {
         },
         'mail_admins': {
             'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler', # Sends emails to admins for errors
+            'class': 'django.utils.log.AdminEmailHandler',  # Sends emails to admins for errors
         },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
@@ -239,6 +262,7 @@ LOGGING = {
         # TO DO - define other loggers as needed
     },
 }
+
 
 # LOGGING = {
 #     'version': 1,
@@ -308,3 +332,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
+# Test email for the vendor
+VENDOR_EMAIL = 'vendor@example.com'

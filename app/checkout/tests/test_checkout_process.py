@@ -237,7 +237,6 @@ class CheckoutTestCase(APITestCase):
 
         # Assert the error message indicates a payment intent creation failure
         self.assertEqual(response.data['detail'],
-                         "Failed to create payment intent: "
                          "Stripe error: Stripe API error occurred."
                          )
 
@@ -417,7 +416,7 @@ class CheckoutTestCase(APITestCase):
         # checkout views and core exception
         self.assertEqual(
             response.data['detail'],
-            "Failed to create order: Not enough stock available"
+            "Not enough stock available"
         )
 
     def test_add_item_with_invalid_quantity(self):

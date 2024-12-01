@@ -7,7 +7,7 @@ from products.models import Product
 from core.exceptions import (
     ProductAlreadyInWishlistException,
     ProductNotInWishlistException,
-    InsufficientStockError
+    InsufficientStockException
 )
 from .models import Wishlist, WishlistItem
 
@@ -63,7 +63,7 @@ def move_wishlist_item_to_cart(user, product_uuid):
     product = get_object_or_404(Product, uuid=product_uuid)
 
     if product.stock <= 0:
-        raise InsufficientStockError()
+        raise InsufficientStockException()
 
     remove_product_from_wishlist(user, product_uuid)
     add_item_to_cart(user, product.uuid, quantity=1)

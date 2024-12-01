@@ -9,11 +9,9 @@ from drf_spectacular.utils import (
 )
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
-from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
 from ..models import Tag
 from ..serializers import (
@@ -97,21 +95,23 @@ class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     lookup_url_kwarg = 'uuid'
 
     def get_object(self):
+        """
+        Retrieve and return the tag based on UUID.
+        """
         uuid = self.kwargs.get('uuid')
         tag = get_object_or_404(Tag, uuid=uuid)
         return tag
 
-    # TO DECIDE - shorter or longer perform_update
     def perform_update(self, serializer):
+        """
+        Perform update on a tag instance & handle unique constraint violations.
+        """
         try:
             serializer.save()
-        except ValidationError as ve:
-            raise serializers.ValidationError(ve.detail)
-        except DuplicateSlugException as dse:
-            raise dse
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
                 raise DuplicateSlugException(
                     'Tag with this slug already exists.'
                 )
-            raise e
+            # Let other IntegrityErrors bubble up
+            raise

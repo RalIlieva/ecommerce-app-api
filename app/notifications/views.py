@@ -7,7 +7,6 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes
 )
-from rest_framework.exceptions import NotFound
 from rest_framework import generics, permissions
 from .models import Notification
 from .serializers import NotificationSerializer
@@ -65,8 +64,5 @@ class NotificationDetailView(generics.RetrieveAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        try:
-            obj = queryset.get(uuid=self.kwargs.get(self.lookup_field))
-        except Notification.DoesNotExist:
-            raise NotFound('Notification not found.')
+        obj = queryset.get(uuid=self.kwargs.get(self.lookup_field))
         return obj

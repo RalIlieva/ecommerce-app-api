@@ -170,7 +170,7 @@ class CompleteCheckoutViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data['detail'],
-            "Payment failed. Checkout could not be completed."
+            "Payment could not be processed"
         )
 
         # Refresh from DB
@@ -245,7 +245,7 @@ class CompleteCheckoutViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data['detail'],
-            "Payment failed. Checkout could not be completed."
+            "Payment could not be processed"
         )
 
     @patch('payment.services.stripe.PaymentIntent.create')
