@@ -9,11 +9,9 @@ from drf_spectacular.utils import (
 )
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from django.core.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
-from rest_framework import serializers
 from core.exceptions import DuplicateSlugException
 from ..models import Tag
 from ..serializers import (
@@ -106,7 +104,7 @@ class TagUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         """
-        Perform update on a tag instance and handle unique constraint violations.
+        Perform update on a tag instance & handle unique constraint violations.
         """
         try:
             serializer.save()
