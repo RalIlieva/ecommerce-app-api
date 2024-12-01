@@ -71,7 +71,8 @@ class CategoryCreateView(generics.CreateAPIView):
                 raise DuplicateSlugException(
                     'Category with this slug already exists.'
                 )
-            raise e
+            # Let other IntegrityErrors bubble up
+            raise
 
 
 class CategoryUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
