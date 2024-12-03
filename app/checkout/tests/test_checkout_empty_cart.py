@@ -43,7 +43,7 @@ class CheckoutTestCase(APITestCase):
     def test_checkout_with_empty_cart(self):
         """
         Test attempting to initiate a checkout with an empty cart.
-        This test verifies that an attempt to initiate the checkout process
+        The test verifies that an attempt to initiate the checkout process
         with an empty cart fails and returns a `400 BAD REQUEST` status.
         Steps:
             - Remove all items from the user's cart.
