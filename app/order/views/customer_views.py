@@ -117,6 +117,7 @@ class OrderCancelView(APIView):
     API view for customers to cancel a pending or paid order.
     """
     permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
 
     def post(self, request, order_uuid, *args, **kwargs):
         order = get_order_details(order_uuid)

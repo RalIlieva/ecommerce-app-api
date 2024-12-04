@@ -45,7 +45,7 @@ class ProductDetailSerializer(ProductMiniSerializer):
         ]
         read_only_fields = ['id']
 
-    def get_reviews(self, obj):
+    def get_reviews(self, obj) -> str:
         # Local import to avoid circularity
         from .review_serializers import ReviewListSerializer
         reviews = obj.reviews.all()
