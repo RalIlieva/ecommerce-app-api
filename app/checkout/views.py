@@ -171,6 +171,7 @@ class CompleteCheckoutView(APIView):
         post(request, *args, **kwargs):
         Handles POST requests to complete a checkout session.
     """
+    serializer_class = CheckoutSessionSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):

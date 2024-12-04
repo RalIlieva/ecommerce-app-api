@@ -25,5 +25,5 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
             'created', 'modified', 'payment_secret'
         ]
 
-    def get_payment_secret(self, obj):
+    def get_payment_secret(self, obj) -> str:
         return getattr(obj, 'payment_secret', None)
