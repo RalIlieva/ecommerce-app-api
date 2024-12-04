@@ -100,7 +100,7 @@ class UserReviewSerializer(serializers.ModelSerializer):
         fields = ['uuid', 'name']
         read_only_fields = ['uuid', 'name']
 
-    def get_name(self, obj):
+    def get_name(self, obj) -> str:
         """Return the user's name, or email prefix if name is missing."""
         name = obj.name
         if not name:

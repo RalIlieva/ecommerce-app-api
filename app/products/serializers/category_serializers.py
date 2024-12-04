@@ -26,7 +26,7 @@ class CategoryDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'uuid', 'name', 'slug', 'products']
         read_only_fields = ['id', 'uuid', 'slug', 'products']
 
-    def get_products(self, obj):
+    def get_products(self, obj) -> list:
         # Deferred import
         from .product_serializers import ProductMiniSerializer
         products = obj.products.all()

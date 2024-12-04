@@ -160,6 +160,7 @@ class MoveToCartView(generics.CreateAPIView):
         Response: A confirmation message with HTTP 200 status.
     """
     permission_classes = [IsAuthenticated]
+    serializer_class = WishlistItemSerializer
 
     def post(self, request, *args, **kwargs):
         product_uuid = request.data.get('product_uuid')
