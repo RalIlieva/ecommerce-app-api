@@ -24,7 +24,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 
-class UserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     """Serializer for the user object."""
     id = serializers.ReadOnlyField()
     uuid = serializers.UUIDField(read_only=True)
@@ -51,7 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserSerializerWithToken(UserSerializer):
+class CustomUserSerializerWithToken(CustomUserSerializer):
     """Serializer for users with tokens for authentication """
     token = serializers.SerializerMethodField(read_only=True)
 
@@ -60,14 +60,14 @@ class UserSerializerWithToken(UserSerializer):
         fields = ['id', 'uuid', 'email', 'password', 'name', 'token']
         read_only_fields = ['id', 'uuid', 'token']
 
-    def get_token(self, obj):
+    def get_token(self, obj) -> str:
         token = RefreshToken.for_user(obj)
         return str(token.access_token)
 
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
     """Serializer for the profile of the customer."""
-    user = UserSerializer(read_only=True)
+    user = CustomUserSerializer(read_only=True)
     profile_uuid = serializers.UUIDField(source='uuid', read_only=True)
 
     class Meta:

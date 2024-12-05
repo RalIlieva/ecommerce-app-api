@@ -186,7 +186,11 @@ DJOSER = {
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'LOGOUT_ON_PASSWORD_CHANGE': True,
     'HIDE_USERS': True,
-    'SERIALIZERS': {},
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.CustomUserSerializer',
+        'user': 'users.serializers.CustomUserSerializerWithToken',
+        # 'user_delete': 'users.serializers.CustomUserSerializer',
+    },
     'EMAIL': {
         'password_reset': 'djoser.email.PasswordResetEmail',
         # 'activation': 'djoser.email.ActivationEmail',

@@ -12,8 +12,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from core.exceptions import UserProfileNotFoundException
 
 from .serializers import (
-    UserSerializer,
-    UserSerializerWithToken,
+    CustomUserSerializer,
+    CustomUserSerializerWithToken,
     CustomerProfileSerializer,
 )
 
@@ -25,7 +25,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        serializer = UserSerializerWithToken(self.user).data
+        serializer = CustomUserSerializerWithToken(self.user).data
         for k, v in serializer.items():
             data[k] = v
 
@@ -38,7 +38,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 class RegisterUserView(generics.CreateAPIView):
     """Register a new user in the system."""
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
     permission_classes = [permissions.AllowAny]
 
 
@@ -47,7 +47,7 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
     GET, PUT, PATCH:
     Manage the authenticated user. (user-facing)
     """
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
     authentication_classes = [JWTAuthentication]
     # No need of IsOwner permission / obj permission /
     # already pointing to the owner's own user.

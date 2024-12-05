@@ -239,8 +239,8 @@ class UserSerializerValidationTest(TestCase):
             'password': 'validpass123',
             'name': 'Invalid Email User'
         }
-        from ..serializers import UserSerializer
-        serializer = UserSerializer(data=payload)
+        from ..serializers import CustomUserSerializer
+        serializer = CustomUserSerializer(data=payload)
         self.assertFalse(serializer.is_valid())
         self.assertIn('email', serializer.errors)
 
@@ -251,8 +251,8 @@ class UserSerializerValidationTest(TestCase):
             'password': '123',
             'name': 'Short Pass User'
         }
-        from ..serializers import UserSerializer
-        serializer = UserSerializer(data=payload)
+        from ..serializers import CustomUserSerializer
+        serializer = CustomUserSerializer(data=payload)
         self.assertFalse(serializer.is_valid())
         self.assertIn('password', serializer.errors)
 
@@ -263,8 +263,8 @@ class UserSerializerValidationTest(TestCase):
             'password': 'anotherpass123',
             'name': 'Duplicate Email User'
         }
-        from ..serializers import UserSerializer
-        serializer = UserSerializer(data=payload)
+        from ..serializers import CustomUserSerializer
+        serializer = CustomUserSerializer(data=payload)
         self.assertFalse(serializer.is_valid())
         self.assertIn('email', serializer.errors)
 

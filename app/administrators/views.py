@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import mixins, viewsets, permissions
 from users.models import CustomerProfile
 from users.serializers import (
-    UserSerializer,
+    CustomUserSerializer,
     CustomerProfileSerializer
 )
 
@@ -22,7 +22,7 @@ class AdministratorUserViewSet(
 ):
     """Administrator viewset for managing users."""
     queryset = get_user_model().objects.all().order_by('id')
-    serializer_class = UserSerializer
+    serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
     lookup_field = 'uuid'  # Use 'uuid' instead of 'id'
 
