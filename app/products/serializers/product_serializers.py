@@ -2,7 +2,10 @@
 Product serializers.
 """
 
-
+from drf_spectacular.utils import (
+    extend_schema_field,
+    OpenApiTypes
+)
 from rest_framework import serializers
 from .category_serializers import CategorySerializer
 from .tag_serializers import TagSerializer
@@ -44,6 +47,11 @@ class ProductDetailSerializer(ProductMiniSerializer):
             'average_rating',
         ]
         read_only_fields = ['id']
+
+    @extend_schema_field(OpenApiTypes.FLOAT)
+    def get_average_rating(self, obj):
+        """Get the average rating of the product."""
+        return obj.average_rating
 
     def get_reviews(self, obj) -> str:
         # Local import to avoid circularity

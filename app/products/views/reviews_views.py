@@ -9,6 +9,7 @@ from drf_spectacular.utils import (
 )
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.exceptions import NotFound
 from rest_framework.filters import SearchFilter
 from rest_framework import generics, permissions
 from ..permissions import IsOwnerOrReadOnly
@@ -57,11 +58,15 @@ class ReviewListView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
-        product_uuid = self.kwargs.get('product_uuid')
-        slug = self.kwargs.get('slug')
-        product = get_object_or_404(Product, uuid=product_uuid, slug=slug)
-        return Review.objects.filter(product=product)
-        # return Review.objects.filter(product__uuid=product_uuid)
+        try:
+            product_uuid = self.kwargs.get('product_uuid')
+            slug = self.kwargs.get('slug')
+            product = get_object_or_404(Product, uuid=product_uuid, slug=slug)
+            return Review.objects.filter(product=product)
+            # return Review.objects.filter(product__uuid=product_uuid)
+        except NotFound:
+            # Returning an empty queryset to avoid errors when product is not found
+            return Review.objects.none()
 
 
 class ReviewCreateView(generics.CreateAPIView):
