@@ -2,7 +2,8 @@ from drf_spectacular.utils import (
     extend_schema_view,
     extend_schema,
     OpenApiParameter,
-    OpenApiTypes
+    OpenApiTypes,
+    OpenApiResponse,
 )
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
@@ -110,7 +111,13 @@ class OrderDetailView(generics.RetrieveAPIView):
 @extend_schema(
     description="Allow a customer to cancel "
                 "a pending or paid order that has not been shipped.",
-    responses={204: 'Order canceled successfully', 400: 'Cannot cancel order'}
+    responses={
+        # 204: 'Order canceled successfully',
+        # 400: 'Cannot cancel order'
+        204: OpenApiResponse(description="Order canceled successfully"),
+        400: OpenApiResponse(description="Cannot cancel order. Only pending or paid orders can be canceled."),
+        403: OpenApiResponse(description="Permission denied. You are not the owner of this order.")
+    }
 )
 class OrderCancelView(APIView):
     """
@@ -120,13 +127,21 @@ class OrderCancelView(APIView):
     serializer_class = OrderSerializer
 
     def post(self, request, order_uuid, *args, **kwargs):
+        # Retrieve the order based on UUID
         order = get_order_details(order_uuid)
+        # Check if the user is the owner of the order
         if order.user != request.user:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "You do not have permission to cancel this order."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        # Check if the order status allows cancellation
         if order.status not in [Order.PENDING, Order.PAID]:
             return Response(
                 {"detail": "Only pending or paid orders can be canceled."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        # Update the order status to cancel
         update_order_status(order, Order.CANCELLED)
+        # Return a 204 response when the order is canceled successfully
         return Response(status=status.HTTP_204_NO_CONTENT)
