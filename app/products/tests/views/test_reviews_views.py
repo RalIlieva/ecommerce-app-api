@@ -87,8 +87,12 @@ class ReviewViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 2)
 
+        # Sort reviews by 'created' field to match the ordering in the queryset
+        sorted_reviews = sorted(response.data['results'], key=lambda x: x['created'], reverse=True)
+
         # Verify review content for the user without a name
-        review_data = response.data['results'][1]
+        review_data = sorted_reviews[0]
+        # review_data = response.data['results'][1]
         self.assertEqual(review_data['uuid'], str(review_without_name.uuid))
         self.assertEqual(review_data['comment'], review_without_name.comment)
         self.assertIn('uuid', review_data['user'])
