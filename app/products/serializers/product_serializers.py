@@ -49,7 +49,7 @@ class ProductDetailSerializer(ProductMiniSerializer):
         read_only_fields = ['id']
 
     @extend_schema_field(OpenApiTypes.FLOAT)
-    def get_average_rating(self, obj):
+    def get_average_rating(self, obj: Product) -> float:
         """Get the average rating of the product."""
         return obj.average_rating
 
