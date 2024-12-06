@@ -64,7 +64,8 @@ class WishlistView(generics.RetrieveAPIView):
             )
         ],
         responses={201: WishlistItemSerializer,
-                   400: "Product already in wishlist.",
+                   400: OpenApiTypes.STR
+                   # 400: "Product already in wishlist.",
                    }
     )
 )
@@ -105,8 +106,12 @@ class AddToWishlistView(generics.CreateAPIView):
                             "from the wishlist."
             )
         ],
-        responses={204: "Product removed from wishlist.",
-                   404: "Product not found in wishlist."}
+        responses={
+            204: OpenApiTypes.STR,  # Product successfully removed
+            404: OpenApiTypes.STR  # Product not found in wishlist
+            # 204: "Product removed from wishlist.",
+            # 404: "Product not found in wishlist."
+        }
     )
 )
 class RemoveFromWishlistView(generics.DestroyAPIView):
@@ -147,8 +152,13 @@ class RemoveFromWishlistView(generics.DestroyAPIView):
                 description="The UUID of the product to move to the cart."
             )
         ],
-        responses={200: "Product moved to cart.", 404: "Product not found"
-                        " in wishlist or insufficient stock."}
+        responses={
+            200: OpenApiTypes.STR,  # Product successfully moved to cart
+            404: OpenApiTypes.STR   # Product not found or insufficient stock
+            # 200: "Product moved to cart.",
+            # 404: "Product not found"
+            #             " in wishlist or insufficient stock."
+        }
     )
 )
 class MoveToCartView(generics.CreateAPIView):
