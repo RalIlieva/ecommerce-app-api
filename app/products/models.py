@@ -98,7 +98,7 @@ class Product(UUIDModel, TimeStampedModel):
         super().save(*args, **kwargs)
 
     @property
-    def average_rating(self):
+    def average_rating(self) -> float:
         """Calculate the average rating of the product based on reviews."""
         average = self.reviews.aggregate(Avg('rating')).get('rating__avg')
         return round(average, 2) if average is not None else None
