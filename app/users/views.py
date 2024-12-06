@@ -58,18 +58,18 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
-    """
-    GET, PUT, PATCH:
-    Manage the own profile of the authenticated customer.(user-facing)
-    """
-    serializer_class = CustomerProfileSerializer
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
-
-    def get_object(self):
-        """Retrieve and return the authenticated customer."""
-        return self.request.user.customer_profile
+# class ManageCustomerProfileView(generics.RetrieveUpdateAPIView):
+#     """
+#     GET, PUT, PATCH:
+#     Manage the own profile of the authenticated customer.(user-facing)
+#     """
+#     serializer_class = CustomerProfileSerializer
+#     authentication_classes = [JWTAuthentication]
+#     permission_classes = [permissions.IsAuthenticated, IsOwner]
+#
+#     def get_object(self):
+#         """Retrieve and return the authenticated customer."""
+#         return self.request.user.customer_profile
 
 
 class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):

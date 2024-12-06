@@ -12,7 +12,7 @@ from rest_framework import status
 
 from users.models import CustomerProfile
 
-PROFILE_URL = reverse('users:customer_profile')
+# PROFILE_URL = reverse('users:customer_profile')
 
 # Generate a valid UUID for testing
 valid_uuid = uuid.uuid4()
@@ -39,13 +39,25 @@ class PrivateCustomerProfileApiTests(TestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
+        # # Ensure a CustomerProfile exists for this user before each test
+        # if not CustomerProfile.objects.filter(user=self.user).exists():
+        #     CustomerProfile.objects.create(user=self.user)
+
         # Ensure a CustomerProfile exists for this user before each test
-        if not CustomerProfile.objects.filter(user=self.user).exists():
-            CustomerProfile.objects.create(user=self.user)
+        self.profile = CustomerProfile.objects.filter(user=self.user).first()
+        if not self.profile:
+            self.profile = CustomerProfile.objects.create(user=self.user)
+
+        # Generate URL for the profile using the UUID
+        self.profile_uuid_url = reverse(
+            'users:customer_profile_uuid',
+            kwargs={'profile_uuid': self.profile.uuid}
+        )
 
     def test_retrieve_profile_success(self):
         """Test retrieving profile for logged in user."""
-        res = self.client.get(PROFILE_URL)
+        # res = self.client.get(PROFILE_URL)
+        res = self.client.get(self.profile_uuid_url)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data['user']['id'], self.user.id)
@@ -61,7 +73,9 @@ class PrivateCustomerProfileApiTests(TestCase):
             'about': 'Testing'
         }
 
-        res = self.client.patch(PROFILE_URL, payload)
+        res = self.client.patch(self.profile_uuid_url, payload)
+        # res = self.client.patch(PROFILE_URL, payload)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         # Check that the response contains the updated data
         self.assertEqual(res.data['gender'], payload['gender'])
@@ -79,7 +93,8 @@ class PrivateCustomerProfileApiTests(TestCase):
     def test_create_profile_fails_for_unauthenticated(self):
         """Test that authentication is required for creating profile."""
         self.client.force_authenticate(user=None)
-        res = self.client.get(PROFILE_URL)
+        # res = self.client.get(PROFILE_URL)
+        res = self.client.get(self.profile_uuid_url)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -88,7 +103,8 @@ class PrivateCustomerProfileApiTests(TestCase):
         self.client.force_authenticate(user=None)  # Log out the user
         payload = {'address': 'New Address'}
 
-        res = self.client.patch(PROFILE_URL, payload)
+        # res = self.client.patch(PROFILE_URL, payload)
+        res = self.client.patch(self.profile_uuid_url, payload)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_update_profile_invalid_data(self):
@@ -98,7 +114,9 @@ class PrivateCustomerProfileApiTests(TestCase):
         }
 
         # Attempt to update the profile with invalid data
-        res = self.client.patch(PROFILE_URL, payload)
+        res = self.client.patch(self.profile_uuid_url, payload)
+        # res = self.client.patch(PROFILE_URL, payload)
+
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
         # Check that the error message is returned in the 'detail' field
         self.assertIn('phone_number', res.data['detail'])

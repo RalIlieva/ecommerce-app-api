@@ -12,7 +12,7 @@ from rest_framework import status
 
 CREATE_USER_URL = reverse('users:register')
 ME_URL = reverse('users:me')
-PROFILE_URL = reverse('users:customer_profile')
+# PROFILE_URL = reverse('users:customer_profile')
 
 
 def create_user(**params):
@@ -283,7 +283,10 @@ class NestedSerializerTest(APITestCase):
 
     def test_customer_profile_serialization(self):
         """Test that CustomerProfile includes nested User data."""
-        res = self.client.get(PROFILE_URL)
+        profile_uuid = str(self.user.customer_profile.uuid)  # Get the UUID of the user's profile
+        profile_url = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': profile_uuid})
+        res = self.client.get(profile_url)
+        # res = self.client.get(PROFILE_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn('user', res.data)
         self.assertEqual(res.data['user']['email'], self.user.email)
