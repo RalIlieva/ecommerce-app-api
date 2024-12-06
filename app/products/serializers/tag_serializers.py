@@ -1,7 +1,7 @@
 """
 Tag serializers.
 """
-
+from typing import List, Dict, Any
 from rest_framework import serializers
 from ..models import Tag
 
@@ -24,7 +24,7 @@ class TagDetailSerializer(serializers.ModelSerializer):
         fields = ['id', 'uuid', 'name', 'slug', 'products']
         read_only_fields = ['id', 'slug', 'uuid']
 
-    def get_products(self, obj):
+    def get_products(self, obj: Tag) -> List[Dict[str, Any]]:
         # Deferred import to avoid circular dependency
         from .product_serializers import ProductMiniSerializer
         products = obj.products.all()

@@ -1,7 +1,7 @@
 """
 Product serializers.
 """
-
+from typing import List, Dict, Any
 from drf_spectacular.utils import (
     extend_schema_field,
     OpenApiTypes
@@ -53,7 +53,8 @@ class ProductDetailSerializer(ProductMiniSerializer):
         """Get the average rating of the product."""
         return obj.average_rating
 
-    def get_reviews(self, obj) -> str:
+    def get_reviews(self, obj: Product) -> List[Dict[str, Any]]:
+        """Get the reviews for the product."""
         # Local import to avoid circularity
         from .review_serializers import ReviewListSerializer
         reviews = obj.reviews.all()
