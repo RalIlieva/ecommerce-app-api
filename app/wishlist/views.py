@@ -64,7 +64,8 @@ class WishlistView(generics.RetrieveAPIView):
             )
         ],
         responses={201: WishlistItemSerializer,
-                   400: "Product already in wishlist."}
+                   400: "Product already in wishlist.",
+                   }
     )
 )
 class AddToWishlistView(generics.CreateAPIView):
@@ -120,6 +121,7 @@ class RemoveFromWishlistView(generics.DestroyAPIView):
         Response: A confirmation message with HTTP 204 status.
     """
     permission_classes = [IsAuthenticated]
+    serializer_class = WishlistItemSerializer
 
     def delete(self, request, *args, **kwargs):
         product_uuid = kwargs.get('product_uuid')

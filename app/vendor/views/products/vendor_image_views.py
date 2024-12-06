@@ -40,6 +40,7 @@ class VendorProductImageDeleteView(generics.DestroyAPIView):
     """
     queryset = ProductImage.objects.all()
     permission_classes = [permissions.IsAuthenticated, IsVendor]
+    serializer_class = ProductImageSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'image_id'
 
