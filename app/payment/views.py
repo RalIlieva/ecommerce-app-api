@@ -102,7 +102,7 @@ class PaymentListView(generics.ListAPIView):
 
     def get_queryset(self):
         # Get payments only for the authenticated user
-        return get_user_payments(self.request.user)
+        return get_user_payments(self.request.user).order_by('-created')
 
 
 @csrf_exempt
