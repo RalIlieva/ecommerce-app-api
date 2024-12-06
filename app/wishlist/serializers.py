@@ -23,7 +23,7 @@ class WishlistItemSerializer(serializers.ModelSerializer):
         fields = ['uuid', 'product', 'product_uuid', 'created', 'in_stock']
         read_only_fields = ['uuid', 'product', 'created', 'in_stock']
 
-    def get_in_stock(self, obj):
+    def get_in_stock(self, obj: WishlistItem) -> bool:
         """
         Check if the associated product is in stock.
             Args:
