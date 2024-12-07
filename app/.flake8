@@ -4,4 +4,9 @@ exclude =
     migrations,
     __pycache__,
     manage.py,
-    settings.py
+    settings.py,
+    app/settings/settings.py,
+    app/settings/__init__.py,
+    app/settings/base.py,
+    app/settings/development.py,
+    app/settings/production.py
