@@ -1,7 +1,7 @@
 # vendor/views/dashboard/vendor_dashboard_overview.py
 
 from rest_framework import serializers
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 from django.db.models import Sum
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,6 +19,7 @@ class VendorDashboardSerializer(serializers.Serializer):
     products = serializers.ListField(child=serializers.DictField())
     orders = serializers.ListField(child=serializers.DictField())
     payments = serializers.ListField(child=serializers.DictField())
+
 
 @extend_schema(
     responses={200: VendorDashboardSerializer}

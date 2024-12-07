@@ -114,9 +114,17 @@ class OrderDetailView(generics.RetrieveAPIView):
     responses={
         # 204: 'Order canceled successfully',
         # 400: 'Cannot cancel order'
-        204: OpenApiResponse(description="Order canceled successfully"),
-        400: OpenApiResponse(description="Cannot cancel order. Only pending or paid orders can be canceled."),
-        403: OpenApiResponse(description="Permission denied. You are not the owner of this order.")
+        204: OpenApiResponse(
+            description="Order canceled successfully"
+        ),
+        400: OpenApiResponse(
+            description="Cannot cancel order. "
+                        "Only pending or paid orders can be canceled."
+        ),
+        403: OpenApiResponse(
+            description="Permission denied. "
+                        "You are not the owner of this order."
+        )
     }
 )
 class OrderCancelView(APIView):
