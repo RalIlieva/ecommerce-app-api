@@ -283,8 +283,11 @@ class NestedSerializerTest(APITestCase):
 
     def test_customer_profile_serialization(self):
         """Test that CustomerProfile includes nested User data."""
-        profile_uuid = str(self.user.customer_profile.uuid)  # Get the UUID of the user's profile
-        profile_url = reverse('users:customer_profile_uuid', kwargs={'profile_uuid': profile_uuid})
+        profile_uuid = str(self.user.customer_profile.uuid)
+        profile_url = reverse(
+            'users:customer_profile_uuid',
+            kwargs={'profile_uuid': profile_uuid}
+        )
         res = self.client.get(profile_url)
         # res = self.client.get(PROFILE_URL)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
