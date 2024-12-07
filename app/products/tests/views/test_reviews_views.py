@@ -88,7 +88,11 @@ class ReviewViewTestCase(APITestCase):
         self.assertEqual(len(response.data['results']), 2)
 
         # Sort reviews by 'created' field to match the ordering in the queryset
-        sorted_reviews = sorted(response.data['results'], key=lambda x: x['created'], reverse=True)
+        sorted_reviews = sorted(
+            response.data['results'],
+            key=lambda x: x['created'],
+            reverse=True
+        )
 
         # Verify review content for the user without a name
         review_data = sorted_reviews[0]
