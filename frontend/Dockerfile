@@ -1,8 +1,3 @@
-FROM ubuntu:latest
-LABEL authors="Ralitsa"
-
-ENTRYPOINT ["top", "-b"]
-
 # Stage 1: Build the React app
 FROM node:20-alpine as build
 
