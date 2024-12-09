@@ -285,3 +285,9 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER')
 # Test email for the vendor
 VENDOR_EMAIL = 'vendor@example.com'
+
+# CORS Settings
+CORS_ALLOWED_ORIGINS = [
+    # Frontend dev server URL
+    'http://localhost:5173',
+]
