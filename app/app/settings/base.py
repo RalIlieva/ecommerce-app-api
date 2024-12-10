@@ -288,6 +288,8 @@ VENDOR_EMAIL = 'vendor@example.com'
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
-    # Frontend dev server URL
+    # Frontend dev server URL (Vite)
     'http://localhost:5173',
+    # Frontend production URL (Nginx)
+    'http://localhost:3000',
 ]
