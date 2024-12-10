@@ -1,5 +1,5 @@
 // src/api.ts
-import axios from 'axios';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
@@ -11,14 +11,15 @@ const api = axios.create({
 
 // Add a request interceptor to include the JWT token if present
 api.interceptors.request.use(
-  (config) => {
+  (config: AxiosRequestConfig) => {
     const token = localStorage.getItem('access_token');
-    if (token) {
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error: AxiosError) => Promise.reject(error)
 );
 
 export default api;
+
