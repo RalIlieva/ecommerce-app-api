@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:20-alpine as build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN npm install
 COPY . .
 
 # Build the app for production
-RUN npm run build
+RUN npm run build && ls -alh /app/build  # Added ls command for debugging
 
 # Stage 2: Serve the React app using Nginx
 FROM nginx:stable-alpine
@@ -24,3 +24,4 @@ EXPOSE 80
 
 # Run Nginx in the foreground (default command)
 CMD ["nginx", "-g", "daemon off;"]
+
