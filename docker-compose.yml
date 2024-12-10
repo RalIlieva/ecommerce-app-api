@@ -64,7 +64,23 @@ services:
     env_file:
       - .env
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile  # Ensure the Dockerfile is named 'Dockerfile' and located in the 'frontend' directory
+    container_name: frontend
+    ports:
+      - "3000:80"  # Host port 3000 mapped to container port 80 (Nginx)
+    depends_on:
+      - app
+    networks:
+      - app-network
+
 volumes:
   dev-db-data:
   dev-static-data:
   dev-logs:
+
+networks:
+  app-network:
+    driver: bridge
