@@ -71,6 +71,10 @@ services:
     container_name: frontend
     ports:
       - "3000:80"  # Host port 3000 mapped to container port 80 (Nginx)
+    environment:
+      - VITE_API_URL=http://app:8000/api
+    env_file:
+        - ./frontend/.env
     depends_on:
       - app
     networks:
