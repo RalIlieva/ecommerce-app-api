@@ -11,17 +11,16 @@ RUN npm install
 COPY . .
 
 # Build the app for production
-RUN npm run build && ls -alh /app/build  # Added ls command for debugging
+RUN npm run build && ls -alh /app/dist  # Debugging step to confirm the build directory
 
 # Stage 2: Serve the React app using Nginx
 FROM nginx:stable-alpine
 
 # Copy the build output to Nginx's html directory
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose port 80 to be accessible from the outside
 EXPOSE 80
 
 # Run Nginx in the foreground (default command)
 CMD ["nginx", "-g", "daemon off;"]
-
