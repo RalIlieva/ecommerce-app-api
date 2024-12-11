@@ -71,7 +71,8 @@ services:
 #      dockerfile: Dockerfile  # For production
     container_name: frontend
     ports:
-      - "3000:3000"  # React dev server runs on port 3000
+      - "3000:5173"  # Host port 3000 maps to container port 5173
+#      - "3000:3000"  # React dev server runs on port 3000
 #      - "3000:80"  # Host port 3000 mapped to container port 80 (Nginx)
     environment:
       - VITE_API_URL=http://app:8000/api
