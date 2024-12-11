@@ -67,14 +67,19 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile  # Ensure the Dockerfile is named 'Dockerfile' and located in the 'frontend' directory
+      dockerfile: Dockerfile.dev  # For development
+#      dockerfile: Dockerfile  # For production
     container_name: frontend
     ports:
-      - "3000:80"  # Host port 3000 mapped to container port 80 (Nginx)
+      - "3000:3000"  # React dev server runs on port 3000
+#      - "3000:80"  # Host port 3000 mapped to container port 80 (Nginx)
     environment:
       - VITE_API_URL=http://app:8000/api
     env_file:
         - ./frontend/.env
+    volumes:
+      - ./frontend:/app  # Mount local frontend directory to /app in container
+      - /app/node_modules  # Use an anonymous volume to prevent local node_modules from overwriting container's
     depends_on:
       - app
     networks:
