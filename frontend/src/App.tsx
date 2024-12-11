@@ -1,6 +1,6 @@
 // src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Login from './pages/Login';
@@ -8,6 +8,13 @@ import Login from './pages/Login';
 const App: React.FC = () => {
   return (
     <Router>
+      <nav style={navStyle}>
+        <ul style={ulStyle}>
+          <li style={liStyle}><Link to="/">Home</Link></li>
+          <li style={liStyle}><Link to="/products">Products</Link></li>
+          <li style={liStyle}><Link to="/login">Login</Link></li>
+        </ul>
+      </nav>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
@@ -17,7 +24,26 @@ const App: React.FC = () => {
   );
 };
 
+// Optional: Add some basic styling
+const navStyle: React.CSSProperties = {
+  background: '#f0f0f0',
+  padding: '10px',
+};
+
+const ulStyle: React.CSSProperties = {
+  listStyle: 'none',
+  display: 'flex',
+  gap: '20px',
+  margin: 0,
+  padding: 0,
+};
+
+const liStyle: React.CSSProperties = {
+  display: 'inline',
+};
+
 export default App;
+
 
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
