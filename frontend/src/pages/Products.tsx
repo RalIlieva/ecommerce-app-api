@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api';
 
 interface Product {
-  id: number;
+  uuid: string;
   name: string;
   // Add other product fields as needed
 }
