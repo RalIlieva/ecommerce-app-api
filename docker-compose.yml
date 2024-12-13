@@ -57,7 +57,7 @@ services:
       context: .
 #    command: celery -A app beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 #    command: sh -c "./wait-for-it.sh app:8000 -- celery -A app beat --loglevel=info"
-    command: sh -c "/app/wait-for-it.sh db:5432 -- celery -A app beat --loglevel=info"
+    command: sh -c "/usr/local/bin/wait-for-it.sh db:5432 -- celery -A app beat --loglevel=info"
     volumes:
       - ./app:/app
     depends_on:
