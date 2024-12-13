@@ -1,10 +1,11 @@
 // src/pages/Login.tsx
+
 import React, { useState } from 'react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState(''); // Changed from username to email
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -12,12 +13,16 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post('/token/', { username, password });
+      const response = await api.post('/token/', { email, password }); // Send email instead of username
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
       navigate('/products'); // Redirect to products page after login
-    } catch (err) {
-      setError('Invalid credentials');
+    } catch (err: any) { // Added type any for error
+      if (err.response && err.response.status === 401) {
+        setError('Invalid email or password.');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
       console.error(err);
     }
   };
@@ -27,11 +32,11 @@ const Login: React.FC = () => {
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
         <div>
-          <label>Username:</label>
+          <label>Email:</label> {/* Changed label from Username to Email */}
           <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email" // Changed input type to email
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -52,3 +57,58 @@ const Login: React.FC = () => {
 };
 
 export default Login;
+
+// // src/pages/Login.tsx
+// import React, { useState } from 'react';
+// import api from '../api';
+// import { useNavigate } from 'react-router-dom';
+//
+// const Login: React.FC = () => {
+//   const [username, setUsername] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState<string | null>(null);
+//   const navigate = useNavigate();
+//
+//   const handleLogin = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     try {
+//       const response = await api.post('/token/', { username, password });
+//       localStorage.setItem('access_token', response.data.access);
+//       localStorage.setItem('refresh_token', response.data.refresh);
+//       navigate('/products'); // Redirect to products page after login
+//     } catch (err) {
+//       setError('Invalid credentials');
+//       console.error(err);
+//     }
+//   };
+//
+//   return (
+//     <div>
+//       <h1>Login</h1>
+//       <form onSubmit={handleLogin}>
+//         <div>
+//           <label>Username:</label>
+//           <input
+//             type="text"
+//             value={username}
+//             onChange={(e) => setUsername(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div>
+//           <label>Password:</label>
+//           <input
+//             type="password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//             required
+//           />
+//         </div>
+//         {error && <p style={{ color: 'red' }}>{error}</p>}
+//         <button type="submit">Login</button>
+//       </form>
+//     </div>
+//   );
+// };
+//
+// export default Login;

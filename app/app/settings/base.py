@@ -294,3 +294,14 @@ CORS_ALLOWED_ORIGINS = [
     # Frontend production URL (Nginx)
     'http://localhost:3000',
 ]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+
+
