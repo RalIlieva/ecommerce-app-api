@@ -303,5 +303,3 @@ CORS_ALLOW_METHODS = [
     'DELETE',
     'OPTIONS',
 ]
-
-
