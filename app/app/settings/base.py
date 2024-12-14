@@ -315,3 +315,9 @@ CORS_ALLOW_HEADERS = [
     'origin',
     'x-requested-with',
 ]
+
+CORS_EXPOSE_HEADERS = [
+    'Authorization',
+    'Content-Type',
+    'X-CSRFToken',
+]
