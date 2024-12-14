@@ -13,7 +13,7 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await api.post('/token/', { email, password }); // Send email instead of username
+      const response = await api.post('/login/', { email, password }); // Send email instead of username
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
       navigate('/products'); // Redirect to products page after login

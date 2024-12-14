@@ -295,6 +295,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     # React in Docker container (if used)
     'http://frontend:5173',
+    # Allow the Docker container (app) to communicate
+    'http://app:8000'
 ]
 
 CORS_ALLOW_METHODS = [

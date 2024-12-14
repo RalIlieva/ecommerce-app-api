@@ -75,7 +75,7 @@ services:
 #      - "3000:3000"  # React dev server runs on port 3000
 #      - "3000:80"  # Host port 3000 mapped to container port 80 (Nginx)
     environment:
-      - VITE_API_URL=http://app:8000/api
+      - VITE_API_URL=http://app:8000/api/v1
     env_file:
         - ./frontend/.env
     volumes:
