@@ -293,6 +293,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     # Frontend production URL (Nginx)
     'http://localhost:3000',
+    # React in Docker container (if used)
+    'http://frontend:5173',
 ]
 
 CORS_ALLOW_METHODS = [
@@ -302,4 +304,14 @@ CORS_ALLOW_METHODS = [
     'PATCH',
     'DELETE',
     'OPTIONS',
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Allow credentials (cookies, authorization headers)
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    'x-csrftoken',
+    'accept',
+    'origin',
+    'x-requested-with',
 ]
