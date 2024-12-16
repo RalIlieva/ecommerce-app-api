@@ -4,6 +4,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'app', 'frontend']
 
+
 # # Additional development-specific settings
 # INSTALLED_APPS += [
 #     'debug_toolbar',
