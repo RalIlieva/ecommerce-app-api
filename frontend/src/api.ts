@@ -3,11 +3,18 @@ import axios from 'axios';
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000/api/v1' : 'http://app:8000/api/v1'),
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// const api = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// });
 
 // const api = axios.create({
 //   baseURL: import.meta.env.VITE_API_URL || 'http://app:8000/api/v1',
