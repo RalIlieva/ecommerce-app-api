@@ -5,6 +5,7 @@ import api from '../api';
 interface Product {
   uuid: string;
   name: string;
+  slug: string;
   // Add other product fields as needed
 }
 
@@ -16,7 +17,7 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get('/products/');
+        const response = await api.get('/products/products/');
         setProducts(response.data);
       } catch (err) {
         setError('Failed to fetch products.');
@@ -37,7 +38,11 @@ const Products: React.FC = () => {
       <h1>Products</h1>
       <ul>
         {products.map((product) => (
-          <li key={product.uuid}>{product.name}</li>
+          <li key={product.uuid}>
+            <a href={`/products/${product.uuid}/${product.slug}/`}>
+              {product.name}
+            </a>
+          </li>
         ))}
       </ul>
     </div>
