@@ -308,7 +308,8 @@ CORS_ALLOW_METHODS = [
     'OPTIONS',
 ]
 
-CORS_ALLOW_CREDENTIALS = True  # Allow credentials (cookies, authorization headers)
+# Allow credentials (cookies, authorization headers)
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
     'content-type',
     'authorization',
