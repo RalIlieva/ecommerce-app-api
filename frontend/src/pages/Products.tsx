@@ -45,7 +45,7 @@ const Products: React.FC = () => {
       <ul>
         {products.map((product) => (
           <li key={product.uuid}>
-            <a href={`/products/${product.uuid}/${product.slug}/`}>
+            <a href={`/products/products/${product.uuid}/${product.slug}/`}>
               {product.name}
             </a>
           </li>
