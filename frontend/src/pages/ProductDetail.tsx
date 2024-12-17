@@ -21,7 +21,7 @@ const ProductDetail: React.FC = () => {
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const response = await api.get(`/products/products/${uuid}/${slug}/`);
+        const response = await api.get(`/products/${uuid}/${slug}/`);
         setProduct(response.data);
       } catch (err) {
         setError('Failed to fetch product details.');
