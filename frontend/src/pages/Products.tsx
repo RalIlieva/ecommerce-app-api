@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';  // Import Link for navigation
 import api from '../api';
 
 interface Product {
@@ -16,7 +17,7 @@ const Products: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await api.get('/products/products/'); // Correct endpoint
+        const response = await api.get('/products/'); // Correct endpoint
         console.log('Fetched products:', response.data); // Log the response
 
         // Ensure we are setting the products from the 'results' field
