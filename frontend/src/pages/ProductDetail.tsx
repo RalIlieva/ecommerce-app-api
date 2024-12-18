@@ -13,7 +13,8 @@ interface ProductDetail {
 }
 
 const ProductDetail: React.FC = () => {
-  const { uuid, slug } = useParams();
+  const { uuid, slug } = useParams<{ uuid: string; slug: string }>(); // Get uuid and slug from URL
+//   const { uuid, slug } = useParams();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
