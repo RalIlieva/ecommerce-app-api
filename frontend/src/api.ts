@@ -9,21 +9,7 @@ const api = axios.create({
   },
 });
 
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL || 'http://app:8000/api/v1',
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-
-// Add a request interceptor to include the JWT token if present
+// Request interceptor to include the JWT token if present
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
