@@ -29,11 +29,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
     uuid = serializers.UUIDField(read_only=True)
     # user_uuid = serializers.UUIDField(read_only=True)
+    profile_uuid = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'uuid', 'email', 'password', 'name']
+        fields = ['id', 'uuid', 'email', 'password', 'name', 'profile_uuid']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
+        read_only_fields = ['id', 'uuid', 'profile_uuid']
 
     def create(self, validated_data):
         """Create and return a user with encrypted password."""
@@ -49,6 +51,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
             user.save()
 
         return user
+
+    def get_profile_uuid(self, obj):
+        # Access the related CustomerProfile for this user
+        # Return the associated profile's UUID
+        return str(obj.customer_profile.uuid)
 
 
 class CustomUserSerializerWithToken(CustomUserSerializer):

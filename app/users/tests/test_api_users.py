@@ -180,6 +180,7 @@ class PrivateUserApiTests(TestCase):
             'uuid': str(self.user.uuid),
             'name': self.user.name,
             'email': self.user.email,
+            'profile_uuid': str(self.user.customer_profile.uuid)
         })
 
     def test_post_me_not_allowed(self):
