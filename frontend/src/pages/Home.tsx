@@ -1,10 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
 
 const Home: React.FC = () => {
-  const { user, logout } = useContext(AuthContext);
-
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -12,25 +9,9 @@ const Home: React.FC = () => {
           <h1 className="display-4 fw-bold text-primary">Welcome to the E-commerce App</h1>
           <p className="lead text-muted">Explore our wide range of products and find the best deals for you.</p>
           <div className="mt-4">
-            {!user ? (
-              <>
-                <Link to="/login" className="btn btn-primary btn-lg me-3">
-                  Login
-                </Link>
-                <Link to="/register" className="btn btn-outline-secondary btn-lg">
-                  Register
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/products" className="btn btn-success btn-lg me-3">
-                  View Products
-                </Link>
-                <button className="btn btn-danger btn-lg" onClick={logout}>
-                  Logout
-                </button>
-              </>
-            )}
+            <Link to="/products" className="btn btn-success btn-lg me-3">
+              View Products
+            </Link>
           </div>
         </div>
       </div>
@@ -74,22 +55,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-
-// // src/pages/Home.tsx
-// import React, { useContext } from 'react';
-// import { Link } from 'react-router-dom';
-// import AuthContext from '../context/AuthContext';
-//
-// const Home: React.FC = () => {
-//   const { user, logout } = useContext(AuthContext);
-//
-//   return (
-//     <div>
-//       <h1>Welcome to the E-commerce App</h1>
-//       <p>Explore our range of products.</p>
-//     </div>
-//   );
-// };
-//
-// export default Home;
