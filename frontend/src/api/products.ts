@@ -1,5 +1,5 @@
 // src/api/products.ts
-import api from './api';
+import api from '../api';
 import { Tag } from './tags';
 import { Category } from './categories';
 

@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import CategoryList from './pages/CategoryList';
 import TagList from './pages/TagList';
+import ProductListByCategory from './pages/ProductListByCategory';
 import AuthContext from './context/AuthContext';
 
 const App: React.FC = () => {
@@ -60,6 +61,7 @@ const App: React.FC = () => {
           <Route path="/profile/:uuid" element={<Profile />} />
           <Route path="/categories" element={<CategoryList />} />
           <Route path="/tags" element={<TagList />} />
+          <Route path="/categories/:slug" element={<ProductListByCategory />} />
         </Routes>
       </div>
     </Router>

@@ -1,5 +1,5 @@
 // src/api/reviews.ts
-import api from './api';
+import api from '../api';
 
 export interface Review {
   uuid: string;

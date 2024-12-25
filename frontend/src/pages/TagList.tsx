@@ -1,23 +1,18 @@
+// src/pages/TagList/TagList.tsx
 import React, { useEffect, useState } from 'react';
-import api from '../api';
-
-interface Tag {
-  uuid: string;
-  name: string;
-  slug: string;
-}
+import { Link } from 'react-router-dom';
+import { fetchTags, Tag } from '../api/tags';
 
 const TagList: React.FC = () => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTags = async () => {
+    const getTags = async () => {
       try {
-        setLoading(true);
-        const response = await api.get('/products/tags/');
-        setTags(response.data.results || response.data);
+        const data = await fetchTags();
+        setTags(data.results || data);
       } catch (err) {
         setError('Failed to fetch tags.');
         console.error(err);
@@ -25,19 +20,37 @@ const TagList: React.FC = () => {
         setLoading(false);
       }
     };
-    fetchTags();
+
+    getTags();
   }, []);
 
-  if (loading) return <p>Loading Tags...</p>;
-  if (error) return <p className="text-danger">{error}</p>;
+  if (loading)
+    return (
+      <div className="container text-center mt-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="container text-center mt-5">
+        <p className="text-danger">{error}</p>
+      </div>
+    );
 
   return (
     <div className="container mt-5">
       <h2>All Tags</h2>
       <ul className="list-group">
         {tags.map((tag) => (
-          <li key={tag.uuid} className="list-group-item">
+          <li key={tag.uuid} className="list-group-item d-flex justify-content-between align-items-center">
             {tag.name}
+            {/* Implement similar product list by tag if needed */}
+            {/* <Link to={`/tags/${tag.slug}`} className="btn btn-primary btn-sm">
+              View Products
+            </Link> */}
           </li>
         ))}
       </ul>
@@ -46,3 +59,53 @@ const TagList: React.FC = () => {
 };
 
 export default TagList;
+
+
+// import React, { useEffect, useState } from 'react';
+// import api from '../api';
+//
+// interface Tag {
+//   uuid: string;
+//   name: string;
+//   slug: string;
+// }
+//
+// const TagList: React.FC = () => {
+//   const [tags, setTags] = useState<Tag[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//
+//   useEffect(() => {
+//     const fetchTags = async () => {
+//       try {
+//         setLoading(true);
+//         const response = await api.get('/products/tags/');
+//         setTags(response.data.results || response.data);
+//       } catch (err) {
+//         setError('Failed to fetch tags.');
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchTags();
+//   }, []);
+//
+//   if (loading) return <p>Loading Tags...</p>;
+//   if (error) return <p className="text-danger">{error}</p>;
+//
+//   return (
+//     <div className="container mt-5">
+//       <h2>All Tags</h2>
+//       <ul className="list-group">
+//         {tags.map((tag) => (
+//           <li key={tag.uuid} className="list-group-item">
+//             {tag.name}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
+//
+// export default TagList;

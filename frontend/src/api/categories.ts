@@ -1,5 +1,5 @@
 // src/api/categories.ts
-import api from './api';
+import api from '../api';
 
 export interface Category {
   uuid: string;
