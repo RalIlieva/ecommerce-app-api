@@ -1,4 +1,5 @@
 // src/pages/Products/Products.tsx
+// src/pages/Products/Products.tsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
@@ -25,24 +26,41 @@ const Products: React.FC = () => {
     const fetchAllData = async () => {
       try {
         setLoading(true);
+
+        // Construct parameters object
+        const params: Record<string, any> = {};
+
+        if (searchName.trim() !== '') params.name = searchName.trim();
+        if (selectedCategory.trim() !== '') params.category = selectedCategory.trim();
+        if (selectedTag.trim() !== '') params.tags = selectedTag.trim();
+        if (minPrice.trim() !== '') params.min_price = Number(minPrice);
+        if (maxPrice.trim() !== '') params.max_price = Number(maxPrice);
+        if (minRating.trim() !== '') params.min_avg_rating = Number(minRating);
+
+        // Log the parameters for debugging
+        console.log('Fetching products with params:', params);
+
         const [productsData, categoriesData, tagsData] = await Promise.all([
-          fetchProducts({
-            name: searchName,
-            category: selectedCategory,
-            tags: selectedTag,
-            min_price: minPrice,
-            max_price: maxPrice,
-            min_avg_rating: minRating,
-          }),
+          fetchProducts(params),
           fetchCategories(),
           fetchTags(),
         ]);
+
         setProducts(productsData.results || productsData);
         setCategories(categoriesData.results || categoriesData);
         setTags(tagsData.results || tagsData);
-      } catch (err) {
+      } catch (err: any) {
         setError('Failed to fetch data.');
-        console.error(err);
+        if (err.response) {
+          console.error('Error response:', err.response.data);
+          setError(`Error: ${JSON.stringify(err.response.data)}`);
+        } else if (err.request) {
+          console.error('No response received:', err.request);
+          setError('No response from server.');
+        } else {
+          console.error('Error:', err.message);
+          setError('An unexpected error occurred.');
+        }
       } finally {
         setLoading(false);
       }
@@ -114,6 +132,28 @@ const Products: React.FC = () => {
           <input
             type="number"
             className="form-control"
+            placeholder="Min Price"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            min="0"
+            step="0.01"
+          />
+        </div>
+        <div className="col-md-3 mb-2">
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Max Price"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            min="0"
+            step="0.01"
+          />
+        </div>
+        <div className="col-md-3 mb-2">
+          <input
+            type="number"
+            className="form-control"
             placeholder="Min Rating"
             value={minRating}
             onChange={(e) => setMinRating(e.target.value)}
@@ -171,14 +211,12 @@ const Products: React.FC = () => {
           </div>
         ))}
       </div>
-
-      {/* Pagination (optional) */}
-      {/* If your API provides pagination info like next, previous, count, add pagination controls here */}
     </div>
   );
 };
 
 export default Products;
+
 
 // import React, { useEffect, useState } from 'react';
 // import { Link } from 'react-router-dom';
