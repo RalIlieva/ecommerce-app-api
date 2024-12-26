@@ -1,4 +1,4 @@
-// src/pages/TagList/TagList.tsx
+// src/pages/TagList.tsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchTags, Tag } from '../api/tags';
