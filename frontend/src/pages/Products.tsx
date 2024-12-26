@@ -17,7 +17,6 @@ const Products: React.FC = () => {
   const [searchName, setSearchName] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>(''); // slug
   const [selectedTag, setSelectedTag] = useState<string>(''); // tag slug
-//   const [selectedTag, setSelectedTag] = useState<string>(''); // tag UUID
   const [minPrice, setMinPrice] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<string>('');
   const [minRating, setMinRating] = useState<string>('');
