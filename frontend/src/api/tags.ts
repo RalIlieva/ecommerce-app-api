@@ -2,6 +2,7 @@
 import api from '../api';
 
 export interface Tag {
+  id: number;
   uuid: string;
   name: string;
   slug: string;

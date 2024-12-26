@@ -16,7 +16,8 @@ const Products: React.FC = () => {
   // States for filters
   const [searchName, setSearchName] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>(''); // slug
-  const [selectedTag, setSelectedTag] = useState<string>(''); // tag UUID
+  const [selectedTag, setSelectedTag] = useState<string>(''); // tag slug
+//   const [selectedTag, setSelectedTag] = useState<string>(''); // tag UUID
   const [minPrice, setMinPrice] = useState<string>('');
   const [maxPrice, setMaxPrice] = useState<string>('');
   const [minRating, setMinRating] = useState<string>('');
@@ -121,7 +122,7 @@ const Products: React.FC = () => {
           >
             <option value="">-- Filter by Tag --</option>
             {tags.map((tag) => (
-              <option key={tag.uuid} value={tag.uuid}>
+                <option key={tag.id} value={tag.id}>
                 {tag.name}
               </option>
             ))}
