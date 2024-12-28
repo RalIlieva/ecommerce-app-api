@@ -1,13 +1,13 @@
 // src/pages/Products.tsx
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // **Change**: Added useLocation
+import { Link, useLocation } from 'react-router-dom'; // Added useLocation
 import api from '../api';
 import { fetchProducts, Product } from '../api/products';
 import { fetchCategories, Category } from '../api/categories';
 import { fetchTags, Tag } from '../api/tags';
 
 const Products: React.FC = () => {
-  const location = useLocation(); // **Change**: Initialized location
+  const location = useLocation(); // Initialized location
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -36,7 +36,7 @@ const Products: React.FC = () => {
         setSearchName(initialSearch);
 
         // Construct API request parameters
-        const apiParams: Record<string, any> = {}; // **Change**: Renamed from 'params' to 'apiParams'
+        const apiParams: Record<string, any> = {}; // Renamed from 'params' to 'apiParams'
 
         if (initialSearch.trim() !== '') apiParams.search = initialSearch.trim(); // **Change**
         if (selectedCategory.trim() !== '') apiParams.category = selectedCategory.trim();
