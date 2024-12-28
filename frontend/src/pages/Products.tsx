@@ -98,7 +98,7 @@ const Products: React.FC = () => {
       <h1 className="text-center mb-4">Products</h1>
 
       {/* Filters Row */}
-      <div className="row mb-3">
+     <div className="row mb-3">
         <div className="col-md-3 mb-2">
           <input
             type="text"
