@@ -1,151 +1,77 @@
-// frontend/src/components/Navbar.tsx
-import React, { useEffect, useState } from 'react';
+// src/components/Navbar.tsx
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { fetchCategories, Category } from '../api/categories';
-import { fetchTags, Tag } from '../api/tags';
+import AuthContext from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // States for filters
-  const [searchName, setSearchName] = useState<string>('');
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [selectedTag, setSelectedTag] = useState<string>('');
-  const [minPrice, setMinPrice] = useState<string>('');
-  const [maxPrice, setMaxPrice] = useState<string>('');
-  const [minRating, setMinRating] = useState<string>('');
-  const [maxRating, setMaxRating] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    // Fetch categories and tags for dropdowns
-    const fetchFilters = async () => {
-      try {
-        const [categoriesData, tagsData] = await Promise.all([
-          fetchCategories(),
-          fetchTags(),
-        ]);
-        setCategories(categoriesData.results || categoriesData);
-        setTags(tagsData.results || tagsData);
-      } catch (error) {
-        console.error('Failed to fetch categories and tags:', error);
-      }
-    };
-
-    fetchFilters();
-  }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const query = new URLSearchParams();
-
-    if (searchName.trim() !== '') query.append('name', searchName.trim());
-    if (selectedCategory !== '') query.append('category', selectedCategory);
-    if (selectedTag !== '') query.append('tags', selectedTag);
-    if (minPrice.trim() !== '') query.append('min_price', minPrice.trim());
-    if (maxPrice.trim() !== '') query.append('max_price', maxPrice.trim());
-    if (minRating.trim() !== '') query.append('min_avg_rating', minRating.trim());
-    if (maxRating.trim() !== '') query.append('max_avg_rating', maxRating.trim());
-
-    navigate(`/products?${query.toString()}`);
+    // Navigate to the Products page with the search term as a query parameter
+    navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
+    setSearchTerm('');
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
+      <div className="container">
+        {/* Brand */}
         <Link className="navbar-brand" to="/">E-Commerce</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarFilters" aria-controls="navbarFilters" aria-expanded="false" aria-label="Toggle navigation">
+
+        {/* Toggler for mobile view */}
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarFilters">
-          <form className="d-flex flex-wrap align-items-center" onSubmit={handleSearch}>
-            {/* Search Input */}
+
+        {/* Navbar Links and Search */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          {/* Left-aligned Links */}
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <Link className="nav-link" to="/products">Products</Link>
+            </li>
+            {user && user.profile_uuid && (
+              <li className="nav-item">
+                <Link className="nav-link" to={`/profile/${user.profile_uuid}`}>Profile</Link>
+              </li>
+            )}
+          </ul>
+
+          {/* Centered Search Form */}
+          <form className="d-flex mx-auto" onSubmit={handleSearchSubmit} style={{ maxWidth: '500px', width: '100%' }}>
             <input
-              type="text"
-              className="form-control me-2 mb-2"
-              placeholder="Search products..."
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
+              className="form-control me-2"
+              type="search"
+              placeholder="Search by name, category, or tag..."
+              aria-label="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              required
             />
-
-            {/* Category Dropdown */}
-            <select
-              className="form-select me-2 mb-2"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat.uuid} value={cat.slug}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-
-            {/* Tag Dropdown */}
-            <select
-              className="form-select me-2 mb-2"
-              value={selectedTag}
-              onChange={(e) => setSelectedTag(e.target.value)}
-            >
-              <option value="">All Tags</option>
-              {tags.map((tag) => (
-                <option key={tag.id} value={tag.id}>
-                  {tag.name}
-                </option>
-              ))}
-            </select>
-
-            {/* Min Price */}
-            <input
-              type="number"
-              className="form-control me-2 mb-2"
-              placeholder="Min Price"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              min="0"
-              step="0.01"
-            />
-
-            {/* Max Price */}
-            <input
-              type="number"
-              className="form-control me-2 mb-2"
-              placeholder="Max Price"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              min="0"
-              step="0.01"
-            />
-
-            {/* Min Rating */}
-            <input
-              type="number"
-              className="form-control me-2 mb-2"
-              placeholder="Min Rating"
-              value={minRating}
-              onChange={(e) => setMinRating(e.target.value)}
-              min="1"
-              max="5"
-            />
-
-            {/* Max Rating */}
-            <input
-              type="number"
-              className="form-control me-2 mb-2"
-              placeholder="Max Rating"
-              value={maxRating}
-              onChange={(e) => setMaxRating(e.target.value)}
-              min="1"
-              max="5"
-            />
-
-            {/* Search Button */}
-            <button type="submit" className="btn btn-outline-success mb-2">
-              Search
-            </button>
+            <button className="btn btn-outline-success" type="submit">Search</button>
           </form>
+
+          {/* Right-aligned Authentication Links */}
+          <div className="d-flex">
+            {!user ? (
+              <>
+                <Link className="btn btn-primary me-2" to="/login">Login</Link>
+                <Link className="btn btn-primary me-2" to="/register">Register</Link>
+              </>
+            ) : (
+              <>
+                <button className="btn btn-danger me-2" onClick={logout}>Logout</button>
+              </>
+            )}
+            <Link className="btn btn-warning" to="/cart">
+              <i className="fas fa-shopping-cart"></i> Cart
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
