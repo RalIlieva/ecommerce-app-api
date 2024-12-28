@@ -1,7 +1,7 @@
 // src/pages/Login.tsx
 import React, { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const { login } = useContext(AuthContext);
@@ -27,32 +27,129 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email:</label><br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow">
+            <div className="card-header bg-primary text-white">
+              <h3 className="mb-0">Login</h3>
+            </div>
+            <div className="card-body">
+              <form onSubmit={handleLogin}>
+                {/* Email Field */}
+                <div className="mb-3">
+                  <label htmlFor="email" className="form-label">
+                    Email:
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="Enter your email"
+                  />
+                </div>
+
+                {/* Password Field */}
+                <div className="mb-3">
+                  <label htmlFor="password" className="form-label">
+                    Password:
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    className="form-control"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="Enter your password"
+                  />
+                </div>
+
+                {/* Error Message */}
+                {error && (
+                  <div className="alert alert-danger" role="alert">
+                    {error}
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <div className="d-grid">
+                  <button type="submit" className="btn btn-primary">
+                    Login
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div className="card-footer text-muted text-center">
+              Don't have an account? <Link to="/register">Register here</Link>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Password:</label><br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Login</button>
-      </form>
+      </div>
     </div>
   );
 };
 
 export default Login;
+
+// // src/pages/Login.tsx
+// import React, { useState, useContext } from 'react';
+// import AuthContext from '../context/AuthContext';
+// import { useNavigate } from 'react-router-dom';
+//
+// const Login: React.FC = () => {
+//   const { login } = useContext(AuthContext);
+//   const navigate = useNavigate();
+//
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState<string | null>(null);
+//
+//   const handleLogin = async (e: React.FormEvent) => {
+//     e.preventDefault();
+//     try {
+//       await login(email, password);
+//       navigate('/products'); // Redirect to products page after login
+//     } catch (err: any) {
+//       if (err.response && err.response.status === 401) {
+//         setError('Invalid email or password.');
+//       } else {
+//         setError('An unexpected error occurred. Please try again.');
+//       }
+//       console.error(err);
+//     }
+//   };
+//
+//   return (
+//     <div>
+//       <h1>Login</h1>
+//       <form onSubmit={handleLogin}>
+//         <div>
+//           <label>Email:</label><br />
+//           <input
+//             type="email"
+//             value={email}
+//             onChange={(e) => setEmail(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div>
+//           <label>Password:</label><br />
+//           <input
+//             type="password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//             required
+//           />
+//         </div>
+//         {error && <p style={{ color: 'red' }}>{error}</p>}
+//         <button type="submit">Login</button>
+//       </form>
+//     </div>
+//   );
+// };
+//
+// export default Login;
