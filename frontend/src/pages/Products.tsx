@@ -184,7 +184,6 @@ const Products: React.FC = () => {
                     {product.name}
                   </Link>
                 </h5>
-                <p className="card-text text-muted">Brand: {product.brand}</p>
                 <p className="card-text">Category: {product.category?.name}</p>
                 <p className="card-text">
                   Tags:{' '}
