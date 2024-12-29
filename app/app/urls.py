@@ -1,6 +1,8 @@
 """
 URL configuration for app project.
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import (
@@ -45,3 +47,11 @@ urlpatterns = [
     path('api/v1/auth/', include('djoser.urls')),  # Djoser auth endpoints
     path('api/v1/auth/', include('djoser.urls.jwt')),  # Djoser JWT endpoints
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT
+    )
