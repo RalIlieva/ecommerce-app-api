@@ -9,6 +9,7 @@ interface ProductDetail {
   description: string;
   price: number;
   image: string;
+  stock: number;
   gallery?: string[];
 }
 
@@ -91,6 +92,7 @@ const ProductDetail: React.FC = () => {
         <div className="col-md-6">
           <h1 className="fw-bold">{product.name}</h1>
           <p className="text-muted">{product.description}</p>
+          <p className="text-muted">In stock: {product.stock}</p>
           <h5 className="text-primary">
             ${product.price ? parseFloat(product.price).toFixed(2) : 'N/A'}
           </h5>
