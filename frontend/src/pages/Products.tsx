@@ -1,13 +1,13 @@
 // src/pages/Products.tsx
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom'; // Added useLocation
+import { Link, useLocation } from 'react-router-dom';
 import api from '../api';
 import { fetchProducts, Product } from '../api/products';
 import { fetchCategories, Category } from '../api/categories';
 import { fetchTags, Tag } from '../api/tags';
 
 const Products: React.FC = () => {
-  const location = useLocation(); // **Change**: Initialized location
+  const location = useLocation();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -16,7 +16,6 @@ const Products: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // States for filters
-  // const [searchName, setSearchName] = useState<string>(''); // **Change**: Removed searchName state
   const [selectedCategory, setSelectedCategory] = useState<string>(''); // slug
   const [selectedTag, setSelectedTag] = useState<string>(''); // tag slug
   const [minPrice, setMinPrice] = useState<string>('');
@@ -32,13 +31,10 @@ const Products: React.FC = () => {
         const params = new URLSearchParams(location.search);
         const initialSearch = params.get('search') || '';
 
-        // Removed the setSearchName call since searchName is no longer used
-        // setSearchName(initialSearch);
-
         // Construct API request parameters
-        const apiParams: Record<string, any> = {}; // **Change**: Renamed from 'params' to 'apiParams'
+        const apiParams: Record<string, any> = {};
 
-        if (initialSearch.trim() !== '') apiParams.search = initialSearch.trim(); // **Change**
+        if (initialSearch.trim() !== '') apiParams.search = initialSearch.trim();
         if (selectedCategory.trim() !== '') apiParams.category = selectedCategory.trim();
         if (selectedTag.trim() !== '') apiParams.tags = selectedTag.trim();
         if (minPrice.trim() !== '') apiParams.min_price = Number(minPrice);
@@ -46,10 +42,10 @@ const Products: React.FC = () => {
         if (minRating.trim() !== '') apiParams.min_avg_rating = Number(minRating);
 
         // Log the parameters for debugging
-        console.log('Fetching products with params:', apiParams); // **Change**
+        console.log('Fetching products with params:', apiParams);
 
         const [productsData, categoriesData, tagsData] = await Promise.all([
-          fetchProducts(apiParams), // **Change**: Using 'apiParams' instead of 'params'
+          fetchProducts(apiParams),
           fetchCategories(),
           fetchTags(),
         ]);
@@ -75,7 +71,7 @@ const Products: React.FC = () => {
     };
 
     fetchAllData();
-  }, [location.search, selectedCategory, selectedTag, minPrice, maxPrice, minRating]); // **Change**: Removed 'searchName' from dependencies
+  }, [location.search, selectedCategory, selectedTag, minPrice, maxPrice, minRating]);
 
   if (loading)
     return (
@@ -98,7 +94,6 @@ const Products: React.FC = () => {
       <h1 className="text-center mb-4">Products</h1>
 
       {/* Filters Row */}
-      {/* Removed Search by Name Input */}
       <div className="row mb-3">
         <div className="col-md-3 mb-2">
           <select
