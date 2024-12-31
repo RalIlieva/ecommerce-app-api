@@ -20,6 +20,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleChange = (
@@ -35,6 +37,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
+    setSuccessMessage(null);
+    setFieldErrors({});
 
     // Convert empty strings to null
     const payload = {
@@ -50,27 +54,29 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
     try {
       const response = await api.patch(`/user/profile/${profile.profile_uuid}/`, payload);
       onUpdate(response.data);
+      setSuccessMessage('Profile updated successfully!');
     } catch (err: any) {
       console.error('Error updating profile:', err);
       if (err.response && err.response.data) {
         console.error('Error details:', err.response.data);
 
-        const errorMessages = Object.entries(err.response.data).map(
-          ([field, messages]: [string, any]) => {
-            if (Array.isArray(messages)) {
-              // If messages is an array, join them
-              return `${field}: ${messages.join(', ')}`;
-            } else if (typeof messages === 'string') {
-              // If messages is a string, use it directly
-              return `${field}: ${messages}`;
-            } else {
-              // If messages is neither, stringify it
-              return `${field}: ${JSON.stringify(messages)}`;
-            }
-          }
-        );
+        // Determine if error details are nested under 'detail'
+        const errorData = err.response.data.detail || err.response.data;
 
-        setError(errorMessages.join(' | '));
+        const fieldErrorsTemp: { [key: string]: string } = {};
+
+        Object.entries(errorData).forEach(([field, messages]: [string, any]) => {
+          if (Array.isArray(messages)) {
+            fieldErrorsTemp[field] = messages.join(', ');
+          } else if (typeof messages === 'string') {
+            fieldErrorsTemp[field] = messages;
+          } else {
+            fieldErrorsTemp[field] = JSON.stringify(messages);
+          }
+        });
+
+        setFieldErrors(fieldErrorsTemp);
+        setError('Please fix the highlighted errors and try again.');
       } else {
         setError('Failed to update profile. Please try again.');
       }
@@ -87,6 +93,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
             <h4 className="mb-0">Edit Profile</h4>
           </div>
           <div className="card-body">
+            {successMessage && <p className="text-success">{successMessage}</p>}
             {error && <p className="text-danger">{error}</p>}
             <form onSubmit={handleSubmit}>
               {/* Gender */}
@@ -97,7 +104,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
                 <select
                   id="gender"
                   name="gender"
-                  className="form-select"
+                  className={`form-select ${fieldErrors.gender ? 'is-invalid' : ''}`}
                   value={formData.gender}
                   onChange={handleChange}
                 >
@@ -106,6 +113,9 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
                   <option value="f">Female</option>
                   <option value="o">Other</option>
                 </select>
+                {fieldErrors.gender && (
+                  <div className="invalid-feedback">{fieldErrors.gender}</div>
+                )}
               </div>
 
               {/* Phone Number */}
@@ -117,10 +127,13 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
                   type="tel"
                   id="phone_number"
                   name="phone_number"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.phone_number ? 'is-invalid' : ''}`}
                   value={formData.phone_number}
                   onChange={handleChange}
                 />
+                {fieldErrors.phone_number && (
+                  <div className="invalid-feedback">{fieldErrors.phone_number}</div>
+                )}
               </div>
 
               {/* Address */}
@@ -132,10 +145,13 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
                   type="text"
                   id="address"
                   name="address"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.address ? 'is-invalid' : ''}`}
                   value={formData.address}
                   onChange={handleChange}
                 />
+                {fieldErrors.address && (
+                  <div className="invalid-feedback">{fieldErrors.address}</div>
+                )}
               </div>
 
               {/* Date of Birth */}
@@ -147,10 +163,13 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
                   type="date"
                   id="date_of_birth"
                   name="date_of_birth"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.date_of_birth ? 'is-invalid' : ''}`}
                   value={formData.date_of_birth}
                   onChange={handleChange}
                 />
+                {fieldErrors.date_of_birth && (
+                  <div className="invalid-feedback">{fieldErrors.date_of_birth}</div>
+                )}
               </div>
 
               {/* About */}
@@ -161,11 +180,14 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
                 <textarea
                   id="about"
                   name="about"
-                  className="form-control"
+                  className={`form-control ${fieldErrors.about ? 'is-invalid' : ''}`}
                   rows={3}
                   value={formData.about}
                   onChange={handleChange}
                 ></textarea>
+                {fieldErrors.about && (
+                  <div className="invalid-feedback">{fieldErrors.about}</div>
+                )}
               </div>
 
               {/* Buttons */}
@@ -191,6 +213,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
 };
 
 export default EditProfileForm;
+
 
 
 
