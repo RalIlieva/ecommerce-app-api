@@ -74,7 +74,6 @@ class CustomUserSerializerWithToken(CustomUserSerializer):
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
     """Serializer for the profile of the customer."""
-    # user = CustomUserSerializer(read_only=True)
     user = CustomUserSerializer(read_only=False)  # Make it writable
     profile_uuid = serializers.UUIDField(source='uuid', read_only=True)
 
