@@ -74,7 +74,8 @@ class CustomUserSerializerWithToken(CustomUserSerializer):
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
     """Serializer for the profile of the customer."""
-    user = CustomUserSerializer(read_only=True)
+    # user = CustomUserSerializer(read_only=True)
+    user = CustomUserSerializer(read_only=False)  # Make it writable
     profile_uuid = serializers.UUIDField(source='uuid', read_only=True)
 
     class Meta:
@@ -91,6 +92,17 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
             'about'
         ]
         read_only_fields = ['id', 'profile_uuid', 'user']
+
+    def update(self, instance, validated_data):
+        """Handle nested updates for user."""
+        user_data = validated_data.pop('user', {})
+        if user_data:
+            user_serializer = CustomUserSerializer(instance.user, data=user_data, partial=True)
+            if user_serializer.is_valid():
+                user_serializer.save()
+            else:
+                raise serializers.ValidationError(user_serializer.errors)
+        return super().update(instance, validated_data)
 
 
 class UserReviewSerializer(serializers.ModelSerializer):
