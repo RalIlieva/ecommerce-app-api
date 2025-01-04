@@ -11,6 +11,8 @@ import TagList from './pages/TagList';
 import ProductListByCategory from './pages/ProductListByCategory';
 import AuthContext from './context/AuthContext';
 import Navbar from './components/Navbar';
+import PasswordResetRequest from './components/PasswordResetRequest';
+import PasswordResetConfirm from './components/PasswordResetConfirm';
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -29,6 +31,8 @@ const App: React.FC = () => {
           <Route path="/categories" element={<CategoryList />} />
           <Route path="/tags" element={<TagList />} />
           <Route path="/categories/:slug" element={<ProductListByCategory />} />
+          <Route path="/password-reset" element={<PasswordResetRequest />} />
+          <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
         </Routes>
       </div>
     </Router>
