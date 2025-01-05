@@ -181,12 +181,12 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    # 'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
-    'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}/',
-    # 'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': 'username/reset-confirm/{uid}/{token}/',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    # 'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}/',
+    'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
+    # 'USERNAME_RESET_CONFIRM_URL': 'username/reset-confirm/{uid}/{token}/',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'DOMAIN': 'http://localhost:3000',  # Frontend domain with protocol
+    'DOMAIN': 'http://localhost:5173',  # Frontend domain with protocol
     'SEND_ACTIVATION_EMAIL': False,
     'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
