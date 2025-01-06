@@ -1,6 +1,6 @@
 // src/components/PasswordResetRequest.tsx
 import React, { useState } from 'react';
-import api from '../api'; // Ensure you have an API utility for making requests
+import api from '../api';
 import { Link } from 'react-router-dom';
 
 const PasswordResetRequest: React.FC = () => {
