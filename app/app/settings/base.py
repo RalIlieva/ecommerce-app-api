@@ -198,7 +198,8 @@ DJOSER = {
         # 'user_delete': 'users.serializers.CustomUserSerializer',
     },
     'EMAIL': {
-        'password_reset': 'djoser.email.PasswordResetEmail',
+        # 'password_reset': 'djoser.email.PasswordResetEmail',
+        'password_reset': 'users.email.CustomPasswordResetEmail', #Custom e-mail
         # 'activation': 'djoser.email.ActivationEmail',
     }
     # 'PERMISSIONS': {
