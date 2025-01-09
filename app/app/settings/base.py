@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django.contrib.sites',
     'core',
     'users.apps.UsersConfig',
     'administrators.apps.AdministratorsConfig',
@@ -183,6 +184,8 @@ SIMPLE_JWT = {
     'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.MyTokenObtainPairSerializer',
 }
 
+# SITE_ID = 1
+
 DJOSER = {
     # 'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}/',
@@ -190,6 +193,8 @@ DJOSER = {
     'USERNAME_RESET_CONFIRM_URL': 'username/reset-confirm/{uid}/{token}/',
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'DOMAIN': 'http://localhost:5173',  # Frontend domain with protocol
+    # 'DOMAIN': 'localhost:3000',  # Frontend domain without protocol
+    'USE_SITES_DOMAIN': True,
     'SEND_ACTIVATION_EMAIL': False,
     'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
