@@ -68,8 +68,12 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # 'DIRS': [],
+        # 'DIRS': [
+        #     BASE_DIR / 'app' / 'users' / 'templates',
+        # ],
         'DIRS': [
-            BASE_DIR / 'app' / 'users' / 'templates',
+            # Add your templates directory if not using app directories
+            os.path.join(BASE_DIR, 'app', 'users', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -188,13 +192,14 @@ SIMPLE_JWT = {
 
 DJOSER = {
     # 'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
-    'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}/',
+    'PASSWORD_RESET_CONFIRM_URL': '/password-reset-confirm/{uid}/{token}/',
     # 'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': 'username/reset-confirm/{uid}/{token}/',
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
-    'DOMAIN': 'http://localhost:5173',  # Frontend domain with protocol
+    'USERNAME_RESET_CONFIRM_URL': '/username/reset-confirm/{uid}/{token}/',
+    'ACTIVATION_URL': '/activate/{uid}/{token}',
+    # 'DOMAIN': 'http://localhost:5173',  # Frontend domain with protocol
+    'DOMAIN': 'localhost:5173',  # Removed protocol
     # 'DOMAIN': 'localhost:3000',  # Frontend domain without protocol
-    'USE_SITES_DOMAIN': True,
+    'USE_SITES_DOMAIN': False,
     'SEND_ACTIVATION_EMAIL': False,
     'SEND_CONFIRMATION_EMAIL': False,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
