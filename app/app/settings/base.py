@@ -193,7 +193,8 @@ SIMPLE_JWT = {
 DJOSER = {
     # 'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     # 'USERNAME_RESET_CONFIRM_URL': 'username/reset/confirm/{uid}/{token}',
-    'PASSWORD_RESET_CONFIRM_URL': '/password-reset-confirm/{uid}/{token}/',
+    'PASSWORD_RESET_CONFIRM_URL': 'password-reset-confirm/{uid}/{token}/',
+    # 'PASSWORD_RESET_CONFIRM_URL': '/password-reset-confirm/{uid}/{token}/',
     'USERNAME_RESET_CONFIRM_URL': '/username/reset-confirm/{uid}/{token}/',
     'ACTIVATION_URL': '/activate/{uid}/{token}',
     # 'DOMAIN': 'http://localhost:5173',  # Frontend domain with protocol
@@ -211,8 +212,8 @@ DJOSER = {
         # 'user_delete': 'users.serializers.CustomUserSerializer',
     },
     'EMAIL': {
-        # 'password_reset': 'djoser.email.PasswordResetEmail',
-        'password_reset': 'users.email.CustomPasswordResetEmail', #Custom e-mail
+        'password_reset': 'djoser.email.PasswordResetEmail',
+        # 'password_reset': 'users.email.CustomPasswordResetEmail', #Custom e-mail
         # 'activation': 'djoser.email.ActivationEmail',
     }
     # 'PERMISSIONS': {
@@ -221,6 +222,11 @@ DJOSER = {
     #     'user': ['rest_framework.permissions.IsAuthenticated'],
     # },
 }
+
+# Ensure that the site URL is used correctly
+SITE_NAME = "E-commerce Api App Website"
+DOMAIN = "localhost:3000"
+EMAIL_HOST_USER = "pthntstngml@gmail.com"
 
 LOGGING = {
     'version': 1,
