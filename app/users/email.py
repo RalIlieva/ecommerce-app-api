@@ -26,8 +26,10 @@ class CustomPasswordResetEmail(PasswordResetEmail):
 
 
 # class CustomPasswordResetEmail(PasswordResetEmail):
-#     template_name = 'users/email/password_reset.html'  # HTML template
-#     plain_text_template_name = 'users/email/password_reset.txt'  # Plain-text template
+    # HTML template
+#     template_name = 'users/email/password_reset.html'
+    # Plain-text template
+#     plain_text_template_name = 'users/email/password_reset.txt'
 #
 #     def get_context(self):
 #         context = super().get_context()
