@@ -46,7 +46,10 @@ class CustomPasswordResetEmail(PasswordResetEmail):
 #         context = self.get_context_data()
 #         # Render HTML and plain-text email templates
 #         html_content = render_to_string(self.template_name, context)
-#         plain_text_content = render_to_string(self.plain_text_template_name, context)
+#         plain_text_content = render_to_string(
+#         self.plain_text_template_name,
+#         context
+#         )
 #         return {'html': html_content, 'text': plain_text_content}
 #
 #     def send(self, to=None):
