@@ -32,7 +32,8 @@ class CustomPasswordResetEmail(PasswordResetEmail):
 #     def get_context(self):
 #         context = super().get_context()
 #         # Ensure the proper context variables are passed
-#         context['protocol'] = 'http'  # Use 'https' when using SSL in production
+        # Use 'https' when using SSL in production
+#         context['protocol'] = 'http'
 #         context['domain'] = 'localhost:5173'
 #         context['url'] = self.reset_url(context['uid'], context['token'])
 #         return context
