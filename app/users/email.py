@@ -11,7 +11,9 @@ class CustomPasswordResetEmail(PasswordResetEmail):
 
     def send(self, to, *args, **kwargs):
         context = self.get_context_data()
-        # subject = render_to_string(self.subject_template_name, context).strip()
+        # subject = render_to_string(
+        # self.subject_template_name, context
+        # ).strip()
         html_content = render_to_string(self.template_name, context)
         text_content = strip_tags(html_content)
 
