@@ -7,18 +7,18 @@ from django.utils.html import strip_tags
 
 class CustomPasswordResetEmail(PasswordResetEmail):
     template_name = 'users/email/password_reset.html'
-    # subject_template_name = 'users/email/password_reset_subject.txt'
+    subject_template_name = 'users/email/password_reset_subject.txt'
 
     def send(self, to, *args, **kwargs):
         context = self.get_context_data()
-        # subject = render_to_string(
-        # self.subject_template_name, context
-        # ).strip()
+        subject = render_to_string(
+        self.subject_template_name, context
+        ).strip()
         html_content = render_to_string(self.template_name, context)
         text_content = strip_tags(html_content)
 
         email = EmailMultiAlternatives(
-            # subject=subject,
+            subject=subject,
             body=text_content,
             from_email=self.from_email,
             to=to,
