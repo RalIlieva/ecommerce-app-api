@@ -3,6 +3,11 @@ Views for the User API.
 """
 
 from rest_framework import generics, permissions
+from rest_framework import status, views
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import check_password
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -87,3 +92,27 @@ class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
             return CustomerProfile.objects.get(uuid=profile_uuid)
         except CustomerProfile.DoesNotExist:
             raise UserProfileNotFoundException("Customer profile not found.")
+
+
+# class ChangePasswordView(views.APIView):
+#     """
+#     View for authenticated users to change their password.
+#     """
+#     permission_classes = [permissions.IsAuthenticated, IsOwner]
+#
+#     def post(self, request):
+#         user = request.get_user_model()
+#         data = request.data
+#         old_password = data.get('old_password')
+#         new_password = data.get('new_password')
+#         confirm_password = data.get('confirm_password')
+#
+#         if not user.check_password(old_password):
+#             return Response({"error": "Old password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
+#
+#         if new_password != confirm_password:
+#             return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+#
+#         user.set_password(new_password)
+#         user.save()
+#         return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)

@@ -33,7 +33,7 @@ const App: React.FC = () => {
           <Route path="/categories/:slug" element={<ProductListByCategory />} />
           <Route path="/password-reset" element={<PasswordResetRequest />} />
           <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
-          <Route path="/change-password" element={<ChangePassword />} />
+{/*           <Route path="/change-password" element={<ChangePassword />} /> */}
         </Routes>
       </div>
     </Router>
