@@ -223,7 +223,7 @@ DJOSER = {
     # },
 }
 
-# Ensure that the site URL is used correctly
+# Additional settings for Djoser - URL - email
 SITE_NAME = "E-commerce Api App Website"
 DOMAIN = "localhost:3000"
 EMAIL_HOST_USER = "pthntstngml@gmail.com"
