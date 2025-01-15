@@ -14,7 +14,6 @@ class ChangePasswordTestCase(APITestCase):
             email='testuser@example.com',
             password='old_password'
         )
-        # self.change_password_url = '/users/change-password/'
 
         self.client.login(
             email='testuser@example.com',
@@ -47,9 +46,6 @@ class ChangePasswordTestCase(APITestCase):
         self.assertTrue(self.user.check_password('new_secure_password'))
 
     def test_change_password_mismatch(self):
-        # # Authenticate the user
-        # self.client.login(username='testuser', password='old_password')
-
         # Payload with mismatched passwords
         data = {
             'old_password': 'old_password',
