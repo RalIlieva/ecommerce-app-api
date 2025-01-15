@@ -13,6 +13,7 @@ import AuthContext from './context/AuthContext';
 import Navbar from './components/Navbar';
 import PasswordResetRequest from './components/PasswordResetRequest';
 import PasswordResetConfirm from './components/PasswordResetConfirm';
+import ChangePassword from './components/ChangePassword';
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -33,7 +34,7 @@ const App: React.FC = () => {
           <Route path="/categories/:slug" element={<ProductListByCategory />} />
           <Route path="/password-reset" element={<PasswordResetRequest />} />
           <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
-{/*           <Route path="/change-password" element={<ChangePassword />} /> */}
+          <Route path="/change-password" element={<ChangePassword />} />
         </Routes>
       </div>
     </Router>
