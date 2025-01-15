@@ -20,6 +20,7 @@ from .serializers import (
     CustomUserSerializer,
     CustomUserSerializerWithToken,
     CustomerProfileSerializer,
+    ChangePasswordSerializer,
 )
 
 from .permissions import IsOwner
@@ -94,25 +95,24 @@ class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
             raise UserProfileNotFoundException("Customer profile not found.")
 
 
-# class ChangePasswordView(views.APIView):
-#     """
-#     View for authenticated users to change their password.
-#     """
-#     permission_classes = [permissions.IsAuthenticated, IsOwner]
-#
-#     def post(self, request):
-#         user = request.get_user_model()
-#         data = request.data
-#         old_password = data.get('old_password')
-#         new_password = data.get('new_password')
-#         confirm_password = data.get('confirm_password')
-#
-#         if not user.check_password(old_password):
-#             return Response({"error": "Old password is incorrect."}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         if new_password != confirm_password:
-#             return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-#
-#         user.set_password(new_password)
-#         user.save()
-#         return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+class ChangePasswordView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        old_password = serializer.validated_data['old_password']
+        new_password = serializer.validated_data['new_password']
+
+        if not user.check_password(old_password):
+            return Response(
+                {"error": "Old password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user.set_password(new_password)
+        user.save()
+        return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+

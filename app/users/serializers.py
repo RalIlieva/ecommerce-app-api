@@ -4,6 +4,7 @@ Serializers for the user API View.
 
 from django.contrib.auth import get_user_model
 # from django.utils.translation import gettext as _
+from django.contrib.auth.password_validation import validate_password
 
 from rest_framework import serializers
 
@@ -128,3 +129,14 @@ class UserReviewSerializer(serializers.ModelSerializer):
         if not name:
             name = obj.email.split('@')[0]
         return name
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True, validators=[validate_password])
+    confirm_password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError("New passwords do not match.")
+        return attrs
