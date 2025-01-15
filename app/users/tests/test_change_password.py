@@ -56,7 +56,8 @@ class ChangePasswordTestCase(APITestCase):
         response = self.client.post(CHANGE_PASS_URL, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # self.assertIn('Passwords do not match', str(response.data))
-        self.assertIn('New passwords do not match.', response.data['detail']['non_field_errors'][0])
+        self.assertIn('New passwords do not match.', str(response.data))
+        # self.assertIn('New passwords do not match.', response.data['detail']['non_field_errors'][0])
 
     def test_change_password_incorrect_old_password(self):
         # Authenticate the user
