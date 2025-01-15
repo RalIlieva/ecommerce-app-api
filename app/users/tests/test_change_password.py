@@ -83,5 +83,30 @@ class ChangePasswordTestCase(APITestCase):
         }
 
         response = self.client.post(CHANGE_PASS_URL, data)
-        # self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    # def test_change_password_forbidden(self):
+    #     # Create another user
+    #     another_user = get_user_model().objects.create_user(
+    #         email='anotheruser@example.com',
+    #         password='another_password'
+    #     )
+    #
+    #     # Authenticate as the first user
+    #     self.client.force_authenticate(user=self.user)
+    #
+    #     # Attempt to change the password for another user (violates IsOwner permission)
+    #     data = {
+    #         'old_password': 'old_password',  # Current user's password
+    #         'new_password': 'new_secure_password',
+    #         'confirm_password': 'new_secure_password',
+    #     }
+    #
+    #     # Assuming the URL or logic explicitly includes the target user
+    #     response = self.client.post(
+    #         CHANGE_PASS_URL, data, **{'HTTP_TARGET_USER': another_user.id}
+    #     )
+    #
+    #     # Check that the response returns 403 Forbidden
+    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    #     self.assertIn('You do not have permission to perform this action', str(response.data))
