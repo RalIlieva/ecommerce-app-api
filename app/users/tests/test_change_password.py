@@ -75,10 +75,11 @@ class ChangePasswordTestCase(APITestCase):
 
         response = self.client.post(CHANGE_PASS_URL, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('Old password is not correct', str(response.data))
+        self.assertIn('Old password is incorrect', str(response.data))
 
     def test_change_password_unauthenticated(self):
         # Payload for password change without login
+        self.client.force_authenticate(user=None)  # Log out the user
         data = {
             'old_password': 'old_password',
             'new_password': 'new_secure_password',
