@@ -18,5 +18,9 @@ urlpatterns = [
     path('profile/<uuid:profile_uuid>/',
          views.ManageCustomerProfileByUUIDView.as_view(),
          name='customer_profile_uuid'),
-    path('change-password/', views.ChangePasswordView.as_view(), name='change_password'),
+    path(
+        'change-password/',
+        views.ChangePasswordView.as_view(),
+        name='change_password'
+    ),
 ]
