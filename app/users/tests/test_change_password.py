@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 CHANGE_PASS_URL = reverse('users:change_password')
@@ -117,35 +118,41 @@ class ChangePasswordTestCase(APITestCase):
         response = self.client.post(CHANGE_PASS_URL, data)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    # def test_change_password_forbidden(self):
-    #     # Create another user
-    #     another_user = get_user_model().objects.create_user(
-    #         email='anotheruser@example.com',
-    #         password='another_password'
-    #     )
-    #
-    #     # Authenticate as the first user
-    #     self.client.force_authenticate(user=self.user)
-    #
-    #     # Attempt to change the password for another user
-    #     # (violates IsOwner permission)
-    #     data = {
-    #         'old_password': 'old_password',  # Current user's password
-    #         'new_password': 'new_secure_password',
-    #         'confirm_password': 'new_secure_password',
-    #     }
-    #
-    #     # Assuming the URL or logic explicitly includes the target user
-    #     response = self.client.post(
-    #         CHANGE_PASS_URL, data, **{'HTTP_TARGET_USER': another_user.id}
-    #     )
-    #
-    #     # Check that the response returns 403 Forbidden
-    #     self.assertEqual(
-    #     response.status_code,
-    #     status.HTTP_403_FORBIDDEN
-    #     )
-    #     self.assertIn(
-    #     'You do not have permission to perform this action',
-    #     str(response.data)
-    #     )
+
+class ChangePasswordForbiddenTest(APITestCase):
+    def setUp(self):
+        self.User = get_user_model()
+
+        # Create two users
+        self.user1 = self.User.objects.create_user(
+            email='user1@example.com', password='password123', name='User One'
+        )
+        self.user2 = self.User.objects.create_user(
+            email='user2@example.com', password='password123', name='User Two'
+        )
+
+        # Get tokens for user1 and user2
+        self.user1_token = str(RefreshToken.for_user(self.user1).access_token)
+        self.user2_token = str(RefreshToken.for_user(self.user2).access_token)
+
+        # Change password endpoint
+        # self.change_password_url = '/change-password/'
+
+    def test_change_password_forbidden_for_other_users(self):
+        """Test that a user cannot change another user's password."""
+        # Log in as user1 and attempt to change user2's password
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.user1_token}')
+
+        payload = {
+            'old_password': 'password123',  # User1's old password
+            'new_password': 'newpassword456',
+            'confirm_password': 'newpassword456',
+            'user_id': str(self.user2.id),  # Attempting to modify user2's password
+        }
+
+        response = self.client.post(CHANGE_PASS_URL, payload)
+
+        # Ensure the response is 403 Forbidden
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn('detail', response.data)
+        self.assertEqual(response.data['detail'], 'You do not have permission to perform this action.')
