@@ -140,6 +140,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     confirm_password = serializers.CharField(required=True)
 
     def validate(self, attrs):
+        # new_password and confirm_password matching logic stays
         if attrs['new_password'] != attrs['confirm_password']:
             raise serializers.ValidationError("New passwords do not match.")
         return attrs

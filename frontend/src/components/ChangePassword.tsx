@@ -1,5 +1,6 @@
 // src/components/ChangePassword.tsx
 import React, { useState } from 'react';
+import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
@@ -21,7 +22,7 @@ const ChangePassword: React.FC = () => {
   }
 
   try {
-    await api.post('/users/change-password/', {
+    await api.post('/user/change-password/', {
       old_password: oldPassword,
       new_password: newPassword,
       confirm_password: confirmPassword,
@@ -34,9 +35,12 @@ const ChangePassword: React.FC = () => {
       navigate('/profile');
     }, 3000);
   } catch (err: any) {
-    console.error(err);
-    setError('Failed to change password. Please check your input.');
-    setSuccess(null);
+    console.error(err); // Log the error for debugging
+    const message = err.response?.data?.error || 'An error occurred.';
+    setError(message);
+//     console.error(err);
+//     setError('Failed to change password. Please check your input.');
+//     setSuccess(null);
   }
 };
 

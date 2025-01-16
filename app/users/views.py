@@ -93,7 +93,7 @@ class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
 
 
 class ChangePasswordView(views.APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
