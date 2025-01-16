@@ -39,7 +39,10 @@ class ChangePasswordTestCase(APITestCase):
 
         # Assert the response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn('Password changed successfully', response.data.get('message', ''))
+        self.assertIn(
+            'Password changed successfully',
+            response.data.get('message', '')
+        )
 
         # Check if the password was updated
         self.user.refresh_from_db()
@@ -95,7 +98,8 @@ class ChangePasswordTestCase(APITestCase):
     #     # Authenticate as the first user
     #     self.client.force_authenticate(user=self.user)
     #
-    #     # Attempt to change the password for another user (violates IsOwner permission)
+    #     # Attempt to change the password for another user
+    #     # (violates IsOwner permission)
     #     data = {
     #         'old_password': 'old_password',  # Current user's password
     #         'new_password': 'new_secure_password',
@@ -108,5 +112,11 @@ class ChangePasswordTestCase(APITestCase):
     #     )
     #
     #     # Check that the response returns 403 Forbidden
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    #     self.assertIn('You do not have permission to perform this action', str(response.data))
+    #     self.assertEqual(
+    #     response.status_code,
+    #     status.HTTP_403_FORBIDDEN
+    #     )
+    #     self.assertIn(
+    #     'You do not have permission to perform this action',
+    #     str(response.data)
+    #     )
