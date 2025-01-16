@@ -8,7 +8,15 @@ CHANGE_PASS_URL = reverse('users:change_password')
 
 
 class ChangePasswordTestCase(APITestCase):
+    """
+    Test cases for the Change Password functionality of the API.
+    """
+
     def setUp(self):
+        """
+        Set up a test user and log in to the test client.
+        This user will be used across all test cases in this class.
+        """
         # Create a user
         self.user = get_user_model().objects.create_user(
             email='testuser@example.com',
@@ -21,6 +29,11 @@ class ChangePasswordTestCase(APITestCase):
         )
 
     def test_change_password_success(self):
+        """
+        Test the password change process for a logged-in user.
+        Ensure the password is updated successfully and the correct
+        response message is returned.
+        """
         # Authenticate the user
         self.client.login(
             email='testuser@example.com',
@@ -49,6 +62,12 @@ class ChangePasswordTestCase(APITestCase):
         self.assertTrue(self.user.check_password('new_secure_password'))
 
     def test_change_password_mismatch(self):
+        """
+        Test the password change process when the new password
+        and confirmation password do not match.
+        Ensure the request fails with a 400 status code and the correct
+        error message is returned.
+        """
         # Payload with mismatched passwords
         data = {
             'old_password': 'old_password',
@@ -65,6 +84,12 @@ class ChangePasswordTestCase(APITestCase):
         # )
 
     def test_change_password_incorrect_old_password(self):
+        """
+        Test the password change process when the old password
+        provided is incorrect.
+        Ensure the request fails with a 400 status code and the correct
+        error message is returned.
+        """
         # Payload with incorrect old password
         data = {
             'old_password': 'wrong_password',
@@ -77,6 +102,10 @@ class ChangePasswordTestCase(APITestCase):
         self.assertIn('Old password is incorrect', str(response.data))
 
     def test_change_password_unauthenticated(self):
+        """
+        Test the password change process when the user is not authenticated.
+        Ensure the request fails with a 401 status code.
+        """
         # Log out the user
         self.client.force_authenticate(user=None)
         data = {
