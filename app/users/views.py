@@ -5,9 +5,6 @@ Views for the User API.
 from rest_framework import generics, permissions
 from rest_framework import status, views
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import check_password
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -114,4 +111,7 @@ class ChangePasswordView(views.APIView):
 
         user.set_password(new_password)
         user.save()
-        return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Password changed successfully."},
+            status=status.HTTP_200_OK
+        )
