@@ -97,9 +97,13 @@ class ChangePasswordView(views.APIView):
 
     def post(self, request):
         # Ensure the authenticated user is only modifying their own password
-        if request.data.get("user_id") and request.data.get("user_id") != str(request.user.id):
+        if request.data.get("user_id") \
+                and request.data.get("user_id") != str(request.user.id):
             return Response(
-                {"detail": "You do not have permission to perform this action."},
+                {"detail": (
+                     "You do not have permission to perform this action."
+                )
+                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
         serializer = ChangePasswordSerializer(data=request.data)
