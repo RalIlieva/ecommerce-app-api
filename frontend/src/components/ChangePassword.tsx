@@ -38,9 +38,6 @@ const ChangePassword: React.FC = () => {
     console.error(err); // Log the error for debugging
     const message = err.response?.data?.error || 'An error occurred.';
     setError(message);
-//     console.error(err);
-//     setError('Failed to change password. Please check your input.');
-//     setSuccess(null);
   }
 };
 
