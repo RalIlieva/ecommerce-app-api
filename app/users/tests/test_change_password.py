@@ -135,19 +135,19 @@ class ChangePasswordForbiddenTest(APITestCase):
         self.user1_token = str(RefreshToken.for_user(self.user1).access_token)
         self.user2_token = str(RefreshToken.for_user(self.user2).access_token)
 
-        # Change password endpoint
-        # self.change_password_url = '/change-password/'
-
     def test_change_password_forbidden_for_other_users(self):
         """Test that a user cannot change another user's password."""
         # Log in as user1 and attempt to change user2's password
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.user1_token}')
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {self.user1_token}'
+        )
 
         payload = {
             'old_password': 'password123',  # User1's old password
             'new_password': 'newpassword456',
             'confirm_password': 'newpassword456',
-            'user_id': str(self.user2.id),  # Attempting to modify user2's password
+            # Attempting to modify user2's password
+            'user_id': str(self.user2.id),
         }
 
         response = self.client.post(CHANGE_PASS_URL, payload)
@@ -155,4 +155,7 @@ class ChangePasswordForbiddenTest(APITestCase):
         # Ensure the response is 403 Forbidden
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIn('detail', response.data)
-        self.assertEqual(response.data['detail'], 'You do not have permission to perform this action.')
+        self.assertEqual(
+            response.data['detail'],
+            'You do not have permission to perform this action.'
+        )
