@@ -1,10 +1,11 @@
 // src/components/ChangePassword.tsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
 const ChangePassword: React.FC = () => {
+  const { user } = useContext(AuthContext);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -21,6 +22,11 @@ const ChangePassword: React.FC = () => {
     return;
   }
 
+  if (!user) {
+    setError('User is not authenticated.');
+    return;
+  }
+
   try {
     await api.post('/user/change-password/', {
       old_password: oldPassword,
@@ -30,16 +36,31 @@ const ChangePassword: React.FC = () => {
     setSuccess('Password changed successfully.');
     setError(null);
 
-    // Redirect to profile after a short delay
-    setTimeout(() => {
-      navigate('/profile');
-    }, 3000);
-  } catch (err: any) {
-    console.error(err); // Log the error for debugging
-    const message = err.response?.data?.error || 'An error occurred.';
-    setError(message);
-  }
-};
+    // Redirect to profile using the user's UUID
+      setTimeout(() => {
+        if (user?.profile_uuid) {
+          navigate(`/user/profile/${user.profileUUID}`);
+        } else {
+          console.error('Profile UUID not found.');
+        }
+      }, 1500); // Optional delay to show the success message
+    } catch (err: any) {
+      console.error(err);
+      const message = err.response?.data?.error || 'An error occurred.';
+      setError(message);
+    }
+  };
+
+//     // Redirect to profile after a short delay
+//     setTimeout(() => {
+//       navigate('/profile');
+//     }, 3000);
+//   } catch (err: any) {
+//     console.error(err); // Log the error for debugging
+//     const message = err.response?.data?.error || 'An error occurred.';
+//     setError(message);
+//   }
+// };
 
   return (
     <div className="container mt-5">
