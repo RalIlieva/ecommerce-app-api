@@ -53,7 +53,8 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
       about: formData.about || null,
     };
 
-    console.log('Submitting form data:', payload); // Log the payload for debugging
+    // Log the payload for debugging
+    console.log('Submitting form data:', payload);
 
     try {
       const response = await api.patch(`/user/profile/${profile.profile_uuid}/`, payload);
