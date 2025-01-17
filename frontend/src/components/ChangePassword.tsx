@@ -39,7 +39,7 @@ const ChangePassword: React.FC = () => {
     // Redirect to profile using the user's UUID
       setTimeout(() => {
         if (user?.profile_uuid) {
-          navigate(`/user/profile/${user.profileUUID}`);
+          navigate(`/profile/${user.profile_uuid}`);
         } else {
           console.error('Profile UUID not found.');
         }
