@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import api from '../api';
-import { Profile } from './Profile'; // Adjust the import path as necessary
+import { Profile } from './Profile';
 
 interface EditProfileFormProps {
   profile: Profile;
