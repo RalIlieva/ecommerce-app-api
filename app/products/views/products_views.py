@@ -97,6 +97,15 @@ class ProductDetailView(generics.RetrieveAPIView):
     # # Better security practice
     # lookup_field = 'uuid'
 
+    def get_serializer_context(self):
+        """
+        Add the request object to the serializer context.
+        This is required for building absolute URLs in the serializer.
+        """
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
     def get_object(self):
         uuid = self.kwargs.get('uuid')
         slug = self.kwargs.get('slug')
