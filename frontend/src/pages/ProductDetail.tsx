@@ -36,6 +36,7 @@ const ProductDetail: React.FC = () => {
     const fetchProductDetail = async () => {
       try {
         const response = await api.get(`/products/products/${uuid}/${slug}/`);
+        console.log(response.data); // Inspect API response
         setProduct(response.data);
       } catch (err) {
         setError('Failed to fetch product details.');
@@ -81,12 +82,17 @@ const ProductDetail: React.FC = () => {
       <div className="row gx-lg-5">
         {/* Product Image and Gallery */}
         <div className="col-md-6 mb-4">
-          <img
-            src={product.image || 'https://via.placeholder.com/500'}
-            alt={product.name}
+        <img
+            src={
+                product.image ||
+                (product.images && product.images.length > 0 ? product.images[0].image_url : 'https://via.placeholder.com/500')
+            }
+            alt={product.name || 'Product image'}
             className="img-fluid rounded mb-4"
             style={{ maxHeight: '500px', objectFit: 'cover' }}
-          />
+        />
+
+
           <div className="d-flex flex-wrap">
             {product.images &&
               product.images.map((image) => (
