@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from drf_spectacular.utils import extend_schema
 
 from core.exceptions import UserProfileNotFoundException
 
@@ -95,6 +96,14 @@ class ManageCustomerProfileByUUIDView(generics.RetrieveUpdateAPIView):
 class ChangePasswordView(views.APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    @extend_schema(
+        request=ChangePasswordSerializer,
+        responses={
+            200: {"message": "Password changed successfully."},
+            400: {"error": "Validation error or incorrect password."},
+            403: {"detail": "Permission denied."},
+        },
+    )
     def post(self, request):
         # Ensure the authenticated user is only modifying their own password
         if request.data.get("user_id") \
