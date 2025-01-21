@@ -1,139 +1,104 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import api from "../api";
+import React, { useEffect, useState, useContext } from 'react';
+import AuthContext from '../context/AuthContext';
+import api from '../api';
 
 interface Review {
+  id: string;
   uuid: string;
   user: {
-    username: string;
+    name: string;
   };
   rating: number;
   comment: string;
   created: string;
 }
 
-interface ProductReviewsProps {
-  isAuthenticated: boolean;
-}
-
-const ProductReviews: React.FC<ProductReviewsProps> = ({ isAuthenticated }) => {
-  const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
+const ProductReviews: React.FC<{ productUuid: string; productSlug: string; isAuthenticated: boolean }> = ({
+  productUuid,
+  productSlug,
+  isAuthenticated,
+}) => {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [averageRating, setAverageRating] = useState<number | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [newReview, setNewReview] = useState({ rating: 0, comment: '' });
   const [error, setError] = useState<string | null>(null);
-
-  // State for form submission
-  const [rating, setRating] = useState<number>(5);
-  const [comment, setComment] = useState<string>("");
-  const [formError, setFormError] = useState<string | null>(null);
-  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await api.get(`/products/${uuid}/${slug}/reviews/`);
-        setReviews(response.data.results); // Adjust if paginated
-        setAverageRating(
-          response.data.average_rating || null // Ensure backend includes average rating
-        );
+        const response = await api.get(`/products/${productUuid}/${productSlug}/reviews/`);
+        setReviews(response.data.results || []); // Assuming paginated API response
       } catch (err) {
-        setError("Failed to fetch reviews.");
-      } finally {
-        setLoading(false);
+        setError('Failed to load reviews.');
       }
     };
 
-    if (uuid && slug) {
-      fetchReviews();
-    }
-  }, [uuid, slug]);
+    fetchReviews();
+  }, [productUuid, productSlug]);
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
-    setFormSuccess(null);
 
-    if (!rating || !comment.trim()) {
-      setFormError("Rating and comment are required.");
+    if (!newReview.rating || !newReview.comment) {
+      setError('Please provide both a rating and a comment.');
       return;
     }
 
     try {
-      await api.post(`/products/${uuid}/${slug}/reviews/create/`, {
-        rating,
-        comment,
+      await api.post(`/products/${productUuid}/${productSlug}/reviews/create/`, {
+        rating: newReview.rating,
+        comment: newReview.comment,
       });
-      setFormSuccess("Review submitted successfully!");
-      setRating(5);
-      setComment("");
+      setNewReview({ rating: 0, comment: '' });
+      setSuccess(true);
 
-      // Refresh reviews
-      const response = await api.get(`/products/${uuid}/${slug}/reviews/`);
-      setReviews(response.data.results);
-      setAverageRating(response.data.average_rating || null);
-    } catch (err) {
-      setFormError("Failed to submit review. Please try again.");
+      // Reload reviews
+      const response = await api.get(`/products/${productUuid}/${productSlug}/reviews/`);
+      setReviews(response.data.results || []);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to submit review.');
     }
   };
 
-  if (loading) {
-    return <p>Loading reviews...</p>;
-  }
-
-  if (error) {
-    return <p className="text-danger">{error}</p>;
-  }
-
   return (
-    <div className="mt-5">
-      <h2>Customer Reviews</h2>
-      {averageRating !== null && (
-        <p className="text-muted">Average Rating: {averageRating.toFixed(1)} / 5</p>
+    <div className="product-reviews">
+      <h3>Reviews</h3>
+
+      {reviews.length === 0 ? (
+        <p>No reviews yet. Be the first to leave one!</p>
+      ) : (
+        <ul className="list-group mb-4">
+          {reviews.map((review) => (
+            <li key={review.uuid} className="list-group-item">
+              <strong>{review.user.name}</strong>
+              <span> - {review.rating} stars</span>
+              <p>{review.comment}</p>
+              <small>{new Date(review.created).toLocaleDateString()}</small>
+            </li>
+          ))}
+        </ul>
       )}
 
-      <div className="reviews-list">
-        {reviews.length > 0 ? (
-          reviews.map((review) => (
-            <div key={review.uuid} className="card mb-3">
-              <div className="card-body">
-                <h5 className="card-title">{review.user.username}</h5>
-                <p className="card-text">
-                  <strong>Rating:</strong> {review.rating} / 5
-                </p>
-                <p className="card-text">{review.comment}</p>
-                <p className="card-text">
-                  <small className="text-muted">
-                    Posted on {new Date(review.created).toLocaleDateString()}
-                  </small>
-                </p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-muted">No reviews available yet. Be the first to review!</p>
-        )}
-      </div>
-
       {isAuthenticated ? (
-        <form onSubmit={handleFormSubmit} className="mt-4">
-          <h3>Leave a Review</h3>
-          {formError && <p className="text-danger">{formError}</p>}
-          {formSuccess && <p className="text-success">{formSuccess}</p>}
+        <form onSubmit={handleReviewSubmit}>
+          {success && <div className="alert alert-success">Review submitted successfully!</div>}
+          {error && <div className="alert alert-danger">{error}</div>}
 
           <div className="mb-3">
             <label htmlFor="rating" className="form-label">
-              Rating (1-5):
+              Rating (1-5)
             </label>
             <select
               id="rating"
               className="form-select"
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
+              value={newReview.rating}
+              onChange={(e) => setNewReview({ ...newReview, rating: Number(e.target.value) })}
             >
-              {[1, 2, 3, 4, 5].map((value) => (
-                <option key={value} value={value}>
-                  {value}
+              <option value={0}>Select Rating</option>
+              {[1, 2, 3, 4, 5].map((val) => (
+                <option key={val} value={val}>
+                  {val}
                 </option>
               ))}
             </select>
@@ -141,15 +106,14 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ isAuthenticated }) => {
 
           <div className="mb-3">
             <label htmlFor="comment" className="form-label">
-              Comment:
+              Comment
             </label>
             <textarea
               id="comment"
               className="form-control"
-              rows={4}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              required
+              rows={3}
+              value={newReview.comment}
+              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
             ></textarea>
           </div>
 
@@ -158,7 +122,9 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ isAuthenticated }) => {
           </button>
         </form>
       ) : (
-        <p className="text-muted">Log in to leave a review.</p>
+        <p>
+          <a href="/login">Log in</a> to leave a review.
+        </p>
       )}
     </div>
   );
