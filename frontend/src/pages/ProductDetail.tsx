@@ -1,12 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
 import api from '../api';
+import ProductReviews from './ProductReviews';
 
 interface ProductImage {
   id: number;
   image: string; // Absolute URL
   alt_text: string;
   image_url: string; // Absolute URL
+}
+
+interface Review {
+  id: string;
+  uuid: string;
+  user: {
+    name: string; // Adjust based on UserReviewSerializer
+  };
+  rating: number;
+  comment: string;
+  created: string;
 }
 
 interface ProductDetail {
@@ -26,11 +39,19 @@ interface ProductDetail {
 
 const ProductDetail: React.FC = () => {
   const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
+  const { user } = useContext(AuthContext); // To check if the user is authenticated
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [showLightbox, setShowLightbox] = useState(false);
+
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [newReview, setNewReview] = useState<{ rating: number; comment: string }>({
+    rating: 5,
+    comment: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Set initial selected image index (if you want to select the first image)
   const handleThumbnailClick = (index: number) => {
@@ -64,8 +85,12 @@ const ProductDetail: React.FC = () => {
     const fetchProductDetail = async () => {
       try {
         const response = await api.get(`/products/products/${uuid}/${slug}/`);
-        console.log(response.data); // Inspect API response
         setProduct(response.data);
+
+        const reviewsResponse = await api.get(
+          `/products/products/${uuid}/${slug}/reviews/`
+        );
+        setReviews(reviewsResponse.data.results || []); // Assuming paginated results
       } catch (err) {
         setError('Failed to fetch product details.');
         console.error(err);
@@ -78,6 +103,50 @@ const ProductDetail: React.FC = () => {
       fetchProductDetail();
     }
   }, [uuid, slug]);
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!user) {
+      alert('You must be logged in to submit a review.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await api.post(
+        `/products/products/${uuid}/${slug}/reviews/create/`,
+        newReview
+      );
+      setReviews([response.data, ...reviews]); // Add the new review to the list
+      setNewReview({ rating: 5, comment: '' }); // Reset form
+    } catch (err) {
+      console.error(err);
+      alert('Failed to submit review.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
+//   useEffect(() => {
+//     const fetchProductDetail = async () => {
+//       try {
+//         const response = await api.get(`/products/products/${uuid}/${slug}/`);
+//         console.log(response.data); // Inspect API response
+//         setProduct(response.data);
+//       } catch (err) {
+//         setError('Failed to fetch product details.');
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//
+//     if (uuid && slug) {
+//       fetchProductDetail();
+//     }
+//   }, [uuid, slug]);
 
   if (loading) {
     return (
@@ -191,16 +260,81 @@ const ProductDetail: React.FC = () => {
         </div>
       )}
 
-      {/* Reviews Section */}
       <div className="mt-5">
         <h2>Customer Reviews</h2>
-        <p className="text-muted">No reviews available yet. Be the first to review!</p>
+        {reviews.length > 0 ? (
+          reviews.map((review) => (
+            <div key={review.uuid} className="border rounded p-3 mb-3">
+              <h5>{review.user.name}</h5>
+              <p className="mb-1">Rating: {review.rating} / 5</p>
+              <p>{review.comment}</p>
+              <p className="text-muted" style={{ fontSize: '0.9rem' }}>
+                {new Date(review.created).toLocaleDateString()}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="text-muted">No reviews yet. Be the first to review!</p>
+        )}
+
+        {user ? (
+          <form className="mt-4" onSubmit={handleReviewSubmit}>
+            <div className="mb-3">
+              <label htmlFor="rating" className="form-label">
+                Rating
+              </label>
+              <select
+                id="rating"
+                className="form-select"
+                value={newReview.rating}
+                onChange={(e) =>
+                  setNewReview({ ...newReview, rating: Number(e.target.value) })
+                }
+                required
+              >
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <option key={rating} value={rating}>
+                    {rating}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="comment" className="form-label">
+                Comment
+              </label>
+              <textarea
+                id="comment"
+                className="form-control"
+                rows={3}
+                value={newReview.comment}
+                onChange={(e) =>
+                  setNewReview({ ...newReview, comment: e.target.value })
+                }
+                required
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Review'}
+            </button>
+          </form>
+        ) : (
+          <p className="text-muted mt-3">
+            <a href="/login">Log in</a> to leave a review.
+          </p>
+        )}
       </div>
     </div>
   );
 };
 
 export default ProductDetail;
+
+
 
 
 // import React, { useEffect, useState, useContext } from 'react';
