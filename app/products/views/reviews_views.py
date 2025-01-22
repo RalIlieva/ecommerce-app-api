@@ -82,14 +82,20 @@ class ReviewCreateView(generics.CreateAPIView):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         product_uuid = self.kwargs.get('product_uuid')
-        product = get_object_or_404(Product, uuid=product_uuid)
+        slug = self.kwargs.get('slug')
+        product = get_object_or_404(Product, uuid=product_uuid, slug=slug)
+        # product = get_object_or_404(Product, uuid=product_uuid)
         context['product'] = product
         return context
 
     def perform_create(self, serializer):
-        product = self.context['product']
-        # product = get_object_or_404(Product, uuid=self.kwargs['product_uuid'])
-        serializer.save(product=product)
+        serializer.save()
+
+    # def perform_create(self, serializer):
+    #     # product = self.context['product']
+    #     # Retrieve product from `serializer.context`, not `self.context`
+    #     product = serializer.context['product']
+    #     serializer.save(product=product)
 
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):

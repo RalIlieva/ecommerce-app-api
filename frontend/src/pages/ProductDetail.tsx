@@ -120,12 +120,21 @@ const ProductDetail: React.FC = () => {
       );
       setReviews([response.data, ...reviews]); // Add the new review to the list
       setNewReview({ rating: 5, comment: '' }); // Reset form
-    } catch (err) {
-      console.error(err);
-      alert('Failed to submit review.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    } catch (err: any) {
+  console.error(err);
+  if (err.response && err.response.data && err.response.data.detail) {
+    alert(err.response.data.detail.non_field_errors[0]);
+  } else {
+    alert('Failed to submit review.');
+  }
+}
+
+//     } catch (err) {
+//       console.error(err);
+//       alert('Failed to submit review.');
+//     } finally {
+//       setIsSubmitting(false);
+//     }
   };
 
 
