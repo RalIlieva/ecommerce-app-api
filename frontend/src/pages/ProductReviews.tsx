@@ -27,7 +27,7 @@ const ProductReviews: React.FC<{ productUuid: string; productSlug: string; isAut
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await api.get(`/products/${productUuid}/${productSlug}/reviews/`);
+        const response = await api.get(`/products/products/${productUuid}/${productSlug}/reviews/`);
         setReviews(response.data.results || []); // Assuming paginated API response
       } catch (err) {
         setError('Failed to load reviews.');
@@ -46,7 +46,7 @@ const ProductReviews: React.FC<{ productUuid: string; productSlug: string; isAut
     }
 
     try {
-      await api.post(`/products/${productUuid}/${productSlug}/reviews/create/`, {
+      await api.post(`/products/products/${productUuid}/${productSlug}/reviews/create/`, {
         rating: newReview.rating,
         comment: newReview.comment,
       });
@@ -54,7 +54,7 @@ const ProductReviews: React.FC<{ productUuid: string; productSlug: string; isAut
       setSuccess(true);
 
       // Reload reviews
-      const response = await api.get(`/products/${productUuid}/${productSlug}/reviews/`);
+      const response = await api.get(`/products/products/${productUuid}/${productSlug}/reviews/`);
       setReviews(response.data.results || []);
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to submit review.');

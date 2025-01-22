@@ -88,6 +88,7 @@ class ReviewCreateView(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         product = self.context['product']
+        # product = get_object_or_404(Product, uuid=self.kwargs['product_uuid'])
         serializer.save(product=product)
 
 
