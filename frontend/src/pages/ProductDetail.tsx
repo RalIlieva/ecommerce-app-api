@@ -120,42 +120,30 @@ const ProductDetail: React.FC = () => {
       );
       setReviews([response.data, ...reviews]); // Add the new review to the list
       setNewReview({ rating: 5, comment: '' }); // Reset form
-    } catch (err: any) {
-  console.error(err);
-  if (err.response && err.response.data && err.response.data.detail) {
-    alert(err.response.data.detail.non_field_errors[0]);
+
+      } catch (err: any) {
+  if (err.response?.status === 400) {
+    // This is likely the “already reviewed” scenario
+    // Show a friendlier message to the user
+    alert('You have already reviewed this product.');
   } else {
-    alert('Failed to submit review.');
+    // Otherwise, show a generic error
+    alert('Failed to submit review. Please try again.');
   }
+  console.error(err); // Or remove this if you don't want it in console
+} finally {
+  setIsSubmitting(false);
 }
 
-//     } catch (err) {
-//       console.error(err);
-//       alert('Failed to submit review.');
-//     } finally {
-//       setIsSubmitting(false);
+//        } catch (err: any) {
+//          if (err.response?.status === 400 && err.response?.data?.detail?.non_field_errors?.includes('You have already reviewed this product.')) {
+//       // Gracefully handle the duplicate review error
+//       setError('You have already reviewed this product.');
+//     } else {
+//       setError('Failed to submit review.');
+//       console.error(err); // Keep this for debugging purposes if needed
 //     }
-  };
-
-
-//   useEffect(() => {
-//     const fetchProductDetail = async () => {
-//       try {
-//         const response = await api.get(`/products/products/${uuid}/${slug}/`);
-//         console.log(response.data); // Inspect API response
-//         setProduct(response.data);
-//       } catch (err) {
-//         setError('Failed to fetch product details.');
-//         console.error(err);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//
-//     if (uuid && slug) {
-//       fetchProductDetail();
-//     }
-//   }, [uuid, slug]);
+//   }
 
   if (loading) {
     return (
