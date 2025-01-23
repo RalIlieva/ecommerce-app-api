@@ -84,7 +84,6 @@ class ReviewCreateView(generics.CreateAPIView):
         product_uuid = self.kwargs.get('product_uuid')
         slug = self.kwargs.get('slug')
         product = get_object_or_404(Product, uuid=product_uuid, slug=slug)
-        # product = get_object_or_404(Product, uuid=product_uuid)
         context['product'] = product
         return context
 
