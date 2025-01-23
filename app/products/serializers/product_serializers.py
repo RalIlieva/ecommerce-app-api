@@ -21,11 +21,12 @@ class ProductMiniSerializer(serializers.ModelSerializer):
     """Basic serializer for product."""
     tags = TagSerializer(many=True, required=False)
     category = CategorySerializer(read_only=True)
+    average_rating = serializers.ReadOnlyField()
 
     class Meta:
         model = Product
-        fields = ['id', 'uuid', 'name', 'price', 'slug', 'tags', 'category']
-        read_only_fields = ['id', 'slug', 'uuid']
+        fields = ['id', 'uuid', 'name', 'price', 'slug', 'tags', 'category', 'average_rating',]
+        read_only_fields = ['id', 'slug', 'uuid', 'average_rating']
 
 
 class ProductDetailSerializer(ProductMiniSerializer):
