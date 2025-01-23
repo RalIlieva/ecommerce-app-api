@@ -60,12 +60,8 @@ class ReviewListView(generics.ListAPIView):
         try:
             product_uuid = self.kwargs.get('product_uuid')
             slug = self.kwargs.get('slug')
-            # product = get_object_or_404(
-            # Product, uuid=product_uuid, slug=slug
-            # )
             product = Product.objects.get(uuid=product_uuid, slug=slug)
             return Review.objects.filter(product=product).order_by('-created')
-            # return Review.objects.filter(product__uuid=product_uuid)
         except Product.DoesNotExist:
             # Return an empty queryset to avoid errors if product is not found
             return Review.objects.none()
