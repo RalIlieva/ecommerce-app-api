@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../api';
-import { ProductDetail as ProductDetailType } from '../types';
+import { ProductDetail as ProductDetailType } from '../api/types';
 import AuthContext from '../context/AuthContext';
 import ProductReviews from './ProductReviews';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import api from '../api';
 import AuthContext from '../context/AuthContext';
-import { Review } from '../types';
+import { Review } from '../api/types';
 
 // Props interface
 interface ProductReviewsProps {
