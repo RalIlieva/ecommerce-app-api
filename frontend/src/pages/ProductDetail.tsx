@@ -318,15 +318,6 @@ export default ProductDetail;
 //   setIsSubmitting(false);
 // }
 //
-// //        } catch (err: any) {
-// //          if (err.response?.status === 400 && err.response?.data?.detail?.non_field_errors?.includes('You have already reviewed this product.')) {
-// //       // Gracefully handle the duplicate review error
-// //       setError('You have already reviewed this product.');
-// //     } else {
-// //       setError('Failed to submit review.');
-// //       console.error(err); // Keep this for debugging purposes if needed
-// //     }
-// //   }
 //
 //   if (loading) {
 //     return (
