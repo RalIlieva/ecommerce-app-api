@@ -174,9 +174,17 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
               <strong>{review.user.name}</strong>
               <div>{renderStars(review.rating)}</div>
               <p>{review.comment}</p>
-              <small className="text-muted">
-                {new Date(review.created).toLocaleDateString()}
-              </small>
+
+                 {/* Show created date; if modified != created, show "Edited" */}
+                <small className="text-muted">
+                    Posted on {new Date(review.created).toLocaleDateString()}
+                {review.modified !== review.created && (
+                <span className="ms-2">
+                (Edited on {new Date(review.modified).toLocaleDateString()})
+                </span>
+                )}
+                </small>
+
 
               {/* Show Edit/Delete buttons if the user is the owner */}
               {user && user.profile_uuid === review.user.uuid && (
