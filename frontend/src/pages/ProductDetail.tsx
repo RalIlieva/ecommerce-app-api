@@ -117,15 +117,15 @@ const ProductDetail: React.FC = () => {
         {/* Product Details */}
         <div className="col-md-6">
           <h1 className="fw-bold">{product.name}</h1>
-          {/* Inside the return block, under <h1 className="fw-bold">{product.name}</h1> */}
-{product.average_rating !== null && product.average_rating !== undefined && (
-  <div className="mb-2">
-    {renderStars(product.average_rating)}
-    <span className="ms-2">
-      {product.average_rating.toFixed(1)}/5
-    </span>
-  </div>
-)}
+          {/* Average rating */}
+          {product.average_rating !== null && product.average_rating !== undefined && (
+            <div className="mb-2">
+                {renderStars(product.average_rating)}
+                <span className="ms-2">
+                    {product.average_rating.toFixed(1)}/5
+                </span>
+            </div>
+           )}
           <p className="text-muted">{product.description}</p>
           <p className={`text-muted ${product.stock > 0 ? 'text-success' : 'text-danger'}`}>
             {product.stock > 0 ? `In stock: ${product.stock}` : 'Out of stock'}
