@@ -179,7 +179,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
               </small>
 
               {/* Show Edit/Delete buttons if the user is the owner */}
-              {user && user.uuid === review.user.uuid && (
+              {user && user.profile_uuid === review.user.uuid && (
                 <div className="mt-2">
                   {isEditing === review.uuid ? (
                     // Edit Form
