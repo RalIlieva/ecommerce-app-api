@@ -6,6 +6,7 @@ import { ProductDetail as ProductDetailType } from '../api/types';
 import AuthContext from '../context/AuthContext';
 import ProductReviews from './ProductReviews';
 import { renderStars } from '../utils';
+import ImageGallery from '../components/ImageGallery';
 
 const ProductDetail: React.FC = () => {
   const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
@@ -14,10 +15,6 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<ProductDetailType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Lightbox state
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [showLightbox, setShowLightbox] = useState(false);
 
   // Fetch product details on mount
   useEffect(() => {
@@ -64,55 +61,15 @@ const ProductDetail: React.FC = () => {
     );
   }
 
-  // Lightbox handlers
-  const handleThumbnailClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setShowLightbox(true);
-  };
-  const closeLightbox = () => setShowLightbox(false);
-  const navigateToNextImage = () => {
-    if (product && selectedImageIndex !== null) {
-      const nextIndex = (selectedImageIndex + 1) % product.images.length;
-      setSelectedImageIndex(nextIndex);
-    }
-  };
-  const navigateToPreviousImage = () => {
-    if (product && selectedImageIndex !== null) {
-      const prevIndex = (selectedImageIndex - 1 + product.images.length) % product.images.length;
-      setSelectedImageIndex(prevIndex);
-    }
-  };
-
   return (
     <div className="container mt-5">
       <div className="row gx-lg-5">
-        {/* Product Image and Gallery */}
-        <div className="col-md-6 mb-4">
-          <img
-            src={
-              product.images.length > 0
-                ? product.images[0].image_url
-                : 'https://via.placeholder.com/500'
-            }
-            alt={product.name}
-            className="img-fluid rounded mb-4"
-            style={{ maxHeight: '500px', objectFit: 'cover' }}
-          />
 
-          {/* Gallery Thumbnails */}
-          <div className="d-flex flex-wrap">
-            {product.images.map((image, index) => (
-              <img
-                key={image.id}
-                src={image.image_url}
-                alt={image.alt_text || `Gallery ${image.id}`}
-                className="img-thumbnail me-2 mb-2"
-                style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                onClick={() => handleThumbnailClick(index)}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Product Image and Gallery */}
+            <div className="col-md-6 mb-4">
+                <ImageGallery images={product.images} mainHeight="500px" />
+            </div>
+
 
         {/* Product Details */}
         <div className="col-md-6">
@@ -152,31 +109,6 @@ const ProductDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* Lightbox Modal for Enlarged Image */}
-      {showLightbox && selectedImageIndex !== null && (
-        <div className="lightbox-modal" style={{ display: 'flex' }}>
-          <div className="lightbox-overlay" onClick={closeLightbox}></div>
-          <div className="lightbox-content">
-            <img
-              src={product.images[selectedImageIndex].image_url}
-              alt="Enlarged view"
-              className="img-fluid rounded"
-              style={{ maxHeight: '80vh', objectFit: 'contain' }}
-            />
-            <div className="lightbox-navigation">
-              <button className="btn btn-light" onClick={navigateToPreviousImage}>
-                <i className="fas fa-chevron-left"></i>
-              </button>
-              <button className="btn btn-light" onClick={navigateToNextImage}>
-                <i className="fas fa-chevron-right"></i>
-              </button>
-            </div>
-            <button className="close-btn" onClick={closeLightbox}>
-              <i className="fas fa-times"></i>
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Render the unified reviews component */}
       <ProductReviews
@@ -189,6 +121,199 @@ const ProductDetail: React.FC = () => {
 };
 
 export default ProductDetail;
+
+// // src/components/ProductDetail.tsx
+// import React, { useEffect, useState, useContext } from 'react';
+// import { useParams } from 'react-router-dom';
+// import api from '../api';
+// import { ProductDetail as ProductDetailType } from '../api/types';
+// import AuthContext from '../context/AuthContext';
+// import ProductReviews from './ProductReviews';
+// import { renderStars } from '../utils';
+// import ImageGallery from './ImageGallery';
+//
+// const ProductDetail: React.FC = () => {
+//   const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
+//   const { user } = useContext(AuthContext);
+//
+//   const [product, setProduct] = useState<ProductDetailType | null>(null);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+//
+//   // Lightbox state
+//   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+//   const [showLightbox, setShowLightbox] = useState(false);
+//
+//   // Fetch product details on mount
+//   useEffect(() => {
+//     const fetchProductDetail = async () => {
+//       try {
+//         const response = await api.get(`/products/products/${uuid}/${slug}/`);
+//         setProduct(response.data);
+//       } catch (err) {
+//         setError('Failed to fetch product details.');
+//         console.error(err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//
+//     if (uuid && slug) {
+//       fetchProductDetail();
+//     }
+//   }, [uuid, slug]);
+//
+//   if (loading) {
+//     return (
+//       <div className="container text-center mt-5">
+//         <div className="spinner-border text-primary" role="status">
+//           <span className="visually-hidden">Loading...</span>
+//         </div>
+//       </div>
+//     );
+//   }
+//
+//   if (error) {
+//     return (
+//       <div className="container text-center mt-5">
+//         <p className="text-danger">{error}</p>
+//       </div>
+//     );
+//   }
+//
+//   if (!product) {
+//     return (
+//       <div className="container text-center mt-5">
+//         <p>Product not found.</p>
+//       </div>
+//     );
+//   }
+//
+//   // Lightbox handlers
+//   const handleThumbnailClick = (index: number) => {
+//     setSelectedImageIndex(index);
+//     setShowLightbox(true);
+//   };
+//   const closeLightbox = () => setShowLightbox(false);
+//   const navigateToNextImage = () => {
+//     if (product && selectedImageIndex !== null) {
+//       const nextIndex = (selectedImageIndex + 1) % product.images.length;
+//       setSelectedImageIndex(nextIndex);
+//     }
+//   };
+//   const navigateToPreviousImage = () => {
+//     if (product && selectedImageIndex !== null) {
+//       const prevIndex = (selectedImageIndex - 1 + product.images.length) % product.images.length;
+//       setSelectedImageIndex(prevIndex);
+//     }
+//   };
+//
+//   return (
+//     <div className="container mt-5">
+//       <div className="row gx-lg-5">
+//         {/* Product Image and Gallery */}
+//         <div className="col-md-6 mb-4">
+//           <img
+//             src={
+//               product.images.length > 0
+//                 ? product.images[0].image_url
+//                 : 'https://via.placeholder.com/500'
+//             }
+//             alt={product.name}
+//             className="img-fluid rounded mb-4"
+//             style={{ maxHeight: '500px', objectFit: 'cover' }}
+//           />
+//
+//           {/* Gallery Thumbnails */}
+//           <div className="d-flex flex-wrap">
+//             {product.images.map((image, index) => (
+//               <img
+//                 key={image.id}
+//                 src={image.image_url}
+//                 alt={image.alt_text || `Gallery ${image.id}`}
+//                 className="img-thumbnail me-2 mb-2"
+//                 style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+//                 onClick={() => handleThumbnailClick(index)}
+//               />
+//             ))}
+//           </div>
+//         </div>
+//
+//         {/* Product Details */}
+//         <div className="col-md-6">
+//           <h1 className="fw-bold">{product.name}</h1>
+//           {/* Average rating */}
+//           {product.average_rating !== null && product.average_rating !== undefined && (
+//             <div className="mb-2">
+//                 {renderStars(product.average_rating)}
+//                 <span className="ms-2">
+//                     {product.average_rating.toFixed(1)}/5
+//                 </span>
+//             </div>
+//            )}
+//           <p className="text-muted">{product.description}</p>
+//           <p className={`text-muted ${product.stock > 0 ? 'text-success' : 'text-danger'}`}>
+//             {product.stock > 0 ? `In stock: ${product.stock}` : 'Out of stock'}
+//           </p>
+//           <h5 className="text-primary">
+//             ${product.price ? parseFloat(product.price.toString()).toFixed(2) : 'N/A'}
+//           </h5>
+//           <div className="mt-4">
+//             <label htmlFor="quantity" className="form-label">
+//               Quantity:
+//             </label>
+//             <input
+//               type="number"
+//               id="quantity"
+//               className="form-control w-25 mb-3"
+//               defaultValue={1}
+//               min={1}
+//             />
+//             <button className="btn btn-primary me-2">Add to Cart</button>
+//             <button className="btn btn-outline-danger">
+//               <i className="fas fa-heart"></i> Add to Wishlist
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//
+//       {/* Lightbox Modal for Enlarged Image */}
+//       {showLightbox && selectedImageIndex !== null && (
+//         <div className="lightbox-modal" style={{ display: 'flex' }}>
+//           <div className="lightbox-overlay" onClick={closeLightbox}></div>
+//           <div className="lightbox-content">
+//             <img
+//               src={product.images[selectedImageIndex].image_url}
+//               alt="Enlarged view"
+//               className="img-fluid rounded"
+//               style={{ maxHeight: '80vh', objectFit: 'contain' }}
+//             />
+//             <div className="lightbox-navigation">
+//               <button className="btn btn-light" onClick={navigateToPreviousImage}>
+//                 <i className="fas fa-chevron-left"></i>
+//               </button>
+//               <button className="btn btn-light" onClick={navigateToNextImage}>
+//                 <i className="fas fa-chevron-right"></i>
+//               </button>
+//             </div>
+//             <button className="close-btn" onClick={closeLightbox}>
+//               <i className="fas fa-times"></i>
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//
+//       {/* Render the unified reviews component */}
+//       <ProductReviews
+//         productUuid={product.uuid}
+//         productSlug={product.slug}
+//         isAuthenticated={!!user}
+//       />
+//     </div>
+//   );
+// };
+//
+// export default ProductDetail;
 
 
 // import React, { useEffect, useState,useContext } from 'react';
