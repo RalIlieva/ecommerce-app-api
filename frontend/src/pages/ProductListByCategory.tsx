@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchProducts, Product } from '../api/products';
 import { fetchCategoryDetail, Category } from '../api/categories';
+import { renderStars } from '../utils';
 
 const ProductListByCategory: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -95,9 +96,15 @@ const ProductListByCategory: React.FC = () => {
                     ))}
                   </p>
                   <h6 className="card-text text-primary">${product.price}</h6>
-                  {product.average_rating !== undefined && (
-                    <p className="text-warning">Avg Rating: {product.average_rating}</p>
-                  )}
+                  {/* Average rating */}
+                  {product.average_rating !== null && product.average_rating !== undefined && (
+                    <div className="mb-2">
+                        {renderStars(product.average_rating)}
+                        <span className="ms-2">
+                            {product.average_rating.toFixed(1)}/5
+                        </span>
+                    </div>
+                    )}
                 </div>
                 <div className="card-footer bg-transparent">
                   <div className="d-flex justify-content-between">
