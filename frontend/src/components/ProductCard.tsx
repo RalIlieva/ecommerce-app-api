@@ -1,7 +1,7 @@
 // src/components/ProductCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Product } from '../api/types'; // your interface
+import { Product } from '../api/types'; // interface
 import { renderStars } from '../utils';
 
 interface ProductCardProps {
