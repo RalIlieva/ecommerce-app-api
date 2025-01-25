@@ -63,17 +63,6 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ profile, onCancel, on
   if (formData.about !== profile.about) {
     payload.about = formData.about || null;
   }
-//     // Prepare payload with nested user object
-//     const payload = {
-//       user: {
-//         name: formData.name || null, // Include name under user
-//       },
-//       gender: formData.gender || null,
-//       phone_number: formData.phone_number || null,
-//       address: formData.address || null,
-//       date_of_birth: formData.date_of_birth || null,
-//       about: formData.about || null,
-//     };
 
     // Log the payload for debugging
     console.log('Submitting form data:', payload);
