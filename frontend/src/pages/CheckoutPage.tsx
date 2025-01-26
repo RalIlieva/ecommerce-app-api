@@ -12,8 +12,8 @@ import {
   useElements
 } from '@stripe/react-stripe-js';
 
-const stripePromise = loadStripe('pk_test_12345');
-// ^ Replace with your real Stripe publishable key
+const stripePromise = loadStripe('pk_test_51QCRzCFopY0kiYaakR4B5pDCLOoeJPG4vsaA9jENSROVAxor1eM3qky0koQMbuZBTHZc2YuFw91hPpW5bNZ6TauR00GHqzUVEr');
+// ^ Replaced with my real Stripe publishable key
 
 interface CheckoutSession {
   uuid: string;
