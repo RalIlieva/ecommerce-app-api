@@ -111,7 +111,7 @@ const CartPage: React.FC = () => {
           <li key={item.uuid} className="list-group-item d-flex justify-content-between align-items-center">
             <div>
               <strong>{item.product.name}</strong> <br />
-              Price: ${item.product.price.toFixed(2)} <br />
+              Price: ${item.product.price ? parseFloat(item.product.price.toString()).toFixed(2) : 'N/A'} <br />
               <small className="text-muted">UUID: {item.uuid}</small>
             </div>
             <div>

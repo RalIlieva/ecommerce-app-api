@@ -14,6 +14,7 @@ import Navbar from './components/Navbar';
 import PasswordResetRequest from './components/PasswordResetRequest';
 import PasswordResetConfirm from './components/PasswordResetConfirm';
 import ChangePassword from './components/ChangePassword';
+import CartPage from './pages/CartPage';
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -35,6 +36,7 @@ const App: React.FC = () => {
           <Route path="/password-reset" element={<PasswordResetRequest />} />
           <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
       </div>
     </Router>
