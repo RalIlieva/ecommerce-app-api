@@ -34,16 +34,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </Link>
         </h5>
 
-        {/* Brand (if present) */}
-        {product.brand && (
-          <p className="card-text text-muted">Brand: {product.brand}</p>
-        )}
-
-        {/* Category name */}
-        {product.category && (
-          <p className="card-text">Category: {product.category.name}</p>
-        )}
-
         {/* Tags */}
         {product.tags && product.tags.length > 0 && (
           <p className="card-text">
@@ -58,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Price */}
         <h6 className="card-text text-primary">
-          ${product.price?.toFixed(2) ?? 'N/A'}
+          ${product.price ? parseFloat(product.price.toString()).toFixed(2) : 'N/A'}
         </h6>
 
         {/* Average rating (stars + numeric) */}
