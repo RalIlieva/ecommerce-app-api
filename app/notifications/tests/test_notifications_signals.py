@@ -1,6 +1,7 @@
 # notifications/tests/test_notifications_signals.py
 
 from django.test import TestCase
+from django.test import TransactionTestCase
 from django.contrib.auth import get_user_model
 from order.models import Order
 from notifications.models import Notification
@@ -9,7 +10,8 @@ from unittest.mock import patch
 User = get_user_model()
 
 
-class NotificationSignalTest(TestCase):
+# class NotificationSignalTest(TestCase):
+class NotificationSignalTest(TransactionTestCase):
     """
     Test cases for signals in the notifications app.
     """
@@ -19,6 +21,7 @@ class NotificationSignalTest(TestCase):
         Set up user instance for testing signals.
         Creates a test user to trigger order creation signals.
         """
+
         # Set up a user and other necessary test data
         self.user = User.objects.create_user(
             email="user@example.com",
