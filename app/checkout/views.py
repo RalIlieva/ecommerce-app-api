@@ -238,64 +238,6 @@ class CompleteCheckoutView(APIView):
             status=status.HTTP_200_OK
         )
 
-    # def post(self, request, *args, **kwargs):
-    #     checkout_session_uuid = kwargs['checkout_session_uuid']
-    #     with transaction.atomic():
-    #         checkout_session = get_object_or_404(
-    #             CheckoutSession.objects.select_for_update(),
-    #             uuid=checkout_session_uuid,
-    #             user=request.user
-    #         )
-    #
-    #         if checkout_session.status != 'IN_PROGRESS':
-    #             raise InvalidCheckoutSessionException()
-    #
-    #         # Retrieve the payment intent from Stripe
-    #         payment_intent = stripe.PaymentIntent.retrieve(
-    #             checkout_session.payment.stripe_payment_intent_id
-    #         )
-    #
-    #         # Validate payment intent status
-    #         if payment_intent['status'] != 'succeeded':
-    #             checkout_session.status = 'FAILED'
-    #             checkout_session.payment.status = Payment.FAILED
-    #             checkout_session.save()
-    #             checkout_session.payment.save()
-    #
-    #             # Use transaction.on_commit to delay raising the exception
-    #             def raise_exception():
-    #                 raise PaymentFailedException()
-    #
-    #             transaction.on_commit(raise_exception)
-    #             return Response(
-    #                 {"detail": "Payment could not be processed"},
-    #                 status=status.HTTP_400_BAD_REQUEST
-    #             )
-    #
-    #         # Proceed with successful payment handling
-    #         update_payment_status(
-    #             checkout_session.payment.stripe_payment_intent_id,
-    #             'COMPLETED'
-    #         )
-    #
-    #         checkout_session.status = 'COMPLETED'
-    #         checkout_session.payment.status = Payment.SUCCESS
-    #
-    #         order = checkout_session.payment.order
-    #         order.status = Order.PAID
-    #
-    #         checkout_session.save()
-    #         checkout_session.payment.save()
-    #         order.save()
-    #
-    #     return Response(
-    #         {
-    #             "detail": "Checkout completed successfully.",
-    #             "order_id": checkout_session.payment.order.uuid
-    #         },
-    #         status=status.HTTP_200_OK
-    #     )
-
         # # Verify if the payment-successful via the frontend-not secure
         # Assume frontend sends payment status
         # payment_status = request.data.get('payment_status')
