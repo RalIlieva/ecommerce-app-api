@@ -225,8 +225,8 @@ class CompleteCheckoutView(APIView):
             checkout_session.payment.save()
             order.save()
 
-            # ---------------------------------------------------------
-            # 6) Clear the entire cart object so user can check out again next time
+            # 6) Clear the entire cart object so user
+            # can check out again next time
             cart = checkout_session.cart
             cart.delete()
 
