@@ -1,3 +1,7 @@
+"""
+Business logic - functions - write to db.
+"""
+
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from notifications.models import Notification
@@ -45,10 +49,7 @@ def handle_order_creation_notification(order):
             lambda: send_order_confirmation_email.delay(vendor_notification.uuid)
         )
 
-
-# """
-# Business logic - functions - write to db.
-# """
+# Initial version - with delay
 # from django.db import transaction
 # from django.conf import settings
 # from django.contrib.auth import get_user_model
