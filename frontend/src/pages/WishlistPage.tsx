@@ -132,7 +132,7 @@ const WishlistPage: React.FC = () => {
                   {item.product.description?.substring(0, 80)}...
                 </p>
                 <p className="text-primary">
-                  ${item.product.price?.toFixed(2)}
+                  ${item.product.price ? parseFloat(item.product.price.toString()).toFixed(2) : 'N/A'}
                 </p>
                 {/* Remove button */}
                 <button
