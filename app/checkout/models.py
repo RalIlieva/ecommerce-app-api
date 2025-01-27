@@ -25,7 +25,9 @@ class CheckoutSession(UUIDModel, TimeStampedModel):
     )
     cart = models.OneToOneField(
         Cart,
-        on_delete=models.CASCADE
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
     payment = models.OneToOneField(
         Payment,
