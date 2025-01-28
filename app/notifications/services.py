@@ -46,7 +46,9 @@ def handle_order_creation_notification(order):
         )
         # Same pattern: schedule the Celery task after commit
         transaction.on_commit(
-            lambda: send_order_confirmation_email.delay(vendor_notification.uuid)
+            lambda: send_order_confirmation_email.delay(
+                vendor_notification.uuid
+            )
         )
 
 # Initial version - with delay
