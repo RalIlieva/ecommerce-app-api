@@ -33,7 +33,9 @@ def handle_order_creation_notification(order):
     try:
         vendor_user = get_user_model().objects.get(email=settings.VENDOR_EMAIL)
     except get_user_model().DoesNotExist:
-        print(f"Vendor user with email {settings.VENDOR_EMAIL} does not exist.")
+        print(
+            f"Vendor user with email {settings.VENDOR_EMAIL} does not exist."
+        )
         return  # So we never create a vendor notification
     else:
         # Only create vendor notification if user is found
