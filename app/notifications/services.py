@@ -68,7 +68,8 @@ def handle_order_creation_notification(order):
 #         user=order.user,
 #         notification_type=Notification.EMAIL,
 #         subject=f"Order Confirmation #{order.uuid}",
-#         body=f"Your order with ID #{order.uuid} has been successfully placed!",
+#         body=f"Your order with ID #{order.uuid}
+#         has been successfully placed!",
 #         status=False  # Not sent initially
 #     )
 #
