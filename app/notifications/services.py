@@ -80,7 +80,9 @@ def handle_order_creation_notification(order):
 #
 #     # Notify the vendor about the new order
 #     try:
-#         vendor_user = get_user_model().objects.get(email=settings.VENDOR_EMAIL)
+#         vendor_user = get_user_model().objects.get(
+#         email=settings.VENDOR_EMAIL
+#         )
 #     except get_user_model().DoesNotExist:
 #         # In case the vendor user is not found
 #         print(
