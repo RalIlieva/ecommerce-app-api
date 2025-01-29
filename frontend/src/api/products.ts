@@ -8,7 +8,6 @@ export interface Product {
   name: string;
   slug: string;
   image: string;
-  brand: string;
   price: string;
   average_rating?: number;
   category: Category;
