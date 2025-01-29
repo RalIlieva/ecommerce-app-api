@@ -35,7 +35,7 @@ export interface ProductDetail {
 export interface CartItem {
   id: number;
   uuid: string;
-  product: ProductDetail; // or a simplified Product type if you have one
+  product: ProductDetail; // or a simplified Product type
   quantity: number;
 }
 
@@ -59,7 +59,7 @@ export interface Product {
     // any other fields
   };
   tags: { uuid: string; name: string }[];
-  image?: string; // If your ProductMiniSerializer returns 'image'
+//   image?: string; // If ProductMiniSerializer returns 'image'
   average_rating?: number | null;
   // ... etc.
 }
@@ -74,11 +74,11 @@ export interface CartItem {
 export interface Cart {
   id: number;
   uuid: string;
-  user: number; // or user UUID if you prefer
+  user: number; // or user UUID
   items: CartItem[];
 }
 
-// The checkout session your backend returns from /checkout/start/
+// The checkout session the backend returns from /checkout/start/
 export interface CheckoutSession {
   uuid: string;
   user: number; // or user UUID
