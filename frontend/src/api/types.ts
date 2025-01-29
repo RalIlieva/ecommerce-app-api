@@ -82,7 +82,7 @@ export interface Cart {
 export interface CheckoutSession {
   uuid: string;
   user: number; // or user UUID
-  cart: Cart | null; // or just omit if you don't return cart in the response
+  cart: Cart | null;
   shipping_address: string;
   status: 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
   payment_secret?: string; // The Stripe client_secret
