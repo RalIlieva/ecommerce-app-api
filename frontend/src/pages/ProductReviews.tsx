@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import api from '../api';
 import AuthContext from '../context/AuthContext';
 import { Review } from '../api/types';
+import { fetchProductReviews, submitProductReview } from '../api/reviews';
 
 // Props interface
 interface ProductReviewsProps {

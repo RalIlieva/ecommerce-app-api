@@ -16,16 +16,6 @@ export interface Product {
   // Add other fields as necessary
 }
 
-// export interface Review {
-//   uuid: string;
-//   rating: number;
-//   comment: string;
-//   created: string;
-//   user: {
-//     email: string;
-//     // Add other user fields if necessary
-//   };
-// }
 
 export async function fetchProducts(params?: Record<string, any>) {
   const response = await api.get('/products/products/', { params });
@@ -36,3 +26,14 @@ export async function fetchProductBySlug(uuid: string, slug: string) {
   const response = await api.get(`/products/products/${uuid}/${slug}/`);
   return response.data;
 }
+
+// export interface Review {
+//   uuid: string;
+//   rating: number;
+//   comment: string;
+//   created: string;
+//   user: {
+//     email: string;
+//     // Add other user fields if necessary
+//   };
+// }
