@@ -6,7 +6,7 @@ export interface WishlistItem {
   uuid: string;
   product: Product;
   created: string;
-  // etc. if more fields e.g. "in_stock"
+  in_stock: boolean;
 }
 
 export interface Wishlist {

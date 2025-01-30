@@ -134,6 +134,19 @@ const WishlistPage: React.FC = () => {
                 <p className="text-primary">
                   ${item.product.price ? parseFloat(item.product.price.toString()).toFixed(2) : 'N/A'}
                 </p>
+
+                {/* Stock status */}
+              <p>
+                {item.in_stock ? (
+                  <span className="text-success">In Stock</span>
+                ) : (
+                  <span className="text-danger">Out of Stock</span>
+                )}
+              </p>
+
+              {/* If you want to display exact quantity, e.g.: */}
+              <p>Available: {item.product.stock ?? 0}</p>
+
                 {/* Remove button */}
                 <button
                   className="btn btn-outline-danger me-2"
