@@ -22,6 +22,7 @@ class ProductMiniSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, required=False)
     category = CategorySerializer(read_only=True)
     average_rating = serializers.ReadOnlyField()
+    image = serializers.SerializerMethodField()  # Added field
 
     class Meta:
         model = Product
@@ -29,9 +30,18 @@ class ProductMiniSerializer(serializers.ModelSerializer):
             'id', 'uuid',
             'name', 'price', 'slug',
             'tags', 'category',
-            'average_rating'
+            'average_rating',
+            'image'
         ]
         read_only_fields = ['id', 'slug', 'uuid', 'average_rating']
+
+    def get_image(self, obj):
+        first_image = obj.images.first()
+        if first_image and first_image.image:
+            request = self.context.get('request')
+            # Build the absolute URL the same way you do in ProductImageSerializer
+            return request.build_absolute_uri(first_image.image.url)
+        return None
 
 
 class ProductDetailSerializer(ProductMiniSerializer):

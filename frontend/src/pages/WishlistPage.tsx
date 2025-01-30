@@ -121,7 +121,7 @@ const WishlistPage: React.FC = () => {
           <div className="col-md-4 mb-4" key={item.uuid}>
             <div className="card">
               <img
-                src={item.product.main_image || '/placeholder.png'}
+                src={item.product.image || '/placeholder.png'}
                 className="card-img-top"
                 alt={item.product.name}
                 style={{ maxHeight: '200px', objectFit: 'cover' }}
