@@ -31,7 +31,7 @@ class ProductMiniSerializer(serializers.ModelSerializer):
             'name', 'price', 'slug',
             'tags', 'category',
             'average_rating',
-            'image', 'stock'
+            'image',
         ]
         read_only_fields = ['id', 'slug', 'uuid', 'average_rating']
 

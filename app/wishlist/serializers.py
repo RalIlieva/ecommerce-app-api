@@ -4,7 +4,8 @@ Wishlist serializers.
 
 from rest_framework import serializers
 from .models import Wishlist, WishlistItem
-from products.serializers import ProductMiniSerializer
+# from products.serializers import ProductMiniSerializer
+from products.serializers import ProductDetailSerializer
 
 
 class WishlistItemSerializer(serializers.ModelSerializer):
@@ -14,7 +15,8 @@ class WishlistItemSerializer(serializers.ModelSerializer):
         - get_in_stock: Determines stock availability
         by checking the product's stock.
     """
-    product = ProductMiniSerializer(read_only=True)
+    # product = ProductMiniSerializer(read_only=True)
+    product = ProductDetailSerializer(read_only=True)
     product_uuid = serializers.UUIDField(write_only=True)
     in_stock = serializers.SerializerMethodField()
 

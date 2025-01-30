@@ -138,14 +138,15 @@ const WishlistPage: React.FC = () => {
                 {/* Stock status */}
               <p>
                 {item.in_stock ? (
-                  <span className="text-success">In Stock</span>
+                    <span className="text-success">
+                        In Stock: {item.product.stock ?? 0}
+                    </span>
                 ) : (
-                  <span className="text-danger">Out of Stock</span>
-                )}
-              </p>
-
-              {/* If you want to display exact quantity, e.g.: */}
-              <p>Available: {item.product.stock ?? 0}</p>
+                    <span className="text-danger">
+                        Out of Stock
+                    </span>
+                    )}
+                </p>
 
                 {/* Remove button */}
                 <button
