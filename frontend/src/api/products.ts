@@ -3,18 +3,7 @@ import api from '../api';
 import { Tag } from './tags';
 import { Category } from './categories';
 import { Review } from '../types';
-
-export interface Product {
-  uuid: string;
-  name: string;
-  slug: string;
-  image: string;
-  price: string;
-  average_rating?: number;
-  category: Category;
-  tags: Tag[];
-  // Add other fields as necessary
-}
+import { Product } from '../types'
 
 
 export async function fetchProducts(params?: Record<string, any>) {
@@ -26,6 +15,18 @@ export async function fetchProductBySlug(uuid: string, slug: string) {
   const response = await api.get(`/products/products/${uuid}/${slug}/`);
   return response.data;
 }
+
+// export interface Product {
+//   uuid: string;
+//   name: string;
+//   slug: string;
+//   image: string;
+//   price: string;
+//   average_rating?: number;
+//   category: Category;
+//   tags: Tag[];
+//   // Add other fields as necessary
+// }
 
 // export interface Review {
 //   uuid: string;
