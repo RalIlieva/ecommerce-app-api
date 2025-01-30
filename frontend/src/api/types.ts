@@ -59,7 +59,7 @@ export interface Product {
     // any other fields
   };
   tags: { uuid: string; name: string }[];
-//   image?: string; // If ProductMiniSerializer returns 'image'
+  image?: string; // If ProductMiniSerializer returns 'image'
   average_rating?: number | null;
   // ... etc.
 }
@@ -78,7 +78,7 @@ export interface Cart {
   items: CartItem[];
 }
 
-// The checkout session the backend returns from /checkout/start/
+// The checkout session your backend returns from /checkout/start/
 export interface CheckoutSession {
   uuid: string;
   user: number; // or user UUID
