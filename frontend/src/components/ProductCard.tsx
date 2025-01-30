@@ -1,7 +1,7 @@
 // src/components/ProductCard.tsx
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Product } from '../api/types';
+import { Product, ProductImage } from '../api/types';
 import { renderStars } from '../utils';
 import AuthContext from '../context/AuthContext';
 import api from '../api';

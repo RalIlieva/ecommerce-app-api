@@ -17,13 +17,6 @@ export interface Review {
   };
 }
 
-// export interface Review {
-//   uuid: string;
-//   user: UserData;
-//   rating: number;
-//   comment: string;
-//   created: string; // ISO date string
-// }
 
 export interface ProductImage {
   id: number;
@@ -77,7 +70,7 @@ export interface Cart {
   items: CartItem[];
 }
 
-// The checkout session your backend returns from /checkout/start/
+// The checkout session the backend returns from /checkout/start/
 export interface CheckoutSession {
   uuid: string;
   user: number; // or user UUID
