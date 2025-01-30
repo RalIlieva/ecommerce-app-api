@@ -3,6 +3,7 @@ import api from '../api';
 import AuthContext from '../context/AuthContext';
 import { Review } from '../api/types';
 import { fetchProductReviews, submitProductReview } from '../api/reviews';
+import { renderStars } from '../utils';
 
 // Props interface
 interface ProductReviewsProps {
@@ -143,19 +144,19 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
     }
   };
 
-  // ---- HELPER: RENDER STARS (1-5) ----
-  const renderStars = (rating: number): JSX.Element[] => {
-    // We'll return an array of star <i> elements
-    const starsArray: JSX.Element[] = [];
-    for (let i = 1; i <= 5; i++) {
-      if (i <= rating) {
-        starsArray.push(<i key={i} className="fas fa-star text-warning me-1"></i>);
-      } else {
-        starsArray.push(<i key={i} className="far fa-star text-muted me-1"></i>);
-      }
-    }
-    return starsArray;
-  };
+//   // ---- HELPER: RENDER STARS (1-5) ----
+//   const renderStars = (rating: number): JSX.Element[] => {
+//     // We'll return an array of star <i> elements
+//     const starsArray: JSX.Element[] = [];
+//     for (let i = 1; i <= 5; i++) {
+//       if (i <= rating) {
+//         starsArray.push(<i key={i} className="fas fa-star text-warning me-1"></i>);
+//       } else {
+//         starsArray.push(<i key={i} className="far fa-star text-muted me-1"></i>);
+//       }
+//     }
+//     return starsArray;
+//   };
 
   return (
     <div className="product-reviews mt-4">
