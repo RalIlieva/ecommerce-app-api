@@ -1,6 +1,8 @@
 // src/components/ProductDetail.tsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCartContext } from '../context/CartContext';
+import { useWishlistContext } from '../context/WishlistContext';
 import api from '../api';
 import { ProductDetail as ProductDetailType } from '../api/types';
 import AuthContext from '../context/AuthContext';
@@ -12,6 +14,10 @@ import { addToWishlist } from '../api/wishlist';
 const ProductDetail: React.FC = () => {
   const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
   const { user } = useContext(AuthContext);
+
+// Destructure cartCount & setCartCount, wishlistCount & setWishlistCount
+  const { cartCount, setCartCount } = useCartContext();
+  const { wishlistCount, setWishlistCount } = useWishlistContext();
 
   const [product, setProduct] = useState<ProductDetailType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,6 +58,9 @@ const ProductDetail: React.FC = () => {
       });
 
       alert('Item added to cart!');
+      // Update the cart count (Option A: increment by quantity)
+      setCartCount(cartCount + quantity);
+
     } catch (err) {
       console.error(err);
       alert('Failed to add item to cart.');
@@ -69,6 +78,9 @@ const ProductDetail: React.FC = () => {
       if (!product) return;
       await addToWishlist(product.uuid); // API call for adding to wishlist
       alert('Item added to wishlist!');
+// Update the wishlist count (Option A: increment by 1)
+      setWishlistCount(wishlistCount + 1);
+
     } catch (err) {
       console.error(err);
       alert('Failed to add item to wishlist.');
