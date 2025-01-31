@@ -39,7 +39,7 @@ class ProductMiniSerializer(serializers.ModelSerializer):
         first_image = obj.images.first()
         if first_image and first_image.image:
             request = self.context.get('request')
-            # Build the absolute URL the same way you do in ProductImageSerializer
+            # Build the absolute URL as in ProductImageSerializer
             return request.build_absolute_uri(first_image.image.url)
         return None
 
