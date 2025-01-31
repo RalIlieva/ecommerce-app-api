@@ -1,5 +1,7 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -22,28 +24,32 @@ const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
 
   return (
-    <Router>
-      <div>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/products/:uuid/:slug" element={<ProductDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile/:uuid" element={<Profile />} />
-          <Route path="/categories" element={<CategoryList />} />
-          <Route path="/tags" element={<TagList />} />
-          <Route path="/categories/:slug" element={<ProductListByCategory />} />
-          <Route path="/password-reset" element={<PasswordResetRequest />} />
-          <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
-        </Routes>
-      </div>
-    </Router>
+  <CartProvider>
+    <WishlistProvider>
+        <Router>
+            <div>
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/products" element={<Products />} />
+                    <Route path="/products/products/:uuid/:slug" element={<ProductDetail />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/profile/:uuid" element={<Profile />} />
+                    <Route path="/categories" element={<CategoryList />} />
+                    <Route path="/tags" element={<TagList />} />
+                    <Route path="/categories/:slug" element={<ProductListByCategory />} />
+                    <Route path="/password-reset" element={<PasswordResetRequest />} />
+                    <Route path="/password-reset-confirm/:uid/:token" element={<PasswordResetConfirm />} />
+                    <Route path="/change-password" element={<ChangePassword />} />
+                    <Route path="/cart" element={<CartPage />} />
+                    <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/wishlist" element={<WishlistPage />} />
+                </Routes>
+            </div>
+        </Router>
+    </WishlistProvider>
+  </CartProvider>
   );
 };
 
