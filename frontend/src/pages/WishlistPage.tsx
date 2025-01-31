@@ -10,7 +10,7 @@ import {
 } from '../api/wishlist';
 import { useNavigate } from 'react-router-dom';
 
-// 1) Import your wishlist context
+// 1) Import wishlist context
 import { useWishlistContext } from '../context/WishlistContext';
 
 const WishlistPage: React.FC = () => {
@@ -84,7 +84,7 @@ const WishlistPage: React.FC = () => {
       setWishlist(updated);
       // Update global wishlist count
       setWishlistCount(updated.items.length);
-      // Optionally navigate("/cart") if you want the user to go to the cart
+      // Optionally navigate("/cart") if the user goes to the cart
     } catch (err) {
       console.error(err);
       alert('Failed to move item to cart.');
