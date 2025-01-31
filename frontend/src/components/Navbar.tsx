@@ -2,8 +2,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
-
-// 1) Import the contexts for wishlist & cart
 import { useWishlistContext } from '../context/WishlistContext';
 import { useCartContext } from '../context/CartContext';
 
@@ -11,7 +9,7 @@ const Navbar: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // 2) Access the global wishlist/cart counts
+  // Access the global wishlist/cart counts
   const { wishlistCount } = useWishlistContext();
   const { cartCount } = useCartContext();
 
