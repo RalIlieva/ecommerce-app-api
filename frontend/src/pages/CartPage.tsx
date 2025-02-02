@@ -3,7 +3,6 @@ import api from '../api';
 import { Cart, CartItem } from '../api/types';
 import AuthContext from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-// Import your CartContext
 import { useCartContext } from '../context/CartContext';
 
 const CartPage: React.FC = () => {
@@ -160,7 +159,7 @@ const CartPage: React.FC = () => {
 
 export default CartPage;
 
-
+// Initial version - without badge counting the items
 // // src/pages/CartPage.tsx
 // import React, { useEffect, useState, useContext } from 'react';
 // import api from '../api';
