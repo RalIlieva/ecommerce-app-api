@@ -178,7 +178,7 @@ const ProductDetail: React.FC = () => {
 export default ProductDetail;
 
 
-// // src/components/ProductDetail.tsx
+// Initial version
 // import React, { useEffect, useState, useContext } from 'react';
 // import { useParams } from 'react-router-dom';
 // import api from '../api';
