@@ -1,5 +1,4 @@
 // src/context/CartContext.tsx
-
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface CartContextProps {
