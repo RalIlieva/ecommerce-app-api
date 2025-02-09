@@ -159,7 +159,6 @@ const CartPage: React.FC = () => {
 
 export default CartPage;
 
-
 // Initial version - without badge counting the items
 // // src/pages/CartPage.tsx
 // import React, { useEffect, useState, useContext } from 'react';
