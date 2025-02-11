@@ -1,14 +1,16 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-interface CartContextType {
+interface CartContextProps {
   cartCount: number;
-  setCartCount: (count: number) => void;
+  setCartCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+// Create the context
+const CartContext = createContext<CartContextProps | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [cartCount, setCartCount] = useState(0);
+// CartProvider component to wrap around the application
+export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [cartCount, setCartCount] = useState<number>(0);
 
   return (
     <CartContext.Provider value={{ cartCount, setCartCount }}>
@@ -17,6 +19,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
+// Custom hook to use the cart context
 export const useCartContext = () => {
   const context = useContext(CartContext);
   if (!context) {
@@ -26,6 +29,36 @@ export const useCartContext = () => {
 };
 
 
+
+// // Version - working wishlist move to cart - badge count
+// import React, { createContext, useContext, useState } from 'react';
+//
+// interface CartContextType {
+//   cartCount: number;
+//   setCartCount: (count: number) => void;
+// }
+//
+// const CartContext = createContext<CartContextType | undefined>(undefined);
+//
+// export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const [cartCount, setCartCount] = useState(0);
+//
+//   return (
+//     <CartContext.Provider value={{ cartCount, setCartCount }}>
+//       {children}
+//     </CartContext.Provider>
+//   );
+// };
+//
+// export const useCartContext = () => {
+//   const context = useContext(CartContext);
+//   if (!context) {
+//     throw new Error('useCartContext must be used within a CartProvider');
+//   }
+//   return context;
+// };
+
+// Initial version
 // // src/context/CartContext.tsx
 // import React, { createContext, useState, useContext, ReactNode } from 'react';
 //
