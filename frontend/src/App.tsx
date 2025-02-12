@@ -19,6 +19,7 @@ import ChangePassword from './components/ChangePassword';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import WishlistPage from './pages/WishlistPage';
+import OrderPage from './pages/OrderPage';
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -45,6 +46,7 @@ const App: React.FC = () => {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/wishlist" element={<WishlistPage />} />
+                    <Route path="/order/:order_uuid" element={<OrderPage />} />
                 </Routes>
             </div>
         </Router>
