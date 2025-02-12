@@ -192,7 +192,7 @@ const Profile: React.FC = () => {
             {Array.isArray(orders) ? (
               orders.map((order) => (
                 <li key={order.uuid} className="list-group-item">
-                  <Link to={`/order`}>
+                  <Link to={`/order/${order.uuid}`}>
                     <h6>Order #{order.uuid} - {order.status}</h6>
                     <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
                   </Link>

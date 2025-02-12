@@ -34,8 +34,9 @@ const OrderPage: React.FC = () => {
 
   const fetchOrderDetails = async (orderUUID: string) => {
     try {
-//       const response = await api.get(`/orders/${orderUUID}/`);
-    const response = await api.get(`/orders/orders/`);
+      const response = await api.get(`/orders/${orderUUID}/`);
+      console.log('Order Details Fetched:', response.data);  // Log the order data for debugging
+//     const response = await api.get(`/orders/orders/`);
       setOrder(response.data);
     } catch (err: any) {
       console.error(err);
@@ -71,18 +72,18 @@ const OrderPage: React.FC = () => {
 
   return (
     <div className="container mt-5">
-      <h4>Order #{order.id} - {order.status}</h4>
+      <h4>Order #{order.uuid} - {order.status}</h4>
       <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
 
       <ul className="list-group">
-        {order.items.map((item) => (
+        {order.items?.map((item) => (
           <li key={item.id} className="list-group-item">
-            {item.product.name} (x{item.quantity}) - ${item.product.price ? parseFloat(product.price.toString()).toFixed(2) : 'N/A'}
+            {item.name} (x{item.quantity}) - ${item.price ? parseFloat(item.price.toString()).toFixed(2) : 'N/A'}
           </li>
         ))}
       </ul>
 
-      <Link to="/profile" className="btn btn-primary mt-4">Back to Profile</Link>
+      <Link to="/profile/:uuid" className="btn btn-primary mt-4">Back to Profile</Link>
     </div>
   );
 };
