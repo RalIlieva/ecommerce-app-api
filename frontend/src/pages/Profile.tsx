@@ -63,12 +63,25 @@ const Profile: React.FC = () => {
   const fetchOrders = async () => {
     try {
       const response = await api.get('/orders/orders/');
-      setOrders(response.data);
-    } catch (err: any) {
-      console.error(err);
-      setError('Failed to fetch orders.');
+      console.log('Orders fetched:', response.data);  // Log to verify the response
+      if (response.data && Array.isArray(response.data.results)) {
+      setOrders(response.data.results);  // Set the orders from response.data.results
+    } else {
+      setOrders([]);
+      setError('Unexpected response format.');
     }
-  };
+  } catch (err: any) {
+    console.error(err);
+    setError('Failed to fetch orders.');
+  }
+};
+
+//       setOrders(response.data);
+//     } catch (err: any) {
+//       console.error(err);
+//       setError('Failed to fetch orders.');
+//     }
+
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -184,7 +197,8 @@ const Profile: React.FC = () => {
                     <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
                   </Link>
                   <ul>
-                    {order.items.map((item) => (
+{/*                     {order.items.map((item) => ( */}
+                      {order.items?.map((item) => (
                       <li key={item.id}>
                         {item.product.name} (x{item.quantity}) - ${item.price.toFixed(2)}
                       </li>
