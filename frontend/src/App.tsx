@@ -46,7 +46,7 @@ const App: React.FC = () => {
                     <Route path="/cart" element={<CartPage />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/wishlist" element={<WishlistPage />} />
-                    <Route path="/order/:order_uuid" element={<OrderPage />} />
+                    <Route path="/order" element={<OrderPage />} />
                 </Routes>
             </div>
         </Router>

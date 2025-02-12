@@ -34,7 +34,8 @@ const OrderPage: React.FC = () => {
 
   const fetchOrderDetails = async (orderUUID: string) => {
     try {
-      const response = await api.get(`/orders/${orderUUID}/`);
+//       const response = await api.get(`/orders/${orderUUID}/`);
+    const response = await api.get(`/orders/orders/`);
       setOrder(response.data);
     } catch (err: any) {
       console.error(err);
@@ -76,7 +77,7 @@ const OrderPage: React.FC = () => {
       <ul className="list-group">
         {order.items.map((item) => (
           <li key={item.id} className="list-group-item">
-            {item.product.name} (x{item.quantity}) - ${item.price.toFixed(2)}
+            {item.product.name} (x{item.quantity}) - ${item.product.price ? parseFloat(product.price.toString()).toFixed(2) : 'N/A'}
           </li>
         ))}
       </ul>
