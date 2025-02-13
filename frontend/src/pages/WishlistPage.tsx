@@ -120,10 +120,6 @@ const WishlistPage: React.FC = () => {
 
 export default WishlistPage;
 
-
-
-
-
 // // src/pages/WishlistPage.tsx
 // import React, { useEffect, useState, useContext } from 'react';
 // import AuthContext from '../context/AuthContext';
