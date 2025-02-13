@@ -197,7 +197,6 @@ const Profile: React.FC = () => {
                     <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
                   </Link>
                   <ul>
-{/*                     {order.items.map((item) => ( */}
                       {order.items?.map((item) => (
                       <li key={item.id}>
                         {item.product.name} (x{item.quantity}) - ${item.price.toFixed(2)}
