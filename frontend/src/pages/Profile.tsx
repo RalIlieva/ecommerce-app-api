@@ -161,25 +161,55 @@ const Profile: React.FC = () => {
 
        {/* Orders Section */}
       <div className="mt-5">
-        <h5>My Orders</h5>
-        {Array.isArray(orders) && orders.length === 0 ? (
-          <p>No orders found.</p>
-        ) : (
-          <ul className="list-group">
-            {Array.isArray(orders) ? (
-              orders.map((order) => (
-                <li key={order.uuid} className="list-group-item">
-                  <Link to={`/order/${order.uuid}`}>
-                    <h6>Order #{order.uuid} - {order.status}</h6>
-                    <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
-                  </Link>
-                </li>
-              ))
-            ) : (
-              <p>Loading orders...</p>  // Handle loading state
-            )}
-          </ul>
-        )}
+{/*         <h5>My Orders</h5> */}
+{/*         {Array.isArray(orders) && orders.length === 0 ? ( */}
+{/*           <p>No orders found.</p> */}
+{/*         ) : ( */}
+{/*           <ul className="list-group"> */}
+{/*             {Array.isArray(orders) ? ( */}
+{/*               orders.map((order) => ( */}
+{/*                 <li key={order.uuid} className="list-group-item"> */}
+{/*                   <Link to={`/order/${order.uuid}`}> */}
+{/*                     <h6>Order #{order.uuid} - {order.status}</h6> */}
+{/*                     <p>Created on: {new Date(order.created).toLocaleDateString()}</p> */}
+{/*                   </Link> */}
+{/*                 </li> */}
+{/*               )) */}
+{/*             ) : ( */}
+{/*               <p>Loading orders...</p>  // Handle loading state */}
+{/*             )} */}
+{/*           </ul> */}
+{/*         )} */}
+<h5>Your Orders</h5>
+{orders.length === 0 ? (
+  <p>No orders found.</p>
+) : (
+  <table className="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Order #</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {orders.map(order => (
+        <tr key={order.uuid}>
+          <td>{order.uuid}</td>
+          <td>{order.status}</td>
+          <td>{new Date(order.created).toLocaleDateString()}</td>
+          <td>
+            <Link to={`/order/${order.uuid}`} className="btn btn-sm btn-primary">
+              View Details
+            </Link>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}
+
       </div>
     </div>
   );
