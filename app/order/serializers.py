@@ -9,6 +9,7 @@ from products.serializers import ProductMiniSerializer
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductMiniSerializer(read_only=True)
+    # product_name = serializers.ReadOnlyField(source='product.name')
 
     class Meta:
         model = OrderItem
@@ -18,7 +19,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     #  Nested OrderItemSer to present items within each order
-    items = OrderItemSerializer(many=True, read_only=True)
+    # items = OrderItemSerializer(many=True, read_only=True)
+    items = OrderItemSerializer(source='order_items', many=True)
 
     class Meta:
         model = Order
