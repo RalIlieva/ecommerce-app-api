@@ -173,13 +173,6 @@ const Profile: React.FC = () => {
                     <h6>Order #{order.uuid} - {order.status}</h6>
                     <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
                   </Link>
-                  <ul>
-                      {order.items?.map((item) => (
-                      <li key={item.id}>
-                        {item.product.name} (x{item.quantity}) - ${item.price ? parseFloat(item.price.toString()).toFixed(2) : 'N/A'}
-                      </li>
-                    ))}
-                  </ul>
                 </li>
               ))
             ) : (
