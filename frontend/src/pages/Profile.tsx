@@ -112,7 +112,7 @@ const Profile: React.FC = () => {
           <div className="col-md-8">
             <div className="card">
               <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 className="mb-0">Your Profile</h4>
+                <h4 className="mb-0">My Profile</h4>
                 <div>
                   <button
                     className="btn btn-light btn-sm me-2"
@@ -180,7 +180,7 @@ const Profile: React.FC = () => {
 {/*             )} */}
 {/*           </ul> */}
 {/*         )} */}
-<h5>Your Orders</h5>
+<h5>My Orders</h5>
 {orders.length === 0 ? (
   <p>No orders found.</p>
 ) : (
