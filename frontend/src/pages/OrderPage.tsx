@@ -67,7 +67,8 @@ const OrderPage: React.FC = () => {
         ))}
       </ul>
 
-      <Link to="/profile/:uuid" className="btn btn-primary mt-4">Back to Profile</Link>
+    <Link to={`/profile/${user.profile_uuid}`} className="btn btn-primary mt-4">Back to Profile</Link>
+
     </div>
   );
 };
