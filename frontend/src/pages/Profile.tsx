@@ -76,13 +76,6 @@ const Profile: React.FC = () => {
   }
 };
 
-//       setOrders(response.data);
-//     } catch (err: any) {
-//       console.error(err);
-//       setError('Failed to fetch orders.');
-//     }
-
-
   const handleEditClick = () => {
     setIsEditing(true);
   };
