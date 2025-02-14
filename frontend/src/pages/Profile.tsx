@@ -161,7 +161,7 @@ const Profile: React.FC = () => {
 
        {/* Orders Section */}
       <div className="mt-5">
-        <h5>Your Orders</h5>
+        <h5>My Orders</h5>
         {Array.isArray(orders) && orders.length === 0 ? (
           <p>No orders found.</p>
         ) : (
