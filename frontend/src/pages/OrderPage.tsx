@@ -4,23 +4,6 @@ import AuthContext from '../context/AuthContext';
 import api from '../api';
 import { Order, OrderItem } from '../api/orders';
 
-// export interface OrderItem {
-//   id: string;
-//   product: {
-//     name: string;
-//   };
-//   quantity: number;
-//   price: number;
-// }
-//
-// export interface Order {
-//   uuid: string;
-//   id: string;
-//   status: string;
-//   created: string;
-//   items: OrderItem[];
-// }
-
 const OrderPage: React.FC = () => {
   const { user } = useContext(AuthContext);
   const [order, setOrder] = useState<Order | null>(null);
