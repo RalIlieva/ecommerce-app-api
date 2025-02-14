@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import api from '../api';
 import EditProfileForm from './EditProfileForm';
+import { Order, OrderItem } from '../api/orders';
 
 export interface Profile {
   profile_uuid: string;
@@ -19,22 +20,22 @@ export interface Profile {
   };
 }
 
-export interface OrderItem {
-  id: string;
-  product: {
-    name: string;
-  };
-  quantity: number;
-  price: number;
-}
-
-export interface Order {
-  uuid: string;
-  id: string;
-  status: string;
-  created: string;
-  items: OrderItem[];
-}
+// export interface OrderItem {
+//   id: string;
+//   product: {
+//     name: string;
+//   };
+//   quantity: number;
+//   price: number;
+// }
+//
+// export interface Order {
+//   uuid: string;
+//   id: string;
+//   status: string;
+//   created: string;
+//   items: OrderItem[];
+// }
 
 const Profile: React.FC = () => {
   const { user } = useContext(AuthContext);
