@@ -78,7 +78,7 @@ const OrderPage: React.FC = () => {
       <ul className="list-group">
         {order.items?.map((item) => (
           <li key={item.id} className="list-group-item">
-            {item.name} (x{item.quantity}) - ${item.price ? parseFloat(item.price.toString()).toFixed(2) : 'N/A'}
+            {item.product.name} (x{item.quantity}) - ${item.price ? parseFloat(item.price.toString()).toFixed(2) : 'N/A'}
           </li>
         ))}
       </ul>

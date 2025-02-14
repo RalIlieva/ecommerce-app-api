@@ -199,7 +199,7 @@ const Profile: React.FC = () => {
                   <ul>
                       {order.items?.map((item) => (
                       <li key={item.id}>
-                        {item.product.name} (x{item.quantity}) - ${item.price.toFixed(2)}
+                        {item.product.name} (x{item.quantity}) - ${item.price ? parseFloat(item.price.toString()).toFixed(2) : 'N/A'}
                       </li>
                     ))}
                   </ul>
