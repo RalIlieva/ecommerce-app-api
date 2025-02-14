@@ -2,23 +2,24 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import api from '../api';
+import { Order, OrderItem } from '../api/orders';
 
-export interface OrderItem {
-  id: string;
-  product: {
-    name: string;
-  };
-  quantity: number;
-  price: number;
-}
-
-export interface Order {
-  uuid: string;
-  id: string;
-  status: string;
-  created: string;
-  items: OrderItem[];
-}
+// export interface OrderItem {
+//   id: string;
+//   product: {
+//     name: string;
+//   };
+//   quantity: number;
+//   price: number;
+// }
+//
+// export interface Order {
+//   uuid: string;
+//   id: string;
+//   status: string;
+//   created: string;
+//   items: OrderItem[];
+// }
 
 const OrderPage: React.FC = () => {
   const { user } = useContext(AuthContext);
