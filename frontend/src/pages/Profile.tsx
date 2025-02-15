@@ -1,4 +1,4 @@
-// src/components/Profile.tsx
+// src/pages/Profile.tsx
 import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
