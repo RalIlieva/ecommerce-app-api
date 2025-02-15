@@ -1,4 +1,4 @@
-// src/pages/CategoryList/CategoryList.tsx
+// src/pages/CategoryList.tsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchCategories, Category } from '../api/categories';
