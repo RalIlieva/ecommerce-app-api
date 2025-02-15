@@ -1,4 +1,4 @@
-// src/components/ProductDetail.tsx
+// src/pages/ProductDetail.tsx
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useCartContext } from '../context/CartContext';
