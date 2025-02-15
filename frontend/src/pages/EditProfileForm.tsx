@@ -1,4 +1,4 @@
-// src/components/EditProfileForm.tsx
+// src/pages/EditProfileForm.tsx
 import React, { useState } from 'react';
 import api from '../api';
 import { Profile } from './Profile';
