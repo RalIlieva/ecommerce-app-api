@@ -1,12 +1,12 @@
 """
 Business logic - functions - write to db.
 """
-from datetime import timedelta
+# from datetime import timedelta
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.db import transaction
 from products.services import update_product_stock
 from products.models import Product
-from checkout.models import CheckoutSession
+# from checkout.models import CheckoutSession
 from .models import Order, OrderItem
 
 

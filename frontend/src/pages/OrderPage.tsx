@@ -81,12 +81,12 @@ const OrderPage: React.FC = () => {
                 </p>
               )}
 
-//                {/* Show shipping_address if it's returned by the serializer */}
-//               {order.shipping_address && (
-//                 <p>
-//                   <strong>Shipped to:</strong> {order.shipping_address}
-//                 </p>
-//               )}
+               {/* Show shipping_address if it's returned by the serializer */}
+              {order.shipping_address && (
+                <p>
+                  <strong>Shipped to:</strong> {order.shipping_address}
+                </p>
+              )}
 
               <hr />
 

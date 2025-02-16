@@ -5,7 +5,7 @@ Order serializers.
 from rest_framework import serializers
 from .models import Order, OrderItem
 from products.serializers import ProductMiniSerializer
-from .services import get_related_checkout_session
+# from .services import get_related_checkout_session
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
