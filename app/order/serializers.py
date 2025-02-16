@@ -21,11 +21,15 @@ class OrderSerializer(serializers.ModelSerializer):
     #  Nested OrderItemSer to present items within each order
     # items = OrderItemSerializer(many=True, read_only=True)
     items = OrderItemSerializer(source='order_items', many=True)
+    total_amount = serializers.DecimalField(
+        max_digits=10, decimal_places=2, read_only=True
+    )
 
     class Meta:
         model = Order
         fields = [
-            'id', 'uuid', 'user', 'status', 'created', 'modified', 'items'
+            'id', 'uuid', 'user', 'status', 'created', 'modified', 'items',
+            'total_amount',
         ]
         read_only_fields = [
             'id', 'uuid',  'user', 'status', 'created', 'modified'

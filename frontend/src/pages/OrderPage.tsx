@@ -57,6 +57,11 @@ const OrderPage: React.FC = () => {
   return (
     <div className="container mt-5">
       <h4>Order #{order.uuid} - {order.status}</h4>
+      {/* Show total_amount if available */}
+      {typeof order.total_amount !== 'undefined' && (
+        <p>Order Total: ${order.total_amount}</p>
+      )}
+
       <p>Created on: {new Date(order.created).toLocaleDateString()}</p>
 
       <ul className="list-group">
