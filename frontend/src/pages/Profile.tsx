@@ -180,35 +180,35 @@ const Profile: React.FC = () => {
 {/*             )} */}
 {/*           </ul> */}
 {/*         )} */}
-<h5>My Orders</h5>
-{orders.length === 0 ? (
-  <p>No orders found.</p>
-) : (
-  <table className="table table-striped mt-3">
-    <thead>
-      <tr>
-        <th>Order #</th>
-        <th>Status</th>
-        <th>Created</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {orders.map(order => (
-        <tr key={order.uuid}>
-          <td>{order.uuid}</td>
-          <td>{order.status}</td>
-          <td>{new Date(order.created).toLocaleDateString()}</td>
-          <td>
-            <Link to={`/order/${order.uuid}`} className="btn btn-sm btn-primary">
-              View Details
-            </Link>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-)}
+            <h5>My Orders</h5>
+                {orders.length === 0 ? (
+                <p>No orders found.</p>
+            ) : (
+                <table className="table table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                <tbody>
+                {orders.map(order => (
+                <tr key={order.uuid}>
+                    <td>{order.uuid}</td>
+                    <td>{order.status}</td>
+                    <td>{new Date(order.created).toLocaleDateString()}</td>
+                    <td>
+                        <Link to={`/order/${order.uuid}`} className="btn btn-sm btn-primary">
+                            View Details
+                        </Link>
+                    </td>
+                </tr>
+                ))}
+                </tbody>
+                </table>
+            )}
 
       </div>
     </div>
