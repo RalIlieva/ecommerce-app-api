@@ -21,7 +21,6 @@ const OrderPage: React.FC = () => {
     try {
       const response = await api.get(`/orders/${orderUUID}/`);
       console.log('Order Details Fetched:', response.data);  // Log the order data for debugging
-//     const response = await api.get(`/orders/orders/`);
       setOrder(response.data);
     } catch (err: any) {
       console.error(err);
