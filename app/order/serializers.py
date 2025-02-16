@@ -5,6 +5,7 @@ Order serializers.
 from rest_framework import serializers
 from .models import Order, OrderItem
 from products.serializers import ProductMiniSerializer
+from .services import get_related_checkout_session
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -25,12 +26,28 @@ class OrderSerializer(serializers.ModelSerializer):
         max_digits=10, decimal_places=2, read_only=True
     )
 
+    # # Use a SerializerMethodField to dynamically fetch shipping address
+    # shipping_address = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
         fields = [
             'id', 'uuid', 'user', 'status', 'created', 'modified', 'items',
             'total_amount',
+            # 'shipping_address',
         ]
         read_only_fields = [
             'id', 'uuid',  'user', 'status', 'created', 'modified'
         ]
+
+    # TO DELETE - first version
+    # def get_shipping_address(self, obj) -> str:
+    #     """
+    #     Attempt to fetch the shipping address from a related CheckoutSession
+    #     without changing the Order model. The logic inside get_related_checkout_session
+    #     is where how to match an Order to a CheckoutSession.
+    #     """
+    #     checkout_session = get_related_checkout_session(obj)
+    #     if checkout_session:
+    #         return checkout_session.shipping_address
+    #     return None

@@ -1,11 +1,12 @@
 """
 Business logic - functions - write to db.
 """
-
+from datetime import timedelta
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from django.db import transaction
 from products.services import update_product_stock
 from products.models import Product
+from checkout.models import CheckoutSession
 from .models import Order, OrderItem
 
 
@@ -55,3 +56,31 @@ def update_order_status(order, status):
     order.status = status
     order.save()
     return order
+
+# TO DELETE - first version
+# def get_related_checkout_session(order: Order) -> CheckoutSession | None:
+#     """
+#     Example approach:
+#     1) Filter checkout sessions by the same user.
+#     2) Filter sessions created close to the order's creation date (e.g., within 5 minutes).
+#     3) Return the most recent one, or None if not found.
+#
+#     WARNING: This is a 'best-guess' approach if there's no direct relationship.
+#     Ideally, you'd store a direct link to checkout (e.g. a foreign key).
+#     """
+#     if not order or not order.user:
+#         return None
+#
+#     # A time window around the order creation (e.g., ±5 minutes).
+#     five_minutes_before = order.created - timedelta(minutes=5)
+#     five_minutes_after = order.created + timedelta(minutes=5)
+#
+#     return (
+#         CheckoutSession.objects.filter(
+#             user=order.user,
+#             created__gte=five_minutes_before,
+#             created__lte=five_minutes_after
+#         )
+#         .order_by('-created')
+#         .first()
+#     )

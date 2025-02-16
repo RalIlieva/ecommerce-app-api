@@ -81,6 +81,13 @@ const OrderPage: React.FC = () => {
                 </p>
               )}
 
+//                {/* Show shipping_address if it's returned by the serializer */}
+//               {order.shipping_address && (
+//                 <p>
+//                   <strong>Shipped to:</strong> {order.shipping_address}
+//                 </p>
+//               )}
+
               <hr />
 
               <h5 className="card-title mb-3">Items</h5>
