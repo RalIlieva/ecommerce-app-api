@@ -77,10 +77,22 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Debugging response if failure
@@ -147,10 +159,22 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Assert that the response is successful
@@ -223,10 +247,22 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Assert that the response status is 400 BAD REQUEST
@@ -270,17 +306,41 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # First checkout attempt
         response_first = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
         self.assertEqual(response_first.status_code, status.HTTP_201_CREATED)
+
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
 
         # Second checkout attempt with the same order
         response_second = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Assert that the second attempt fails due to existing payment
@@ -315,10 +375,22 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Assert that the response is successful
@@ -403,10 +475,22 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': '123 Main St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Assert that the response status is 400 BAD REQUEST

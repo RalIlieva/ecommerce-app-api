@@ -300,10 +300,22 @@ class CompleteCheckoutViewTestCase(APITestCase):
         # Add logging to track the request/response cycle for debugging
         print("Attempting to start checkout process...")
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to initiate the checkout session
         start_response = self.client.post(
             start_checkout_url, format='json',
-            data={'shipping_address': '321 Pine St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # Print response for debugging purposes if it fails

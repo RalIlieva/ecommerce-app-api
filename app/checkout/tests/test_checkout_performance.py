@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from products.models import Product, Category
 from cart.models import Cart, CartItem
+from checkout.models import ShippingAddress
 
 
 class CheckoutPerformanceTestCase(APITestCase):
@@ -81,10 +82,22 @@ class CheckoutPerformanceTestCase(APITestCase):
         # Start timing
         start_time = time.time()
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': '789 Oak St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         # End timing

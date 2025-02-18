@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from products.models import Product, Category
 from payment.models import Payment
 from cart.models import Cart, CartItem
-from checkout.models import CheckoutSession
+from checkout.models import CheckoutSession, ShippingAddress
 import uuid
 
 
@@ -91,11 +91,23 @@ class CompleteCheckoutFlowTestCase(APITestCase):
             'metadata': {'order_uuid': str(order_uuid)}
         }
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+123456789"
+        )
+
         # Step 1: Initiate Checkout
         start_checkout_url = reverse('checkout:start-checkout')
         start_response = self.client.post(
             start_checkout_url, format='json',
-            data={'shipping_address': '456 Elm St'}
+            data={'shipping_address': str(shipping_address.id)}
         )
 
         self.assertEqual(start_response.status_code, status.HTTP_201_CREATED)
