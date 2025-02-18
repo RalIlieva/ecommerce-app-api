@@ -161,25 +161,6 @@ const Profile: React.FC = () => {
 
        {/* Orders Section */}
       <div className="mt-5">
-{/*         <h5>My Orders</h5> */}
-{/*         {Array.isArray(orders) && orders.length === 0 ? ( */}
-{/*           <p>No orders found.</p> */}
-{/*         ) : ( */}
-{/*           <ul className="list-group"> */}
-{/*             {Array.isArray(orders) ? ( */}
-{/*               orders.map((order) => ( */}
-{/*                 <li key={order.uuid} className="list-group-item"> */}
-{/*                   <Link to={`/order/${order.uuid}`}> */}
-{/*                     <h6>Order #{order.uuid} - {order.status}</h6> */}
-{/*                     <p>Created on: {new Date(order.created).toLocaleDateString()}</p> */}
-{/*                   </Link> */}
-{/*                 </li> */}
-{/*               )) */}
-{/*             ) : ( */}
-{/*               <p>Loading orders...</p>  // Handle loading state */}
-{/*             )} */}
-{/*           </ul> */}
-{/*         )} */}
             <h5>My Orders</h5>
                 {orders.length === 0 ? (
                 <p>No orders found.</p>
