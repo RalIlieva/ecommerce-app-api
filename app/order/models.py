@@ -29,6 +29,12 @@ class Order(UUIDModel, TimeStampedModel):
         related_name='order',
         on_delete=models.CASCADE
     )
+    shipping_address = models.ForeignKey(
+        'checkout.ShippingAddress',  # String reference to avoid circular import
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False
+    )
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,

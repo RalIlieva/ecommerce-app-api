@@ -12,7 +12,7 @@ from .models import Order, OrderItem
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'uuid', 'user_email', 'status', 'created', 'modified'
+        'id', 'uuid', 'user_email', 'status', 'shipping_address', 'created', 'modified'
     ]
     list_filter = [
         'status', 'created', 'modified'
@@ -25,6 +25,12 @@ class OrderAdmin(admin.ModelAdmin):
         return obj.user.email
 
     user_email.short_description = 'User Email'
+
+    # Show the shipping address in the list view
+    def shipping_address(self, obj):
+        return obj.shipping_address
+
+    shipping_address.short_description = 'Shipping Address'
 
 
 class OrderItemInline(admin.TabularInline):

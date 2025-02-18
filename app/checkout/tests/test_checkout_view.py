@@ -7,7 +7,7 @@ from products.models import Product, Category
 from payment.models import Payment
 from order.models import Order
 from cart.models import Cart, CartItem
-from checkout.models import CheckoutSession
+from checkout.models import CheckoutSession, ShippingAddress
 from payment.services import create_payment_intent
 import uuid
 
@@ -74,11 +74,22 @@ class CompleteCheckoutViewTestCase(APITestCase):
         )
         self.payment = Payment.objects.get(order=self.order)
 
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name="Test Other User",
+            address_line_1="Somewhere",
+            address_line_2="Somewhere 2",
+            city="Lala",
+            postal_code="12345",
+            country="CountryName",
+            phone_number="+359883368888"
+        )
+
         # Create a checkout session
         self.checkout_session = CheckoutSession.objects.create(
             user=self.user,
             cart=self.cart,
-            shipping_address='123 Main St',
+            shipping_address=self.shipping_address,
             payment=self.payment,
             status='IN_PROGRESS'
         )

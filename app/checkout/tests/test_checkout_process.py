@@ -10,7 +10,7 @@ from payment.models import Payment
 from order.models import Order
 from cart.models import Cart, CartItem
 from cart.services import add_item_to_cart
-from checkout.models import CheckoutSession
+from checkout.models import CheckoutSession, ShippingAddress
 from stripe.error import StripeError
 from rest_framework.exceptions import ValidationError
 # from django.core.exceptions import ValidationError
@@ -528,6 +528,18 @@ class CheckoutTestCase(APITestCase):
             cart=other_cart, product=self.product, quantity=1
         )
 
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=other_user,
+            full_name="Test Other User",
+            address_line_1="Somewhere",
+            address_line_2="Somewhere 2",
+            city="Lala",
+            postal_code="12345",
+            country="CountryName",
+            phone_number="+359883368888"
+        )
+
         # Initiate checkout for the other user's cart
         from payment.services import create_payment_intent
         from order.services import create_order
@@ -549,7 +561,7 @@ class CheckoutTestCase(APITestCase):
             user=other_user,
             cart=other_cart,
             payment=payment,
-            shipping_address="123 Main St",
+            shipping_address=shipping_address,
             status='IN_PROGRESS'
         )
 

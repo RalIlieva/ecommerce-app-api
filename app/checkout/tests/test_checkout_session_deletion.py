@@ -5,7 +5,7 @@ from products.models import Product, Category
 from payment.models import Payment
 from order.models import Order
 from cart.models import Cart, CartItem
-from checkout.models import CheckoutSession
+from checkout.models import CheckoutSession, ShippingAddress
 
 
 class CheckoutSessionDeletionTestCase(APITestCase):
@@ -79,10 +79,21 @@ class CheckoutSessionDeletionTestCase(APITestCase):
         self.payment = Payment.objects.get(
             order=self.order
         )
+        # Create a ShippingAddress instance
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name="Test Other User",
+            address_line_1="Somewhere",
+            address_line_2="Somewhere 2",
+            city="Lala",
+            postal_code="12345",
+            country="CountryName",
+            phone_number="+359883368888"
+        )
         self.checkout_session = CheckoutSession.objects.create(
             user=self.user,
             cart=self.cart,
-            shipping_address='789 Maple Ave',
+            shipping_address=self.shipping_address,
             payment=self.payment,
             status='IN_PROGRESS'
         )

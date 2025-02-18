@@ -4,7 +4,8 @@ Checkout serializers.
 
 from rest_framework import serializers
 from .models import CheckoutSession
-from core.validators import validate_string_only
+# from core.validators import validate_string_only
+from checkout.models import ShippingAddress
 from cart.serializers import CartSerializer
 
 
@@ -12,10 +13,12 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     cart = CartSerializer(read_only=True)
     uuid = serializers.UUIDField(read_only=True)
     payment_secret = serializers.SerializerMethodField(read_only=True)
-    shipping_address = serializers.CharField(
-        required=True,
-        validators=[validate_string_only]
-    )
+    # shipping_address = serializers.CharField(
+    #     required=True,
+    #     validators=[validate_string_only]
+    # )
+    shipping_address = serializers.PrimaryKeyRelatedField(
+        queryset=ShippingAddress.objects.all())  # Changed to a ForeignKey field
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:

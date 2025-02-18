@@ -8,12 +8,16 @@ from order.models import (
 )
 
 
-def create_order_from_cart(cart, user):
+def create_order_from_cart(cart, user, shipping_address):
     # Create a new order from the cart
     if cart.items.count() == 0:
         return None
 
-    order = Order.objects.create(user=user, status=Order.PENDING)
+    order = Order.objects.create(
+        user=user,
+        shipping_address=shipping_address,
+        status=Order.PENDING
+    )
 
     for item in cart.items.all():
         OrderItem.objects.create(

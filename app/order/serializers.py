@@ -28,13 +28,14 @@ class OrderSerializer(serializers.ModelSerializer):
 
     # # Use a SerializerMethodField to dynamically fetch shipping address
     # shipping_address = serializers.SerializerMethodField()
+    shipping_address = serializers.CharField()  # Add shipping address field
 
     class Meta:
         model = Order
         fields = [
             'id', 'uuid', 'user', 'status', 'created', 'modified', 'items',
             'total_amount',
-            # 'shipping_address',
+            'shipping_address',
         ]
         read_only_fields = [
             'id', 'uuid',  'user', 'status', 'created', 'modified'

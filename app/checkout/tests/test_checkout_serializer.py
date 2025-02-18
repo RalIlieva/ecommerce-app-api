@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
 from products.models import Product, Category
 from cart.models import Cart, CartItem
-from checkout.models import CheckoutSession
+from checkout.models import CheckoutSession, ShippingAddress
 from checkout.serializers import CheckoutSessionSerializer
 
 
@@ -47,11 +47,23 @@ class CheckoutSessionSerializerTestCase(APITestCase):
             cart=self.cart, product=self.product, quantity=2
         )
 
+        # Create a ShippingAddress instance
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name="Test Other User",
+            address_line_1="Somewhere",
+            address_line_2="Somewhere 2",
+            city="Lala",
+            postal_code="12345",
+            country="CountryName",
+            phone_number="+359883368888"
+        )
+
         # Create a checkout session
         self.checkout_session = CheckoutSession.objects.create(
             user=self.user,
             cart=self.cart,
-            shipping_address="123 Main St",
+            shipping_address=self.shipping_address,
             status='IN_PROGRESS'
         )
 
