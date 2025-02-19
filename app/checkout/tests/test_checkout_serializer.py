@@ -139,6 +139,7 @@ class CheckoutSessionSerializerTestCase(APITestCase):
 
         # Assert specific field values
         self.assertEqual(data['shipping_address'], self.shipping_address.id)
+        self.assertIsInstance(data['shipping_address'], int)  # Assert it's an integer (ID)
         self.assertEqual(data['status'], 'IN_PROGRESS')
         self.assertEqual(data['payment_secret'], 'serializer_secret')
 
