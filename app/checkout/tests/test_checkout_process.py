@@ -629,7 +629,7 @@ class CheckoutTestCase(APITestCase):
             "city": "New York",
             "postal_code": "10001",
             "country": "USA",
-            "phone_number": "+15551234567"
+            "phone_number": "+359883368888"
         }
 
         # Make a POST request with new shipping address
@@ -637,18 +637,21 @@ class CheckoutTestCase(APITestCase):
             url,
             format='json',
             data={
-                "shipping_address": new_shipping_address_data
+                "new_shipping_address": new_shipping_address_data
             }
         )
+
+        print("Response Status Code:", response.status_code)
+        print("Response Data:", response.data['detail'])
 
         # Assert that the response status is 201 CREATED
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Assert that the response contains the shipping address details
-        self.assertIn("shipping_address", response.data)
-        self.assertEqual(response.data["shipping_address"]["full_name"], "John Doe")
-        self.assertEqual(response.data["shipping_address"]["address_line_1"], "123 Elm Street")
-        self.assertEqual(response.data["shipping_address"]["city"], "New York")
+        self.assertIn("new_shipping_address", response.data['detail'])
+        self.assertEqual(response.data['detail']["new_shipping_address"]["full_name"], "John Doe")
+        self.assertEqual(response.data['detail']["new_shipping_address"]["address_line_1"], "123 Elm Street")
+        self.assertEqual(response.data['detail']["new_shipping_address"]["city"], "New York")
 
     def test_access_another_users_order(self):
         """

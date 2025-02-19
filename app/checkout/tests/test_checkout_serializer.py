@@ -126,7 +126,7 @@ class CheckoutSessionSerializerTestCase(APITestCase):
             'uuid': str,
             'user': int,
             'cart': dict,
-            'shipping_address': str,
+            'shipping_address': int,
             'status': str,
             'created': str,
             'modified': str,
@@ -138,7 +138,7 @@ class CheckoutSessionSerializerTestCase(APITestCase):
             self.assertIsInstance(data[key], expected_type)
 
         # Assert specific field values
-        self.assertEqual(data['shipping_address'], '123 Main St')
+        self.assertEqual(data['shipping_address'], self.shipping_address.id)
         self.assertEqual(data['status'], 'IN_PROGRESS')
         self.assertEqual(data['payment_secret'], 'serializer_secret')
 
