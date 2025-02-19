@@ -571,22 +571,84 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
+        # Sample new shipping address data
+        invalid_address = {
+            "full_name": "John Doe",
+            "address_line_1": "1234",
+            "address_line_2": "567",
+            "city": "89",
+            "postal_code": "10001",
+            "country": "USA",
+            "phone_number": "+15551234567"
+        }
+
         # Make a POST request with invalid data types
         # An integer for 'shipping_address' instead of a string
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': 12345}
+            data={"new_shipping_address": invalid_address}
         )
 
         # Assert that the response status is 400 BAD REQUEST
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         # Assert the error message indicates the shipping address type er
-        self.assertIn('shipping_address', response.data['detail'])
+        self.assertIn('new_shipping_address', response.data['detail'])
         self.assertEqual(
-            response.data['detail']['shipping_address'][0],
+            response.data['detail']['new_shipping_address']['address_line_1'][0],
             'Shipping address cannot be purely numeric.'
         )
+
+    @patch('payment.services.stripe.PaymentIntent.create')
+    def test_checkout_with_new_shipping_address(
+            self, mock_payment_intent_create
+    ):
+        """
+        Test initiating checkout with a new shipping address.
+        Steps:
+            - Provide a complete new shipping address in the request.
+            - Attempt to initiate checkout.
+        Expected Outcome:
+            - The checkout session is successfully created.
+            - The response should contain the new shipping address.
+        """
+        # Mock the Stripe PaymentIntent creation
+        mock_payment_intent_create.return_value = {
+            'id': 'pi_test',
+            'client_secret': 'test_client_secret'
+        }
+
+        # Endpoint for initiating the checkout process
+        url = reverse('checkout:start-checkout')
+
+        # Sample new shipping address data
+        new_shipping_address_data = {
+            "full_name": "John Doe",
+            "address_line_1": "123 Elm Street",
+            "address_line_2": "Apt 5B",
+            "city": "New York",
+            "postal_code": "10001",
+            "country": "USA",
+            "phone_number": "+15551234567"
+        }
+
+        # Make a POST request with new shipping address
+        response = self.client.post(
+            url,
+            format='json',
+            data={
+                "shipping_address": new_shipping_address_data
+            }
+        )
+
+        # Assert that the response status is 201 CREATED
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Assert that the response contains the shipping address details
+        self.assertIn("shipping_address", response.data)
+        self.assertEqual(response.data["shipping_address"]["full_name"], "John Doe")
+        self.assertEqual(response.data["shipping_address"]["address_line_1"], "123 Elm Street")
+        self.assertEqual(response.data["shipping_address"]["city"], "New York")
 
     def test_access_another_users_order(self):
         """
