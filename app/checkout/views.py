@@ -62,6 +62,7 @@ class StartCheckoutSessionView(generics.CreateAPIView):
     serializer_class = CheckoutSessionSerializer
 
     def post(self, request, *args, **kwargs):
+        print("Request Data:", request.data)  # Debugging line
         """
         Handles the creation of a new checkout session.
         The method retrieves the user's cart, validates that it is not empty,

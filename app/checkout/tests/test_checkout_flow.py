@@ -107,7 +107,18 @@ class CompleteCheckoutFlowTestCase(APITestCase):
         start_checkout_url = reverse('checkout:start-checkout')
         start_response = self.client.post(
             start_checkout_url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         self.assertEqual(start_response.status_code, status.HTTP_201_CREATED)

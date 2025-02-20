@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from products.models import Product, Category
 from cart.models import Cart, CartItem
 from checkout.models import CheckoutSession, ShippingAddress
-from checkout.serializers import CheckoutSessionSerializer
+from checkout.serializers import CheckoutSessionSerializer, ShippingAddressSerializer
 
 
 class CheckoutSessionSerializerTestCase(APITestCase):
@@ -126,7 +126,7 @@ class CheckoutSessionSerializerTestCase(APITestCase):
             'uuid': str,
             'user': int,
             'cart': dict,
-            'shipping_address': int,
+            'shipping_address': dict,
             'status': str,
             'created': str,
             'modified': str,
@@ -138,8 +138,10 @@ class CheckoutSessionSerializerTestCase(APITestCase):
             self.assertIsInstance(data[key], expected_type)
 
         # Assert specific field values
-        self.assertEqual(data['shipping_address'], self.shipping_address.id)
-        self.assertIsInstance(data['shipping_address'], int)  # Assert it's an integer (ID)
+        # self.assertEqual(data['shipping_address'], self.shipping_address)
+        self.assertEqual(data['shipping_address'], ShippingAddressSerializer(self.shipping_address).data)
+
+        self.assertIsInstance(data['shipping_address'], dict)
         self.assertEqual(data['status'], 'IN_PROGRESS')
         self.assertEqual(data['payment_secret'], 'serializer_secret')
 

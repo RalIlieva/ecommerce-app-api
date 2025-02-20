@@ -37,11 +37,15 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     uuid = serializers.UUIDField(read_only=True)
     payment_secret = serializers.SerializerMethodField(read_only=True)
 
-    shipping_address = serializers.PrimaryKeyRelatedField(
-        queryset=ShippingAddress.objects.all(),
+    # shipping_address = serializers.PrimaryKeyRelatedField(
+    #     queryset=ShippingAddress.objects.all(),
+    #     required=False,
+    #     allow_null=True
+    # )
+    shipping_address = ShippingAddressSerializer(
         required=False,
         allow_null=True
-    )
+    )  # Nested serializer
     new_shipping_address = ShippingAddressSerializer(required=False)
 
     class Meta:
@@ -93,6 +97,8 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
             validated_data['shipping_address'] = new_shipping_address
 
         checkout_session = super().create(validated_data)
+        print("Created CheckoutSession:", checkout_session)
+        print("Shipping Address:", checkout_session.shipping_address)
         return checkout_session
 
     def to_representation(self, instance):
