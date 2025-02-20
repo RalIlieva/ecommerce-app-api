@@ -309,13 +309,24 @@ class CompleteCheckoutViewTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368823"
         )
 
         # Make a POST request to initiate the checkout session
         start_response = self.client.post(
             start_checkout_url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Print response for debugging purposes if it fails
