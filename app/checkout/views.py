@@ -17,7 +17,7 @@ import stripe
 
 from .models import CheckoutSession
 from cart.services import get_or_create_cart
-from .serializers import CheckoutSessionSerializer
+from .serializers import CheckoutSessionSerializer, ShippingAddressSerializer
 from order.services import create_order
 from payment.services import (
     create_payment_intent,
@@ -104,7 +104,8 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         # Extract validated data
-        shipping_address = serializer.validated_data['shipping_address']
+        # shipping_address = serializer.validated_data['shipping_address']
+        shipping_address = serializer.validated_data.get('shipping_address')
 
         # Create the checkout session
         checkout_session = CheckoutSession.objects.create(
@@ -136,6 +137,15 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         checkout_session.save()
 
         serializer = self.get_serializer(checkout_session)
+
+        response_data = dict(serializer.data)
+        # shipping_address is currently a pk in `serializer.data`:
+        # Overwrite it with nested if it’s not None:
+        if checkout_session.shipping_address:
+            response_data['shipping_address'] = ShippingAddressSerializer(
+                checkout_session.shipping_address
+            ).data
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

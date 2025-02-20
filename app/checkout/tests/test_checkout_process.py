@@ -2,6 +2,7 @@
 
 from unittest.mock import patch
 from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -642,16 +643,17 @@ class CheckoutTestCase(APITestCase):
         )
 
         print("Response Status Code:", response.status_code)
-        print("Response Data:", response.data['detail'])
+        print("Response Data:", response.data)
 
         # Assert that the response status is 201 CREATED
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Assert that the response contains the shipping address details
-        self.assertIn("new_shipping_address", response.data['detail'])
-        self.assertEqual(response.data['detail']["new_shipping_address"]["full_name"], "John Doe")
-        self.assertEqual(response.data['detail']["new_shipping_address"]["address_line_1"], "123 Elm Street")
-        self.assertEqual(response.data['detail']["new_shipping_address"]["city"], "New York")
+        self.assertIn("shipping_address", response.data)
+        self.assertIsNotNone(response.data["shipping_address"])  # Ensure it's not None
+        self.assertEqual(response.data["shipping_address"]["full_name"], "John Doe")
+        self.assertEqual(response.data["shipping_address"]["address_line_1"], "123 Elm Street")
+        self.assertEqual(response.data["shipping_address"]["city"], "New York")
 
     def test_access_another_users_order(self):
         """

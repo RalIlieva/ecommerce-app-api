@@ -36,13 +36,12 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     cart = CartSerializer(read_only=True)
     uuid = serializers.UUIDField(read_only=True)
     payment_secret = serializers.SerializerMethodField(read_only=True)
-    # shipping_address = serializers.CharField(
-    #     required=True,
-    #     validators=[validate_string_only]
-    # )
+
     shipping_address = serializers.PrimaryKeyRelatedField(
-        queryset=ShippingAddress.objects.all())  # Changed to a ForeignKey field
-    # user = serializers.PrimaryKeyRelatedField(required=False)
+        queryset=ShippingAddress.objects.all(),
+        required=False,
+        allow_null=True
+    )
     new_shipping_address = ShippingAddressSerializer(required=False)
 
     class Meta:
@@ -54,35 +53,159 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
             'created', 'modified', 'payment_secret'
         ]
         extra_kwargs = {
-            'user': {'required': False}  # Allow it to be set in `create`
+            'user': {'required': False}
         }
 
-    def get_payment_secret(self, obj) -> str:
+    def get_payment_secret(self, obj):
         return getattr(obj, 'payment_secret', None)
 
     def validate(self, data):
-        user = self.context['request'].user
-        if not user or not user.is_authenticated:
-            raise serializers.ValidationError({"user": "User must be authenticated to checkout."})
+        # Safely handle no request in context
+        request = self.context.get('request')
+        if request is not None:
+            user = request.user
+            if not user or not user.is_authenticated:
+                raise serializers.ValidationError({"user": "User must be authenticated to checkout."})
 
-        # If a new address is provided, use that instead of the existing one
+        # Must provide shipping_address or new_shipping_address
         if not data.get('shipping_address') and not data.get('new_shipping_address'):
-            raise serializers.ValidationError("Shipping address is required.")
+            raise serializers.ValidationError({
+                "shipping_address": ["This field is required."]
+            })
 
+        # Cannot provide both
         if data.get('shipping_address') and data.get('new_shipping_address'):
             raise serializers.ValidationError(
-                "You can either select an existing address or provide a new one, not both.")
+                "You can either select an existing address or provide a new one, not both."
+            )
 
         return data
 
     def create(self, validated_data):
-        user = self.context['request'].user  # Ensure user is assigned
+        user = self.context['request'].user
         validated_data['user'] = user
 
-        # If a new address is provided, create it and assign to checkout session
+        # If a new shipping address is provided, create it and assign to checkout session
         if 'new_shipping_address' in validated_data:
             new_address_data = validated_data.pop('new_shipping_address')
-            new_shipping_address = ShippingAddress.objects.create(**new_address_data)
+            # Ensure we are linking the user to the new shipping address
+            new_shipping_address = ShippingAddress.objects.create(user=user, **new_address_data)
             validated_data['shipping_address'] = new_shipping_address
 
-        return super().create(validated_data)
+        checkout_session = super().create(validated_data)
+        return checkout_session
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.shipping_address:
+            data['shipping_address'] = ShippingAddressSerializer(instance.shipping_address).data
+        return data
+
+    # def create(self, validated_data):
+    #     if 'new_shipping_address' in validated_data:
+    #         new_data = validated_data.pop('new_shipping_address')
+    #         # If context includes 'request', attach user:
+    #         request = self.context.get('request')
+    #         user = request.user if request else None
+    #         new_shipping_address = ShippingAddress.objects.create(
+    #             user=user,
+    #             **new_data
+    #         )
+    #         validated_data['shipping_address'] = new_shipping_address
+    #
+    #     return super().create(validated_data)
+
+    # def to_representation(self, instance):
+    #     """
+    #     Return the default representation with shipping_address as pk,
+    #     so that tests expecting shipping_address=pk pass.
+    #     """
+    #     return super().to_representation(instance)
+
+
+
+# class CheckoutSessionSerializer(serializers.ModelSerializer):
+#     cart = CartSerializer(read_only=True)
+#     uuid = serializers.UUIDField(read_only=True)
+#     payment_secret = serializers.SerializerMethodField(read_only=True)
+#     # shipping_address = serializers.CharField(
+#     #     required=True,
+#     #     validators=[validate_string_only]
+#     # )
+#     shipping_address = serializers.PrimaryKeyRelatedField(
+#         queryset=ShippingAddress.objects.all(),
+#         required=False,
+#         allow_null=True
+#     )  # Changed to a ForeignKey field
+#     # user = serializers.PrimaryKeyRelatedField(required=False)
+#     new_shipping_address = ShippingAddressSerializer(required=False)
+#
+#     class Meta:
+#         model = CheckoutSession
+#         fields = [
+#             'uuid', 'user', 'cart', 'shipping_address',
+#             'new_shipping_address',
+#             'status',
+#             'created', 'modified', 'payment_secret'
+#         ]
+#         extra_kwargs = {
+#             'user': {'required': False}  # Allow it to be set in `create`
+#         }
+#
+#     def get_payment_secret(self, obj) -> str:
+#         return getattr(obj, 'payment_secret', None)
+#
+#     def validate(self, data):
+#         user = self.context['request'].user
+#         if not user or not user.is_authenticated:
+#             raise serializers.ValidationError({"user": "User must be authenticated to checkout."})
+#
+#         # If a new address is provided, use that instead of the existing one
+#         if not data.get('shipping_address') and not data.get('new_shipping_address'):
+#             raise serializers.ValidationError({
+#                 "shipping_address": ["This field is required."]
+#             })
+#             # raise serializers.ValidationError(
+#             #     "Shipping address is required."
+#             # )
+#
+#         if data.get('shipping_address') and data.get('new_shipping_address'):
+#             raise serializers.ValidationError(
+#                 "You can either select an existing address or provide a new one, not both.")
+#
+#         return data
+#
+#     def create(self, validated_data):
+#         """
+#         If new_shipping_address is provided, create it and set shipping_address
+#         to that newly created object. Otherwise, just use shipping_address pk.
+#         """
+#         user = self.context['request'].user  # Ensure user is assigned
+#         validated_data['user'] = user
+#
+#         # If a new address is provided, create it and assign to checkout session
+#         if 'new_shipping_address' in validated_data:
+#             # pop the nested shipping address data
+#             new_address_data = validated_data.pop('new_shipping_address')
+#             # create a new ShippingAddress for this user
+#             new_shipping_address = ShippingAddress.objects.create(**new_address_data)
+#             validated_data['shipping_address'] = new_shipping_address
+#
+#         # return super().create(validated_data)
+#         checkout_session = super().create(validated_data)
+#         return checkout_session
+#
+#     def to_representation(self, instance):
+#         """
+#         Return the full nested shipping address instead of just the pk.
+#         """
+#         data = super().to_representation(instance)
+#
+#         # Instead of just returning shipping_address = <pk>,
+#         # return the nested address fields.
+#         if instance.shipping_address:
+#             data['shipping_address'] = ShippingAddressSerializer(
+#                 instance.shipping_address
+#             ).data
+#
+#         return data
