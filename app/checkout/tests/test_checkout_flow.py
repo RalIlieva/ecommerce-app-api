@@ -100,7 +100,7 @@ class CompleteCheckoutFlowTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368888"
         )
 
         # Step 1: Initiate Checkout
@@ -120,6 +120,8 @@ class CompleteCheckoutFlowTestCase(APITestCase):
                 }
             }
         )
+        print("Response Status Code:", start_response.status_code)
+        print("Response Data:", start_response.data)
 
         self.assertEqual(start_response.status_code, status.HTTP_201_CREATED)
         self.assertIn('payment_secret', start_response.data)
