@@ -207,15 +207,17 @@ class CheckoutTestCase(APITestCase):
         response_duplicate = self.client.post(
             url, format='json',
             # data={'shipping_address': '123 Main St'}
-            data={'shipping_address': {
-                "full_name": "Test User",
-                "address_line_1": "789 Oak St",
-                "address_line_2": "Apt 2",
-                "city": "Test City",
-                "postal_code": "12345",
-                "country": "Test Country",
-                "phone_number": "+123456789"
-            }}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Assert that the response status is 400 BAD REQUEST
@@ -288,13 +290,24 @@ class CheckoutTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368888"
         )
 
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Assert that the response status is 400 BAD REQUEST
@@ -347,13 +360,24 @@ class CheckoutTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368888"
         )
 
         # First checkout attempt
         response_first = self.client.post(
             url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
         self.assertEqual(response_first.status_code, status.HTTP_201_CREATED)
 
@@ -366,13 +390,24 @@ class CheckoutTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368888"
         )
 
         # Second checkout attempt with the same order
         response_second = self.client.post(
             url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Assert that the second attempt fails due to existing payment
@@ -416,13 +451,24 @@ class CheckoutTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368888"
         )
 
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Assert that the response is successful
@@ -516,13 +562,24 @@ class CheckoutTestCase(APITestCase):
             city="Test City",
             postal_code="12345",
             country="Test Country",
-            phone_number="+123456789"
+            phone_number="+359883368888"
         )
 
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
-            data={'shipping_address': str(shipping_address.id)}
+            # data={'shipping_address': str(shipping_address.id)}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Assert that the response status is 400 BAD REQUEST
@@ -611,7 +668,7 @@ class CheckoutTestCase(APITestCase):
             "city": "89",
             "postal_code": "10001",
             "country": "USA",
-            "phone_number": "+15551234567"
+            "phone_number": "+359883368888"
         }
 
         # Make a POST request with invalid data types
