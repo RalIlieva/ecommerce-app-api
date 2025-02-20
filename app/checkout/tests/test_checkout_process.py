@@ -171,31 +171,33 @@ class CheckoutTestCase(APITestCase):
         # Endpoint for initiating the checkout process
         url = reverse('checkout:start-checkout')
 
-        # # Create a ShippingAddress instance
-        # shipping_address = ShippingAddress.objects.create(
-        #     user=self.user,  # Associate the shipping address with the current user
-        #     full_name="Test User",
-        #     address_line_1="789 Oak St",
-        #     address_line_2="Apt 2",
-        #     city="Test City",
-        #     postal_code="12345",
-        #     country="Test Country",
-        #     phone_number="+123456789"
-        # )
+        # Create a ShippingAddress instance
+        shipping_address = ShippingAddress.objects.create(
+            user=self.user,  # Associate the shipping address with the current user
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+359883368888"
+        )
 
         # Make a POST request to start checkout
         response = self.client.post(
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
-            data={'shipping_address': {
-                "full_name": "Test User",
-                "address_line_1": "789 Oak St",
-                "address_line_2": "Apt 2",
-                "city": "Test City",
-                "postal_code": "12345",
-                "country": "Test Country",
-                "phone_number": "+123456789"
-            }}
+            data={
+                'shipping_address': {
+                    'full_name': shipping_address.full_name,
+                    'address_line_1': shipping_address.address_line_1,
+                    'address_line_2': shipping_address.address_line_2,
+                    'city': shipping_address.city,
+                    'postal_code': shipping_address.postal_code,
+                    'country': shipping_address.country,
+                    'phone_number': str(shipping_address.phone_number)
+                }
+            }
         )
 
         # Assert that the response is successful
