@@ -83,9 +83,18 @@ const OrderPage: React.FC = () => {
 
                {/* Show shipping_address if it's returned by the serializer */}
               {order.shipping_address && (
-                <p>
-                  <strong>Shipped to:</strong> {order.shipping_address}
-                </p>
+                <div className="card mt-3 p-3">
+    <h5>Shipping Address</h5>
+    <p><strong>Name:</strong> {order.shipping_address.full_name}</p>
+    <p><strong>Address:</strong> {order.shipping_address.address_line_1}, {order.shipping_address.address_line_2}</p>
+    <p><strong>City:</strong> {order.shipping_address.city}</p>
+    <p><strong>Postal Code:</strong> {order.shipping_address.postal_code}</p>
+    <p><strong>Country:</strong> {order.shipping_address.country}</p>
+    <p><strong>Phone:</strong> {order.shipping_address.phone_number}</p>
+  </div>
+//                 <p>
+//                   <strong>Shipped to:</strong> {order.shipping_address}
+//                 </p>
               )}
 
               <hr />

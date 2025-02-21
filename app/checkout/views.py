@@ -47,7 +47,7 @@ class StartCheckoutSessionView(generics.CreateAPIView):
     serializer_class = CheckoutSessionSerializer
 
     def post(self, request, *args, **kwargs):
-        print("Request Data:", request.data)  # Debugging line
+        print("Request Data:", request.data)  # Debugging log
 
         # Get the user's cart
         cart = get_or_create_cart(request.user)
@@ -59,12 +59,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Check if a CheckoutSession already exists for this cart
-        if CheckoutSession.objects.filter(cart=cart).exists():
-            return Response(
-                {'detail': "Checkout session already exists for this cart."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # Delete any existing checkout session before creating a new one
+        existing_session = CheckoutSession.objects.filter(cart=cart).first()
+        if existing_session:
+            if existing_session.payment:
+                existing_session.payment.delete()  # ✅ Remove payment if it exists
+            existing_session.delete()
 
         # Validate request data using the serializer
         serializer = self.get_serializer(
@@ -83,12 +83,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
                 **new_shipping_address_data
             )
         elif shipping_address_data:
-            shipping_address, _ = ShippingAddress.objects.get_or_create(
-                user=request.user,
-                **shipping_address_data
-            )
+            shipping_address = shipping_address_data
         else:
-            shipping_address = None
+            return Response(
+                {'detail': "Shipping address is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Create the checkout session
         checkout_session = CheckoutSession.objects.create(
@@ -110,25 +110,99 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         order = create_order(user=request.user, items_data=items_data)
 
         # Create payment intent for checkout & attach it to a payment object
-        payment_secret = create_payment_intent(
-            order_uuid=order.uuid, user=request.user
-        )
+        payment_secret = create_payment_intent(order_uuid=order.uuid, user=request.user)
         payment = Payment.objects.get(order=order)
         checkout_session.payment = payment
         setattr(checkout_session, 'payment_secret', payment_secret)
         checkout_session.save()
 
         # Serialize response properly
-        serializer = self.get_serializer(checkout_session)
-        response_data = dict(serializer.data)
-
-        # Ensure shipping_address is included in response
-        if checkout_session.shipping_address:
-            response_data['shipping_address'] = ShippingAddressSerializer(
-                checkout_session.shipping_address
-            ).data
-
+        response_data = self.get_serializer(checkout_session).data
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+    # def post(self, request, *args, **kwargs):
+    #     print("Request Data:", request.data)  # Debugging line
+    #
+    #     # Get the user's cart
+    #     cart = get_or_create_cart(request.user)
+    #
+    #     # Validate cart - it shouldn't be empty
+    #     if not cart.items.exists():
+    #         return Response(
+    #             {'detail': "Cart is empty."},
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #
+    #     # Check if a CheckoutSession already exists for this cart
+    #     if CheckoutSession.objects.filter(cart=cart).exists():
+    #         return Response(
+    #             {'detail': "Checkout session already exists for this cart."},
+    #             status=status.HTTP_400_BAD_REQUEST
+    #         )
+    #
+    #     # Validate request data using the serializer
+    #     serializer = self.get_serializer(
+    #         data=request.data,
+    #         context={'request': request}
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #
+    #     shipping_address_data = serializer.validated_data.get('shipping_address')
+    #     new_shipping_address_data = serializer.validated_data.get('new_shipping_address')
+    #
+    #     # Create or assign shipping address
+    #     if new_shipping_address_data:
+    #         shipping_address = ShippingAddress.objects.create(
+    #             user=request.user,
+    #             **new_shipping_address_data
+    #         )
+    #     elif shipping_address_data:
+    #         shipping_address, _ = ShippingAddress.objects.get_or_create(
+    #             user=request.user,
+    #             **shipping_address_data
+    #         )
+    #     else:
+    #         shipping_address = None
+    #
+    #     # Create the checkout session
+    #     checkout_session = CheckoutSession.objects.create(
+    #         user=request.user,
+    #         cart=cart,
+    #         shipping_address=shipping_address
+    #     )
+    #
+    #     # Prepare items data to pass to create_order function
+    #     items_data = [
+    #         {
+    #             'product': item.product.uuid,
+    #             'quantity': item.quantity
+    #         }
+    #         for item in cart.items.all()
+    #     ]
+    #
+    #     # Create an order from the cart
+    #     order = create_order(user=request.user, items_data=items_data)
+    #
+    #     # Create payment intent for checkout & attach it to a payment object
+    #     payment_secret = create_payment_intent(
+    #         order_uuid=order.uuid, user=request.user
+    #     )
+    #     payment = Payment.objects.get(order=order)
+    #     checkout_session.payment = payment
+    #     setattr(checkout_session, 'payment_secret', payment_secret)
+    #     checkout_session.save()
+    #
+    #     # Serialize response properly
+    #     serializer = self.get_serializer(checkout_session)
+    #     response_data = dict(serializer.data)
+    #
+    #     # Ensure shipping_address is included in response
+    #     if checkout_session.shipping_address:
+    #         response_data['shipping_address'] = ShippingAddressSerializer(
+    #             checkout_session.shipping_address
+    #         ).data
+    #
+    #     return Response(response_data, status=status.HTTP_201_CREATED)
 
 # class StartCheckoutSessionView(generics.CreateAPIView):
 #     """

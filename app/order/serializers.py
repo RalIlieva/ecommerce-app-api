@@ -5,6 +5,7 @@ Order serializers.
 from rest_framework import serializers
 from .models import Order, OrderItem
 from products.serializers import ProductMiniSerializer
+from checkout.serializers import ShippingAddressSerializer
 # from .services import get_related_checkout_session
 
 
@@ -28,7 +29,8 @@ class OrderSerializer(serializers.ModelSerializer):
 
     # # Use a SerializerMethodField to dynamically fetch shipping address
     # shipping_address = serializers.SerializerMethodField()
-    shipping_address = serializers.CharField()  # Add shipping address field
+    # shipping_address = serializers.CharField()  # Add shipping address field
+    shipping_address = ShippingAddressSerializer(read_only=True)  # Return full address
 
     class Meta:
         model = Order

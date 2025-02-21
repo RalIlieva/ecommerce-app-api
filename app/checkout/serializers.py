@@ -104,6 +104,21 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
         print("Shipping Address:", checkout_session.shipping_address)
         return checkout_session
 
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+
+        # Handle updating shipping address inline
+        if 'shipping_address' in validated_data:
+            shipping_data = validated_data.pop('shipping_address')
+            if instance.shipping_address:
+                for attr, value in shipping_data.items():
+                    setattr(instance.shipping_address, attr, value)
+                instance.shipping_address.save()
+            else:
+                instance.shipping_address = ShippingAddress.objects.create(user=user, **shipping_data)
+
+        return super().update(instance, validated_data)
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if instance.shipping_address:
