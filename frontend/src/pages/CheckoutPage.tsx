@@ -71,24 +71,64 @@ const CheckoutPage: React.FC = () => {
     return;
   }
 
-  try {
-    const requestData = selectedAddress
-      ? { shipping_address: selectedAddress }
-      : { new_shipping_address: newAddress };
+//   try {
+//     const requestData = selectedAddress
+//       ? { shipping_address: selectedAddress }
+//       : { new_shipping_address: newAddress };
+//
+//     console.log("Checkout Request Data:", requestData); // Debugging log
+//
+//     const response = await api.post('/checkout/start/', requestData);
+//     setCheckoutSession(response.data);
+//   } catch (err: any) {
+//     console.error("Checkout Error:", err.response ? err.response.data : err);
+//
+//     if (err.response && err.response.data.detail === 'Checkout session already exists for this cart.') {
+//       alert("A checkout session already exists for this cart. Try completing your current checkout or refresh the page.");
+//     } else {
+//       alert('Failed to start checkout session.');
+//     }
+//   }
+try {
+  const requestData = selectedAddress
+    ? { shipping_address: selectedAddress }
+    : { new_shipping_address: newAddress };
 
-    console.log("Checkout Request Data:", requestData); // Debugging log
+  console.log("Checkout Request Data:", requestData); // Debugging log
 
-    const response = await api.post('/checkout/start/', requestData);
-    setCheckoutSession(response.data);
-  } catch (err: any) {
-    console.error("Checkout Error:", err.response ? err.response.data : err);
+  const response = await api.post('/checkout/start/', requestData);
+  setCheckoutSession(response.data);
+} catch (err: any) {
+  console.error("Checkout Error:", err.response ? err.response.data : err);
 
-    if (err.response && err.response.data.detail === 'Checkout session already exists for this cart.') {
-      alert("A checkout session already exists for this cart. Try completing your current checkout or refresh the page.");
-    } else {
-      alert('Failed to start checkout session.');
+  if (err.response) {
+    const errorData = err.response.data;
+
+    if (errorData.detail) {
+      // Handle known errors
+      if (errorData.detail === 'Checkout session already exists for this cart.') {
+        alert("A checkout session already exists for this cart. Try completing your current checkout or refresh the page.");
+        return;
+      }
+
+      alert(errorData.detail); // Generic error message from backend
+      return;
+    }
+
+    // Handle validation errors (e.g., missing fields)
+    if (typeof errorData === 'object') {
+      const errorMessages = Object.entries(errorData)
+        .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(", ") : messages}`)
+        .join("\n");
+
+      alert(`Error(s):\n${errorMessages}`);
+      return;
     }
   }
+
+  // Fallback error message
+  alert("Failed to start checkout session. Please try again.");
+}
 };
 
 
