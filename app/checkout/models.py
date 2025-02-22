@@ -35,7 +35,8 @@ class CheckoutSession(UUIDModel, TimeStampedModel):
         null=True, blank=True
     )
     shipping_address = models.ForeignKey(
-        'checkout.ShippingAddress',  # String reference to avoid circular import
+        # String reference to avoid circular import
+        'checkout.ShippingAddress',
         on_delete=models.SET_NULL,
         null=True,
         blank=False
@@ -74,4 +75,5 @@ class ShippingAddress(UUIDModel, TimeStampedModel):
     )
 
     def __str__(self):
-        return f"{self.full_name}, {self.address_line_1}, {self.city}, {self.country}, {self.phone_number}"
+        return f"{self.full_name}, {self.address_line_1}, " \
+               f"{self.city}, {self.country}, {self.phone_number}"
