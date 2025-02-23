@@ -30,7 +30,8 @@ class OrderSerializer(serializers.ModelSerializer):
     # # Use a SerializerMethodField to dynamically fetch shipping address
     # shipping_address = serializers.SerializerMethodField()
     # shipping_address = serializers.CharField()  # Add shipping address field
-    shipping_address = ShippingAddressSerializer(read_only=True)  # Return full address
+    # Return full address
+    shipping_address = ShippingAddressSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -47,7 +48,8 @@ class OrderSerializer(serializers.ModelSerializer):
     # def get_shipping_address(self, obj) -> str:
     #     """
     #     Attempt to fetch the shipping address from a related CheckoutSession
-    #     without changing the Order model. The logic inside get_related_checkout_session
+    #     without changing the Order model. The logic
+    #     inside get_related_checkout_session
     #     is where how to match an Order to a CheckoutSession.
     #     """
     #     checkout_session = get_related_checkout_session(obj)
