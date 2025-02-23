@@ -302,7 +302,8 @@ class CompleteCheckoutViewTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
