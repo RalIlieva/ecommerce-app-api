@@ -62,10 +62,12 @@ def update_order_status(order, status):
 #     """
 #     Example approach:
 #     1) Filter checkout sessions by the same user.
-#     2) Filter sessions created close to the order's creation date (e.g., within 5 minutes).
+#     2) Filter sessions created close to the order's creation date
+#     (e.g., within 5 minutes).
 #     3) Return the most recent one, or None if not found.
 #
-#     WARNING: This is a 'best-guess' approach if there's no direct relationship.
+#     WARNING: This is a 'best-guess' approach
+#     if there's no direct relationship.
 #     Ideally, you'd store a direct link to checkout (e.g. a foreign key).
 #     """
 #     if not order or not order.user:
