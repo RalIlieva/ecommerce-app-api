@@ -12,7 +12,9 @@ from .models import Order, OrderItem
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
-        'id', 'uuid', 'user_email', 'status', 'shipping_address', 'created', 'modified'
+        'id', 'uuid', 'user_email',
+        'status', 'shipping_address',
+        'created', 'modified'
     ]
     list_filter = [
         'status', 'created', 'modified'

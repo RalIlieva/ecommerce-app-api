@@ -30,7 +30,8 @@ class Order(UUIDModel, TimeStampedModel):
         on_delete=models.CASCADE
     )
     shipping_address = models.ForeignKey(
-        'checkout.ShippingAddress',  # String reference to avoid circular import
+        # String reference to avoid circular import
+        'checkout.ShippingAddress',
         on_delete=models.SET_NULL,
         null=True,
         blank=False
