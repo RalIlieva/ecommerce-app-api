@@ -2,7 +2,7 @@
 
 from unittest.mock import patch
 from rest_framework import status
-from rest_framework.response import Response
+# from rest_framework.response import Response
 from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -80,7 +80,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -173,7 +174,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -283,7 +285,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -353,7 +356,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -383,7 +387,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -444,7 +449,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -555,7 +561,8 @@ class CheckoutTestCase(APITestCase):
 
         # Create a ShippingAddress instance
         shipping_address = ShippingAddress.objects.create(
-            user=self.user,  # Associate the shipping address with the current user
+            # Associate the shipping address with the current user
+            user=self.user,
             full_name="Test User",
             address_line_1="789 Oak St",
             address_line_2="Apt 2",
@@ -738,10 +745,20 @@ class CheckoutTestCase(APITestCase):
 
         # Assert that the response contains the shipping address details
         self.assertIn("shipping_address", response.data)
-        self.assertIsNotNone(response.data["shipping_address"])  # Ensure it's not None
-        self.assertEqual(response.data["shipping_address"]["full_name"], "John Doe")
-        self.assertEqual(response.data["shipping_address"]["address_line_1"], "123 Elm Street")
-        self.assertEqual(response.data["shipping_address"]["city"], "New York")
+        # Ensure it's not None
+        self.assertIsNotNone(response.data["shipping_address"])
+        self.assertEqual(
+            response.data["shipping_address"]["full_name"],
+            "John Doe"
+        )
+        self.assertEqual(
+            response.data["shipping_address"]["address_line_1"],
+            "123 Elm Street"
+        )
+        self.assertEqual(
+            response.data["shipping_address"]["city"],
+            "New York"
+        )
 
     def test_access_another_users_order(self):
         """
