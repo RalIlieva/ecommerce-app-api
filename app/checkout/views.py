@@ -17,7 +17,10 @@ import stripe
 
 from .models import CheckoutSession, ShippingAddress
 from cart.services import get_or_create_cart
-from .serializers import CheckoutSessionSerializer, ShippingAddressSerializer
+from .serializers import (
+    CheckoutSessionSerializer,
+    # ShippingAddressSerializer
+)
 from order.services import create_order
 from payment.services import (
     create_payment_intent,
@@ -63,7 +66,7 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         existing_session = CheckoutSession.objects.filter(cart=cart).first()
         if existing_session:
             if existing_session.payment:
-                existing_session.payment.delete()  # ✅ Remove payment if it exists
+                existing_session.payment.delete()
             existing_session.delete()
 
         # Validate request data using the serializer
@@ -73,8 +76,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         )
         serializer.is_valid(raise_exception=True)
 
-        shipping_address_data = serializer.validated_data.get('shipping_address')
-        new_shipping_address_data = serializer.validated_data.get('new_shipping_address')
+        shipping_address_data = serializer.validated_data.get(
+            'shipping_address'
+        )
+        new_shipping_address_data = serializer.validated_data.get(
+            'new_shipping_address'
+        )
 
         # Create or assign shipping address
         if new_shipping_address_data:
@@ -110,7 +117,10 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         order = create_order(user=request.user, items_data=items_data)
 
         # Create payment intent for checkout & attach it to a payment object
-        payment_secret = create_payment_intent(order_uuid=order.uuid, user=request.user)
+        payment_secret = create_payment_intent(
+            order_uuid=order.uuid,
+            user=request.user
+        )
         payment = Payment.objects.get(order=order)
         checkout_session.payment = payment
         setattr(checkout_session, 'payment_secret', payment_secret)
@@ -147,8 +157,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
     #     )
     #     serializer.is_valid(raise_exception=True)
     #
-    #     shipping_address_data = serializer.validated_data.get('shipping_address')
-    #     new_shipping_address_data = serializer.validated_data.get('new_shipping_address')
+    #     shipping_address_data = serializer.validated_data.get(
+    #     'shipping_address'
+    #     )
+    #     new_shipping_address_data = serializer.validated_data.get(
+    #     'new_shipping_address'
+    #     )
     #
     #     # Create or assign shipping address
     #     if new_shipping_address_data:
@@ -268,7 +282,9 @@ class StartCheckoutSessionView(generics.CreateAPIView):
 #
 #         # Extract validated data
 #         # shipping_address = serializer.validated_data['shipping_address']
-#         shipping_address_data = serializer.validated_data.get('shipping_address')
+#         shipping_address_data = serializer.validated_data.get(
+#         'shipping_address'
+#         )
 #
 #         if shipping_address_data:
 #             shipping_address, _ = ShippingAddress.objects.get_or_create(
