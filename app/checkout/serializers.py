@@ -207,12 +207,14 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
 #         user = self.context['request'].user  # Ensure user is assigned
 #         validated_data['user'] = user
 #
-#         # If a new address is provided, create it and assign to checkout session
+#         # If a new address is provided, create & assign to checkout session
 #         if 'new_shipping_address' in validated_data:
 #             # pop the nested shipping address data
 #             new_address_data = validated_data.pop('new_shipping_address')
 #             # create a new ShippingAddress for this user
-#             new_shipping_address = ShippingAddress.objects.create(**new_address_data)
+#             new_shipping_address = ShippingAddress.objects.create(
+#             **new_address_data
+#             )
 #             validated_data['shipping_address'] = new_shipping_address
 #
 #         # return super().create(validated_data)
