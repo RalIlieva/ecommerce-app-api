@@ -21,9 +21,9 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
         validators=[validate_string_only],
         required=False
     )
-    city = serializers.CharField\
-        (max_length=100,
-         validators=[validate_string_only]
+    city = serializers.CharField(
+        max_length=100,
+        validators=[validate_string_only]
          )
     postal_code = serializers.CharField(max_length=20)
     country = serializers.CharField(
@@ -87,7 +87,9 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
                 )
 
         # Must provide shipping_address or new_shipping_address
-        if not data.get('shipping_address') and not data.get('new_shipping_address'):
+        if not data.get(
+                'shipping_address'
+        ) and not data.get('new_shipping_address'):
             raise serializers.ValidationError({
                 "shipping_address": ["This field is required."]
             })
