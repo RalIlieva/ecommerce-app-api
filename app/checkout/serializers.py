@@ -88,15 +88,21 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         validated_data['user'] = user
+        # Debugging log
+        print("Received validated_data:", validated_data)
 
-        print("Received validated_data:", validated_data)  # Debugging log
-
-        # If a new shipping address is provided, create it and assign to checkout session
+        # If a new shipping address is provided,
+        # create it and assign to checkout session
         if 'new_shipping_address' in validated_data:
             new_address_data = validated_data.pop('new_shipping_address')
-            print("Creating new shipping address with data:", new_address_data)  # Debugging log
-            # Ensure we are linking the user to the new shipping address
-            new_shipping_address = ShippingAddress.objects.create(user=user, **new_address_data)
+            print(
+                "Creating new shipping address with data:",
+                new_address_data
+            )
+            # Ensure linking the user to the new shipping address
+            new_shipping_address = ShippingAddress.objects.create(
+                user=user, **new_address_data
+            )
             validated_data['shipping_address'] = new_shipping_address
 
         checkout_session = super().create(validated_data)
@@ -115,14 +121,18 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
                     setattr(instance.shipping_address, attr, value)
                 instance.shipping_address.save()
             else:
-                instance.shipping_address = ShippingAddress.objects.create(user=user, **shipping_data)
+                instance.shipping_address = ShippingAddress.objects.create(
+                    user=user, **shipping_data
+                )
 
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         if instance.shipping_address:
-            data['shipping_address'] = ShippingAddressSerializer(instance.shipping_address).data
+            data['shipping_address'] = ShippingAddressSerializer(
+                instance.shipping_address
+            ).data
         return data
 
     # def create(self, validated_data):
