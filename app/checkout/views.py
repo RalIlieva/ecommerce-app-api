@@ -66,8 +66,12 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         existing_session = CheckoutSession.objects.filter(cart=cart).first()
         if existing_session:
             if existing_session.payment:
-                existing_session.payment.delete()
-            existing_session.delete()
+                return Response(
+                    {'detail': "Checkout session already exists for this cart."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            #     existing_session.payment.delete()
+            # existing_session.delete()
 
         # Validate request data using the serializer
         serializer = self.get_serializer(

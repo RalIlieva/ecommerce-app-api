@@ -96,7 +96,7 @@ class CheckoutTestCase(APITestCase):
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
             data={
-                'shipping_address': {
+                'new_shipping_address': {
                     'full_name': shipping_address.full_name,
                     'address_line_1': shipping_address.address_line_1,
                     'address_line_2': shipping_address.address_line_2,
@@ -190,7 +190,7 @@ class CheckoutTestCase(APITestCase):
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
             data={
-                'shipping_address': {
+                'new_shipping_address': {
                     'full_name': shipping_address.full_name,
                     'address_line_1': shipping_address.address_line_1,
                     'address_line_2': shipping_address.address_line_2,
@@ -301,7 +301,7 @@ class CheckoutTestCase(APITestCase):
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
             data={
-                'shipping_address': {
+                'new_shipping_address': {
                     'full_name': shipping_address.full_name,
                     'address_line_1': shipping_address.address_line_1,
                     'address_line_2': shipping_address.address_line_2,
@@ -372,7 +372,7 @@ class CheckoutTestCase(APITestCase):
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
             data={
-                'shipping_address': {
+                'new_shipping_address': {
                     'full_name': shipping_address.full_name,
                     'address_line_1': shipping_address.address_line_1,
                     'address_line_2': shipping_address.address_line_2,
@@ -465,7 +465,7 @@ class CheckoutTestCase(APITestCase):
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
             data={
-                'shipping_address': {
+                'new_shipping_address': {
                     'full_name': shipping_address.full_name,
                     'address_line_1': shipping_address.address_line_1,
                     'address_line_2': shipping_address.address_line_2,
@@ -577,7 +577,7 @@ class CheckoutTestCase(APITestCase):
             url, format='json',
             # data={'shipping_address': str(shipping_address.id)}
             data={
-                'shipping_address': {
+                'new_shipping_address': {
                     'full_name': shipping_address.full_name,
                     'address_line_1': shipping_address.address_line_1,
                     'address_line_2': shipping_address.address_line_2,
