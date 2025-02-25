@@ -12,11 +12,24 @@ from cart.serializers import CartSerializer
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(max_length=255)
-    address_line_1 = serializers.CharField(max_length=255, validators=[validate_string_only])
-    address_line_2 = serializers.CharField(max_length=255, validators=[validate_string_only], required=False)
-    city = serializers.CharField(max_length=100, validators=[validate_string_only])
+    address_line_1 = serializers.CharField(
+        max_length=255,
+        validators=[validate_string_only]
+    )
+    address_line_2 = serializers.CharField(
+        max_length=255,
+        validators=[validate_string_only],
+        required=False
+    )
+    city = serializers.CharField\
+        (max_length=100,
+         validators=[validate_string_only]
+         )
     postal_code = serializers.CharField(max_length=20)
-    country = serializers.CharField(max_length=100, validators=[validate_string_only])
+    country = serializers.CharField(
+        max_length=100,
+        validators=[validate_string_only]
+    )
     phone_number = PhoneNumberField()
 
     class Meta:
@@ -69,7 +82,9 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
         if request is not None:
             user = request.user
             if not user or not user.is_authenticated:
-                raise serializers.ValidationError({"user": "User must be authenticated to checkout."})
+                raise serializers.ValidationError(
+                    {"user": "User must be authenticated to checkout."}
+                )
 
         # Must provide shipping_address or new_shipping_address
         if not data.get('shipping_address') and not data.get('new_shipping_address'):
