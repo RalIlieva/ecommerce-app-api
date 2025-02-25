@@ -97,7 +97,8 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
         # Cannot provide both
         if data.get('shipping_address') and data.get('new_shipping_address'):
             raise serializers.ValidationError(
-                "You can either select an existing address or provide a new one, not both."
+                "You can either select an existing address "
+                "or provide a new one, not both."
             )
 
         return data

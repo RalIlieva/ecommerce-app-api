@@ -67,7 +67,10 @@ class StartCheckoutSessionView(generics.CreateAPIView):
         if existing_session:
             if existing_session.payment:
                 return Response(
-                    {'detail': "Checkout session already exists for this cart."},
+                    {
+                        'detail':
+                            "Checkout session already exists for this cart."
+                    },
                     status=status.HTTP_400_BAD_REQUEST
                 )
             #     existing_session.payment.delete()
