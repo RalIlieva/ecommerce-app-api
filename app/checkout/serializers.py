@@ -147,7 +147,6 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     #     return super().to_representation(instance)
 
 
-
 # class CheckoutSessionSerializer(serializers.ModelSerializer):
 #     cart = CartSerializer(read_only=True)
 #     uuid = serializers.UUIDField(read_only=True)
@@ -182,10 +181,16 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
 #     def validate(self, data):
 #         user = self.context['request'].user
 #         if not user or not user.is_authenticated:
-#             raise serializers.ValidationError({"user": "User must be authenticated to checkout."})
+#             raise serializers.ValidationError(
+#             {"user": "User must be authenticated to checkout."}
+#             )
 #
 #         # If a new address is provided, use that instead of the existing one
-#         if not data.get('shipping_address') and not data.get('new_shipping_address'):
+#         if not data.get(
+#         'shipping_address'
+#         ) and not data.get(
+#         'new_shipping_address'
+#         ):
 #             raise serializers.ValidationError({
 #                 "shipping_address": ["This field is required."]
 #             })
@@ -195,14 +200,16 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
 #
 #         if data.get('shipping_address') and data.get('new_shipping_address'):
 #             raise serializers.ValidationError(
-#                 "You can either select an existing address or provide a new one, not both.")
+#                 "You can either select an existing address or
+#                 provide a new one, not both."
+#                 )
 #
 #         return data
 #
 #     def create(self, validated_data):
 #         """
-#         If new_shipping_address is provided, create it and set shipping_address
-#         to that newly created object. Otherwise, just use shipping_address pk.
+#         If new_shipping_address is provided, create it & set shipping_address
+#         to that newly created object. Otherwise, use shipping_address pk.
 #         """
 #         user = self.context['request'].user  # Ensure user is assigned
 #         validated_data['user'] = user
