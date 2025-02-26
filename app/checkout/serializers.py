@@ -50,15 +50,17 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     uuid = serializers.UUIDField(read_only=True)
     payment_secret = serializers.SerializerMethodField(read_only=True)
 
+    # Initial version - ID needed
     # shipping_address = serializers.PrimaryKeyRelatedField(
     #     queryset=ShippingAddress.objects.all(),
     #     required=False,
     #     allow_null=True
     # )
+    # Nested serializer
     shipping_address = ShippingAddressSerializer(
         required=False,
         allow_null=True
-    )  # Nested serializer
+    )
     new_shipping_address = ShippingAddressSerializer(required=False)
 
     class Meta:
@@ -152,27 +154,6 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
                 instance.shipping_address
             ).data
         return data
-
-    # def create(self, validated_data):
-    #     if 'new_shipping_address' in validated_data:
-    #         new_data = validated_data.pop('new_shipping_address')
-    #         # If context includes 'request', attach user:
-    #         request = self.context.get('request')
-    #         user = request.user if request else None
-    #         new_shipping_address = ShippingAddress.objects.create(
-    #             user=user,
-    #             **new_data
-    #         )
-    #         validated_data['shipping_address'] = new_shipping_address
-    #
-    #     return super().create(validated_data)
-
-    # def to_representation(self, instance):
-    #     """
-    #     Return the default representation with shipping_address as pk,
-    #     so that tests expecting shipping_address=pk pass.
-    #     """
-    #     return super().to_representation(instance)
 
 
 # class CheckoutSessionSerializer(serializers.ModelSerializer):
