@@ -134,8 +134,15 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             for item in cart.items.all()
         ]
 
-        # Create an order from the cart
-        order = create_order(user=request.user, items_data=items_data)
+        # # Create an order from the cart - initial working version
+        # order = create_order(user=request.user, items_data=items_data)
+
+        # Create an order from the cart with shipping address
+        order = create_order(
+            user=request.user,
+            items_data=items_data,
+            shipping_address=shipping_address
+        )
 
         # Create payment intent for checkout & attach it to a payment object
         payment_secret = create_payment_intent(
@@ -350,6 +357,12 @@ class CompleteCheckoutView(APIView):
             checkout_session.payment.status = Payment.SUCCESS
 
             order = checkout_session.payment.order
+
+            # Ensure the order has a shipping address saved
+            if not order.shipping_address:
+                order.shipping_address = checkout_session.shipping_address
+                order.save()
+
             order.status = Order.PAID
 
             checkout_session.save()
