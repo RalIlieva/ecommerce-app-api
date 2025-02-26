@@ -46,10 +46,22 @@ from core.exceptions import (
     )
 )
 class StartCheckoutSessionView(generics.CreateAPIView):
+    """
+    API endpoint to start a checkout session.
+    This view handles the creation of a checkout session for a user's cart.
+    It ensures the cart is not empty, creates an order for the cart items,
+    and initiates a payment intent.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = CheckoutSessionSerializer
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles the creation of a new checkout session.
+        The method retrieves the user's cart, validates that it is not empty,
+        and then creates a new checkout session. It also creates an order
+        from the cart items and initiates a payment intent.
+        """
         # Debugging log
         print("Request Data:", request.data)
 
@@ -64,6 +76,7 @@ class StartCheckoutSessionView(generics.CreateAPIView):
             )
 
         # Delete any existing checkout session before creating a new one
+        # or return - checkout session already exists
         existing_session = CheckoutSession.objects.filter(cart=cart).first()
         if existing_session:
             if existing_session.payment:
