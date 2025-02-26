@@ -56,6 +56,7 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     #     required=False,
     #     allow_null=True
     # )
+
     # Nested serializer
     shipping_address = ShippingAddressSerializer(
         required=False,
@@ -108,6 +109,7 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         validated_data['user'] = user
+
         # Debugging log
         print("Received validated_data:", validated_data)
 
@@ -115,10 +117,13 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
         # create it and assign to checkout session
         if 'new_shipping_address' in validated_data:
             new_address_data = validated_data.pop('new_shipping_address')
+
+            # Debugging log
             print(
                 "Creating new shipping address with data:",
                 new_address_data
             )
+
             # Ensure linking the user to the new shipping address
             new_shipping_address = ShippingAddress.objects.create(
                 user=user, **new_address_data
@@ -126,6 +131,8 @@ class CheckoutSessionSerializer(serializers.ModelSerializer):
             validated_data['shipping_address'] = new_shipping_address
 
         checkout_session = super().create(validated_data)
+
+        # Debugging log
         print("Created CheckoutSession:", checkout_session)
         print("Shipping Address:", checkout_session.shipping_address)
         return checkout_session
