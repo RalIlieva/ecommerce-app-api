@@ -61,10 +61,20 @@ const ProductDetail: React.FC = () => {
       // Update the cart count (Option A: increment by quantity)
       setCartCount(cartCount + quantity);
 
-    } catch (err) {
-      console.error(err);
-      alert('Failed to add item to cart.');
+    } catch (error: any) {
+    if (error.response) {
+      // Handle backend validation errors specifically for insufficient stock
+      if (error.response.status === 400) {
+        const errorMessage = error.response.data.detail || 'Failed to add item to cart.';
+        alert(errorMessage); // Display the actual backend error message
+      } else {
+        alert('An error occurred while adding item to cart.');
+      }
+    } else {
+      console.error(error);
+      alert('Network error, please try again.');
     }
+  }
   };
 
   // Add to Wishlist functionality
