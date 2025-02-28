@@ -132,3 +132,12 @@ def update_product_stock(product_uuid, quantity):
     product.stock -= quantity
     product.save()
     return product
+
+
+@transaction.atomic
+def increase_product_stock(product_uuid, quantity):
+    """Increase stock for a given product by quantity."""
+    product = Product.objects.select_for_update().get(uuid=product_uuid)
+    product.stock += quantity
+    product.save()
+    return product
