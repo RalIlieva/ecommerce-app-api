@@ -94,7 +94,7 @@ try {
     ? { shipping_address: selectedAddress }
     : { new_shipping_address: newAddress };
 
-  console.log("Checkout Request Data:", requestData); // Debugging log
+//   console.log("Checkout Request Data:", requestData); // Debugging log
 
   const response = await api.post('/checkout/start/', requestData);
   setCheckoutSession(response.data);
