@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 from celery import Celery
 from django.conf import settings
-# from celery.schedules import crontab
+from celery.schedules import crontab
 
 # Set the default Django settings module for Celery.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
@@ -22,6 +22,16 @@ app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
 
+
+# Define periodic tasks
+app.conf.beat_schedule = {
+    'cancel-expired-orders-every-night': {
+        'task': 'order.tasks.cancel_expired_orders_task',
+        'schedule': crontab(hour=0, minute=0),  # Runs every night at midnight
+    },
+}
+
+app.conf.timezone = 'UTC'
 
 # # Optional: Celery Beat schedule if needed for periodic tasks
 # app.conf.beat_schedule = {
