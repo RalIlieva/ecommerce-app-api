@@ -17,6 +17,7 @@ from order.services import (
     create_order,
     # update_order_status
 )
+from checkout.models import ShippingAddress
 
 ORDERS_URL = reverse('order:order-list')
 ORDER_CREATE_URL = reverse('order:order-create')
@@ -52,13 +53,25 @@ class OrderListViewTests(TestCase):
             name='Test Product', description='A great product', price=100.00,
             category=self.category, stock=10, slug='test-product'
         )
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name='Test User',
+            address_line_1='123 Test Street',
+            address_line_2='',
+            city='Test City',
+            postal_code='12345',
+            country='Testland',
+            phone_number='+1234567890'
+        )
         self.order1 = create_order(
             self.user,
-            [{'product': self.product.uuid, 'quantity': 2}]
+            [{'product': self.product.uuid, 'quantity': 2}],
+            self.shipping_address
         )
         self.order2 = create_order(
             self.other_user,
-            [{'product': self.product.uuid, 'quantity': 1}]
+            [{'product': self.product.uuid, 'quantity': 1}],
+            self.shipping_address
         )
         self.client.force_authenticate(self.user)
 
@@ -187,10 +200,21 @@ class OrderDetailViewTests(TestCase):
             name='Test Product', description='A great product', price=100.00,
             category=self.category, stock=10, slug='test-product'
         )
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name='Test User',
+            address_line_1='123 Test Street',
+            address_line_2='',
+            city='Test City',
+            postal_code='12345',
+            country='Testland',
+            phone_number='+1234567890'
+        )
 
         # Create an order for the user
         self.order = create_order(
-            self.user, [{'product': self.product.uuid, 'quantity': 2}]
+            self.user, [{'product': self.product.uuid, 'quantity': 2}],
+            self.shipping_address
         )
         self.client.force_authenticate(self.user)
 
