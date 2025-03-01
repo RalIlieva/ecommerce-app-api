@@ -52,7 +52,7 @@ class OrderCreationTestCase(OrderTestBase):
 
     def test_list_orders_filter_status(self):
         """Test filtering orders by status."""
-        shipped_order = create_order(
+        shipped_order = self.create_order(
             self.user,
             [{'product': self.product.uuid, 'quantity': 1}]
         )
