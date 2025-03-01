@@ -10,7 +10,9 @@ from rest_framework.views import APIView
 from rest_framework import generics, status, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from order.models import Order
+from checkout.models import ShippingAddress
 from order.serializers import OrderSerializer
 from order.services import (
     create_order,
@@ -62,9 +64,29 @@ class OrderCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
 
+    # def create(self, request, *args, **kwargs):
+    #     order_data = request.data.get('items', [])
+    #     order = create_order(request.user, order_data)
+    #     serializer = self.get_serializer(order)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def create(self, request, *args, **kwargs):
-        order_data = request.data.get('items', [])
-        order = create_order(request.user, order_data)
+        # Extract items data
+        items_data = request.data.get('items', [])
+        if not items_data:
+            raise DRFValidationError({'detail': "Items must not be empty."})
+
+        # Extract shipping address data; this could be a nested dict from the request
+        shipping_address_data = request.data.get('shipping_address')
+        if not shipping_address_data:
+            raise DRFValidationError({'detail': "Shipping address is required."})
+
+        # Create a new shipping address for the user using the provided data.
+        # You might want to use a serializer to validate shipping_address_data first.
+        shipping_address = ShippingAddress.objects.create(user=request.user, **shipping_address_data)
+
+        # Now, create the order by supplying the shipping address.
+        order = create_order(request.user, items_data, shipping_address)
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

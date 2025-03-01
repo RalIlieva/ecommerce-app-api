@@ -10,6 +10,7 @@ from rest_framework import status
 from uuid import uuid4
 from products.models import Product, Category
 from order.services import create_order
+from checkout.models import ShippingAddress
 
 
 def admin_detail_url(order_uuid):
@@ -42,8 +43,20 @@ class AdminOrderDetailViewTests(TestCase):
             name='Test Product', description='A great product', price=100.00,
             category=self.category, stock=10, slug='test-product'
         )
+        # Create a shipping address for the user.
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name='Test User',
+            address_line_1='123 Test Street',
+            address_line_2='',
+            city='Test City',
+            postal_code='12345',
+            country='Testland',
+            phone_number='+1234567890'
+        )
         self.order = create_order(
-            self.user, [{'product': self.product.uuid, 'quantity': 2}]
+            self.user, [{'product': self.product.uuid, 'quantity': 2}],
+            self.shipping_address
         )
         self.client.force_authenticate(self.admin_user)
 
