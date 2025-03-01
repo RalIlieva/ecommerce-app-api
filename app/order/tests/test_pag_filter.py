@@ -18,7 +18,16 @@ class OrderCreationTestCase(OrderTestBase):
         Test creating an order with valid data.
         """
         payload = {
-            'items': [{'product': str(self.product.uuid), 'quantity': 2}]
+            'items': [{'product': str(self.product.uuid), 'quantity': 2}],
+            'new_shipping_address': {
+                'full_name': "Test User",
+                'address_line_1': "123 Test Street",
+                'address_line_2': "Apt 1",
+                'city': "Test City",
+                'postal_code': "12345",
+                'country': "Testland",
+                'phone_number': "+359883368888"
+            }
         }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 

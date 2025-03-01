@@ -10,6 +10,7 @@ from rest_framework import status
 from products.models import Category, Product
 from order.models import Order
 from order.services import create_order
+from checkout.models import ShippingAddress
 
 ORDERS_URL = reverse('order:order-list')
 ORDER_CREATE_URL = reverse('order:order-create')
@@ -32,11 +33,23 @@ class OrderTestBase(TestCase):
             name='Test Product', description='A great product', price=100.00,
             category=self.category, stock=20, slug='test-product'
         )
+        self.shipping_address = ShippingAddress.objects.create(
+            user=self.user,
+            full_name="Test User",
+            address_line_1="123 Test Street",
+            address_line_2="Apt 1",
+            city="Test City",
+            postal_code="12345",
+            country="Testland",
+            phone_number="+359883368888"
+        )
         self.client.force_authenticate(self.user)
 
     def create_order(self, user, items):
         """Helper to create an order for testing purposes."""
-        return create_order(user, items)
+        # return create_order(user, items)
+        from order.services import create_order  # Import here to avoid circular imports
+        return create_order(user, items, self.shipping_address)
 
     def create_user(self, email, password):
         """Helper to create a user."""
