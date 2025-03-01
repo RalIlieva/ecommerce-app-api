@@ -115,6 +115,7 @@ def update_product_with_related_data(instance, validated_data):
     return instance
 
 
+# Initial version - to delete
 # def update_product_stock(product_id, quantity):
 #     product = Product.objects.get(id=product_id)
 #     product.stock -= quantity
