@@ -65,7 +65,7 @@ class OrderCreationTestCase(OrderTestBase):
         """Test creating an order with valid data."""
         payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': 2}]
-        }
+            }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
