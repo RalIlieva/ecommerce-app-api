@@ -48,7 +48,8 @@ class OrderTestBase(TestCase):
     def create_order(self, user, items):
         """Helper to create an order for testing purposes."""
         # return create_order(user, items)
-        from order.services import create_order  # Import here to avoid circular imports
+        # Import here to avoid circular imports
+        from order.services import create_order
         return create_order(user, items, self.shipping_address)
 
     def create_user(self, email, password):
