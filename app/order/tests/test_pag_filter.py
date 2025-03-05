@@ -19,7 +19,7 @@ class OrderCreationTestCase(OrderTestBase):
         """
         payload = {
             'items': [{'product': str(self.product.uuid), 'quantity': 2}],
-            'new_shipping_address': {
+            'shipping_address': {
                 'full_name': "Test User",
                 'address_line_1': "123 Test Street",
                 'address_line_2': "Apt 1",
@@ -54,7 +54,7 @@ class OrderCreationTestCase(OrderTestBase):
         """Test filtering orders by status."""
         shipped_order = self.create_order(
             self.user,
-            [{'product': self.product.uuid, 'quantity': 1}]
+            [{'product': self.product.uuid, 'quantity': 1}],
         )
         shipped_order.status = Order.SHIPPED
         shipped_order.save()
