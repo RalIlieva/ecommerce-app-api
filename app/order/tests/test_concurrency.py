@@ -39,7 +39,16 @@ class OrderCreationTestCase(LiveServerTestCase):
 
         # Example payload for placing an order
         self.payload = {
-            'items': [{'product': str(self.product.uuid), 'quantity': 5}]
+            'items': [{'product': str(self.product.uuid), 'quantity': 5}],
+            'shipping_address': {
+                'full_name': "Test User",
+                'address_line_1': "123 Test Street",
+                'address_line_2': "Apt 1",
+                'city': "Test City",
+                'postal_code': "12345",
+                'country': "Testland",
+                'phone_number': "+359883368888"
+            }
         }
 
     def place_order(self):
