@@ -18,8 +18,6 @@ def cancel_expired_orders_task():
         created__lt=expired_time
     )
 
-    print(f"Found {expired_orders.count()} expired orders.")
-
     for order in expired_orders:
         # Restock the products before cancelling the order
         for item in order.order_items.all():
