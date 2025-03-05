@@ -6,7 +6,7 @@ from datetime import timedelta
 from django.contrib.auth import get_user_model
 from order.models import Order, OrderItem
 from checkout.models import ShippingAddress
-from products.models import Product
+from products.models import Product, Category
 from order.tasks import cancel_expired_orders_task
 
 User = get_user_model()
@@ -31,9 +31,17 @@ class CancelExpiredOrdersTestCase(TestCase):
             phone_number='+1234567890'
         )
 
+        self.category = Category.objects.create(
+            name='Electronics',
+            slug='electronics'
+        )
+
         # Create a test product with initial stock of 10
         self.product = Product.objects.create(
             name='Test Product',
+            slug = 'test-product',
+            category = self.category,
+            description = 'A great product',
             stock=10,
             price=100.00
         )
