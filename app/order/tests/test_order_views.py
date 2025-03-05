@@ -171,7 +171,16 @@ class OrderCreateViewTests(TestCase):
         """
         invalid_uuid = uuid4()
         payload = {
-            'items': [{'product': invalid_uuid, 'quantity': 1}]
+            'items': [{'product': invalid_uuid, 'quantity': 1}],
+            'shipping_address': {
+                'full_name': "Test User",
+                'address_line_1': "123 Test Street",
+                'address_line_2': "Apt 1",
+                'city': "Test City",
+                'postal_code': "12345",
+                'country': "Testland",
+                'phone_number': "+359883368888"
+            }
         }
         response = self.client.post(ORDER_CREATE_URL, payload, format='json')
 
