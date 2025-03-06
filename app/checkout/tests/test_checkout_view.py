@@ -62,18 +62,6 @@ class CompleteCheckoutViewTestCase(APITestCase):
             cart=self.cart, product=self.product, quantity=2
         )
 
-        # Create order and payment using mocked function
-        from order.services import create_order
-        self.order = create_order(user=self.user, items_data=[
-            {'product': self.product.uuid, 'quantity': 2}
-        ])
-
-        # Use create_payment_intent to create a payment & attach to the order
-        self.payment_secret = create_payment_intent(
-            order_uuid=self.order.uuid, user=self.user
-        )
-        self.payment = Payment.objects.get(order=self.order)
-
         self.shipping_address = ShippingAddress.objects.create(
             user=self.user,
             full_name="Test Other User",
@@ -84,6 +72,19 @@ class CompleteCheckoutViewTestCase(APITestCase):
             country="CountryName",
             phone_number="+359883368888"
         )
+
+        # Create order and payment using mocked function
+        from order.services import create_order
+        self.order = create_order(user=self.user, items_data=[
+            {'product': self.product.uuid, 'quantity': 2}
+        ], shipping_address=self.shipping_address
+        )
+
+        # Use create_payment_intent to create a payment & attach to the order
+        self.payment_secret = create_payment_intent(
+            order_uuid=self.order.uuid, user=self.user
+        )
+        self.payment = Payment.objects.get(order=self.order)
 
         # Create a checkout session
         self.checkout_session = CheckoutSession.objects.create(
