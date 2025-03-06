@@ -8,6 +8,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
+from checkout.models import ShippingAddress
 from products.models import Product, Category
 from order.services import create_order
 from django.contrib.auth.models import Group
@@ -63,8 +64,22 @@ class VendorOrderDetailViewTests(TestCase):
             name='Test Product', description='A great product', price=100.00,
             category=self.category, stock=10, slug='test-product'
         )
+        # Create a ShippingAddress instance
+        self.shipping_address = ShippingAddress.objects.create(
+            # Associate the shipping address with the current user
+            user=self.user,
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+359883368823"
+        )
+
         self.order = create_order(
-            self.user, [{'product': self.product.uuid, 'quantity': 2}]
+            self.user, [{'product': self.product.uuid, 'quantity': 2}],
+            shipping_address=self.shipping_address
         )
 
     def test_update_order_status_with_valid_uuid(self):
