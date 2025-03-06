@@ -804,7 +804,8 @@ class CheckoutTestCase(APITestCase):
         # Create an order for the other user
         order = create_order(user=other_user, items_data=[
             {'product': self.product.uuid, 'quantity': 1}
-        ])
+        ], shipping_address=shipping_address
+        )
 
         # Create a payment intent for that order
         create_payment_intent(order_uuid=order.uuid, user=other_user)
