@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 from order.models import Order
-from order.services import create_order
+# from order.services import create_order
 from .test_base import OrderTestBase
 
 ORDERS_URL = reverse('order:order-list')

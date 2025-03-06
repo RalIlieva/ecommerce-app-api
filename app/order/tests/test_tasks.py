@@ -81,5 +81,6 @@ class CancelExpiredOrdersTestCase(TestCase):
 
         # After task execution, the order should be CANCELLED...
         self.assertEqual(self.order.status, Order.CANCELLED)
-        # ... and the product stock should be increased by the quantity from the order item (10 + 2 = 12)
+        # ... and the product stock should be increased by
+        # the quantity from the order item (10 + 2 = 12)
         self.assertEqual(self.product.stock, 12)
