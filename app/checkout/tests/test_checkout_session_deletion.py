@@ -67,18 +67,7 @@ class CheckoutSessionDeletionTestCase(APITestCase):
         self.cart_item = CartItem.objects.create(
             cart=self.cart, product=self.product, quantity=1
         )
-        from order.services import create_order
-        from payment.services import create_payment_intent
-        self.order = create_order(user=self.user, items_data=[
-            {'product': self.product.uuid, 'quantity': 1}
-        ])
-        # This now uses the mocked function
-        self.payment_secret = create_payment_intent(
-            order_uuid=self.order.uuid, user=self.user
-        )
-        self.payment = Payment.objects.get(
-            order=self.order
-        )
+
         # Create a ShippingAddress instance
         self.shipping_address = ShippingAddress.objects.create(
             user=self.user,
@@ -90,6 +79,21 @@ class CheckoutSessionDeletionTestCase(APITestCase):
             country="CountryName",
             phone_number="+359883368888"
         )
+
+        from order.services import create_order
+        from payment.services import create_payment_intent
+        self.order = create_order(user=self.user, items_data=[
+            {'product': self.product.uuid, 'quantity': 1}
+        ], shipping_address=self.shipping_address
+        )
+        # This now uses the mocked function
+        self.payment_secret = create_payment_intent(
+            order_uuid=self.order.uuid, user=self.user
+        )
+        self.payment = Payment.objects.get(
+            order=self.order
+        )
+
         self.checkout_session = CheckoutSession.objects.create(
             user=self.user,
             cart=self.cart,
