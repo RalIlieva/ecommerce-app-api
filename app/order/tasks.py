@@ -28,5 +28,5 @@ def cancel_expired_orders_task():
         order.status = Order.CANCELLED
         order.save()
         print(
-            f"Order {order.uuid} has been cancelled and stock has been updated."
+            f"Order {order.uuid} has been cancelled and stock updated."
         )
