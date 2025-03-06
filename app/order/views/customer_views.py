@@ -76,14 +76,19 @@ class OrderCreateView(generics.CreateAPIView):
         if not items_data:
             raise DRFValidationError({'detail': "Items must not be empty."})
 
-        # Extract shipping address data; this could be a nested dict from the request
+        # Extract shipping address data; a nested dict from the request
         shipping_address_data = request.data.get('shipping_address')
         if not shipping_address_data:
-            raise DRFValidationError({'detail': "Shipping address is required."})
+            raise DRFValidationError(
+                {'detail': "Shipping address is required."}
+            )
 
         # Create a new shipping address for the user using the provided data.
-        # You might want to use a serializer to validate shipping_address_data first.
-        shipping_address = ShippingAddress.objects.create(user=request.user, **shipping_address_data)
+        # Use a serializer to validate shipping_address_data first.
+        shipping_address = ShippingAddress.objects.create(
+            user=request.user,
+            **shipping_address_data
+        )
 
         # Now, create the order by supplying the shipping address.
         order = create_order(request.user, items_data, shipping_address)
