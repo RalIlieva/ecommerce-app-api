@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from products.models import Product, Category
+from checkout.models import ShippingAddress
 from order.services import create_order
 from notifications.models import Notification
 
@@ -29,10 +30,24 @@ class VendorOrderNotificationTest(TestCase):
             category=self.category, stock=10, slug='test-product'
         )
 
+        # Create a ShippingAddress instance
+        self.shipping_address = ShippingAddress.objects.create(
+            # Associate the shipping address with the current user
+            user=self.user,
+            full_name="Test User",
+            address_line_1="789 Oak St",
+            address_line_2="Apt 2",
+            city="Test City",
+            postal_code="12345",
+            country="Test Country",
+            phone_number="+359883368823"
+        )
+
     def test_vendor_receives_notification_on_order_creation(self):
         # Create an order
         order = create_order(
-            self.user, [{'product': self.product.uuid, 'quantity': 2}]
+            self.user, [{'product': self.product.uuid, 'quantity': 2}],
+            shipping_address=self.shipping_address
         )
 
         # Check if the vendor received a notification
