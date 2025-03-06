@@ -3,7 +3,7 @@ from order.models import Order
 from products.services import increase_product_stock
 from datetime import timedelta
 from django.utils import timezone
-from django.db import transaction
+# from django.db import transaction
 
 
 @shared_task
@@ -27,4 +27,6 @@ def cancel_expired_orders_task():
         # Mark the order as cancelled
         order.status = Order.CANCELLED
         order.save()
-        print(f"Order {order.uuid} has been cancelled and stock has been updated.")
+        print(
+            f"Order {order.uuid} has been cancelled and stock has been updated."
+        )
