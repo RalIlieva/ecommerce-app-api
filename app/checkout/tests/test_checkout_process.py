@@ -691,7 +691,8 @@ class CheckoutTestCase(APITestCase):
         # Assert the error message indicates the shipping address type er
         self.assertIn('new_shipping_address', response.data['detail'])
         self.assertEqual(
-            response.data['detail']['new_shipping_address']['address_line_1'][0],
+            response.data[
+                'detail']['new_shipping_address']['address_line_1'][0],
             'Shipping address cannot be purely numeric.'
         )
 
