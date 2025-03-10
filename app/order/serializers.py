@@ -43,16 +43,3 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'id', 'uuid',  'user', 'status', 'created', 'modified'
         ]
-
-    # TO DELETE - first version
-    # def get_shipping_address(self, obj) -> str:
-    #     """
-    #     Attempt to fetch the shipping address from a related CheckoutSession
-    #     without changing the Order model. The logic
-    #     inside get_related_checkout_session
-    #     is where how to match an Order to a CheckoutSession.
-    #     """
-    #     checkout_session = get_related_checkout_session(obj)
-    #     if checkout_session:
-    #         return checkout_session.shipping_address
-    #     return None
