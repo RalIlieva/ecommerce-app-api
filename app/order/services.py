@@ -54,6 +54,7 @@ def update_order_status(order, status):
     order.save()
     return order
 
+
 # TO DELETE - first version
 # def get_related_checkout_session(order: Order) -> CheckoutSession | None:
 #     """
@@ -65,7 +66,7 @@ def update_order_status(order, status):
 #
 #     WARNING: This is a 'best-guess' approach
 #     if there's no direct relationship.
-#     Ideally, you'd store a direct link to checkout (e.g. a foreign key).
+#     Ideally, store a direct link to checkout (e.g. foreign key).
 #     """
 #     if not order or not order.user:
 #         return None
