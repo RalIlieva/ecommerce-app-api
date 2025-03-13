@@ -25,6 +25,7 @@ import OrderPage from './pages/OrderPage';
 // import VendorDashboard from './pages/vendor/VendorDashboard';
 // import VendorProducts from './pages/vendor/VendorProducts';
 // import VendorOrders from './pages/vendor/VendorOrders';
+import VendorLogin from './pages/vendor/VendorLogin';
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -53,12 +54,15 @@ const App: React.FC = () => {
                     <Route path="/wishlist" element={<WishlistPage />} />
                     <Route path="/order/:order_uuid" element={<OrderPage />} />
 
-{/*                      */}{/* Vendor routes */}
+                    {/* Vendor routes */}
 {/*                     <Route path="/vendor" element={<VendorRoute />}> */}
 {/*                         <Route path="dashboard" element={<VendorDashboard />} /> */}
 {/*                         <Route path="products" element={<VendorProducts />} /> */}
 {/*                         <Route path="orders" element={<VendorOrders />} /> */}
 {/*                     </Route> */}
+
+                    {/* Vendor routes */}
+                    <Route path="/vendor/login" element={<VendorLogin />} />
 
                 </Routes>
             </div>
