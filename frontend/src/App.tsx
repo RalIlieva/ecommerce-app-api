@@ -21,8 +21,10 @@ import CheckoutPage from './pages/CheckoutPage';
 import WishlistPage from './pages/WishlistPage';
 import OrderPage from './pages/OrderPage';
 
-// import VendorLogin from './pages/VendorLogin';
-// import VendorDashboard from './pages/VendorDashboard';
+// // Vendor pages
+// import VendorDashboard from './pages/vendor/VendorDashboard';
+// import VendorProducts from './pages/vendor/VendorProducts';
+// import VendorOrders from './pages/vendor/VendorOrders';
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -50,9 +52,14 @@ const App: React.FC = () => {
                     <Route path="/checkout" element={<CheckoutPage />} />
                     <Route path="/wishlist" element={<WishlistPage />} />
                     <Route path="/order/:order_uuid" element={<OrderPage />} />
-{/*                      */}{/* Vendor Routes */}
-{/*                     <Route path="/vendor/login" element={<VendorLogin />} /> */}
-{/*                     <Route path="/vendor/dashboard" element={<VendorDashboard />} /> */}
+
+{/*                      */}{/* Vendor routes */}
+{/*                     <Route path="/vendor" element={<VendorRoute />}> */}
+{/*                         <Route path="dashboard" element={<VendorDashboard />} /> */}
+{/*                         <Route path="products" element={<VendorProducts />} /> */}
+{/*                         <Route path="orders" element={<VendorOrders />} /> */}
+{/*                     </Route> */}
+
                 </Routes>
             </div>
         </Router>
