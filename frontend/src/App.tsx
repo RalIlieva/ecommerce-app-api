@@ -22,10 +22,12 @@ import WishlistPage from './pages/WishlistPage';
 import OrderPage from './pages/OrderPage';
 
 // // Vendor pages
-// import VendorDashboard from './pages/vendor/VendorDashboard';
-// import VendorProducts from './pages/vendor/VendorProducts';
-// import VendorOrders from './pages/vendor/VendorOrders';
 import VendorLogin from './pages/vendor/VendorLogin';
+import VendorRoute from './components/VendorRoute';
+import VendorDashboard from './pages/vendor/VendorDashboard';
+import VendorProducts from './pages/vendor/VendorProducts';
+import VendorOrders from './pages/vendor/VendorOrders';
+
 
 const App: React.FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -55,14 +57,12 @@ const App: React.FC = () => {
                     <Route path="/order/:order_uuid" element={<OrderPage />} />
 
                     {/* Vendor routes */}
-{/*                     <Route path="/vendor" element={<VendorRoute />}> */}
-{/*                         <Route path="dashboard" element={<VendorDashboard />} /> */}
-{/*                         <Route path="products" element={<VendorProducts />} /> */}
-{/*                         <Route path="orders" element={<VendorOrders />} /> */}
-{/*                     </Route> */}
-
-                    {/* Vendor routes */}
                     <Route path="/vendor/login" element={<VendorLogin />} />
+                    <Route path="/vendor" element={<VendorRoute />}>
+                        <Route path="dashboard" element={<VendorDashboard />} />
+                        <Route path="products" element={<VendorProducts />} />
+                        <Route path="orders" element={<VendorOrders />} />
+                    </Route>
 
                 </Routes>
             </div>
