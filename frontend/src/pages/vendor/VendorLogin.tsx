@@ -82,7 +82,6 @@ const VendorLogin: React.FC = () => {
 
 export default VendorLogin;
 
-
 // // src/pages/VendorLogin.tsx
 // import React, { useState, useContext } from 'react';
 // import { useNavigate } from 'react-router-dom';
