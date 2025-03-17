@@ -30,7 +30,10 @@ def vendor_login(request):
 
         # Check if user is part of the "vendor" group
         if not user.groups.filter(name="vendor").exists():
-            return Response({"detail": "You are not authorized as a vendor."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "You are not authorized as a vendor."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         # Vendor-specific logic: Return JWT
         # Generate a token using JWT
