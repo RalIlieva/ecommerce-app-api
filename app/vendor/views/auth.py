@@ -26,7 +26,10 @@ def vendor_login(request):
         user = authenticate(email=email, password=password)
 
         if user is None:
-            return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"detail": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
 
         # Check if user is part of the "vendor" group
         if not user.groups.filter(name="vendor").exists():
