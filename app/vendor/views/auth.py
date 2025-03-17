@@ -36,6 +36,9 @@ def vendor_login(request):
         # Generate a token using JWT
         # token = generate_jwt_token(user)
         # In this case, we are just returning the email for simplicity
-        return Response({"detail": "Login successful", "user": {"email": user.email}}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Login successful", "user": {"email": user.email}},
+            status=status.HTTP_200_OK
+        )
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
