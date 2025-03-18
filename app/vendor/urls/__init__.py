@@ -29,4 +29,5 @@ urlpatterns = [
         'vendor.urls.dashboard_urls',
         namespace='dashboard')
          ),
+    path('login/', include('vendor.urls.auth_urls', namespace='vendor-login')),
 ]

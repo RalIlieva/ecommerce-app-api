@@ -1,7 +1,7 @@
 # vendor/views/auth.py
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import VendorTokenObtainPairSerializer
+from vendor.serializers.serializers_auth import VendorTokenObtainPairSerializer
 
 
 class VendorTokenObtainPairView(TokenObtainPairView):
