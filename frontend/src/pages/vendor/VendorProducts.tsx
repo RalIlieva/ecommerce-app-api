@@ -11,7 +11,7 @@ const VendorProducts: React.FC = () => {
     const fetchVendorProducts = async () => {
       try {
         // Adjust this endpoint to match your DRF vendor product list URL.
-        const response = await api.get('/vendor/products/');
+        const response = await api.get('/vendor/products/products/');
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching vendor products:', error);
