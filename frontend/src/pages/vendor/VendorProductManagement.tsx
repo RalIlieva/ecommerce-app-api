@@ -24,7 +24,7 @@
 //   const handleAddProduct = async () => {
 //     const newProduct = { name, price, stock };
 //     try {
-//       const response = await api.post('/vendor/products/', newProduct);
+//       const response = await api.post('/vendor/products/products/', newProduct);
 //       setProducts([...products, response.data]);
 //       setName('');
 //       setPrice(0);
