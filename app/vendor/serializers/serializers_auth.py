@@ -7,7 +7,8 @@ from rest_framework import serializers
 class VendorTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
     Custom TokenObtainPairSerializer that checks whether the user is in
-    the 'vendor' group and returns user info (including groups) in the token response.
+    the 'vendor' group and returns user info
+    (including groups) in the token response.
     """
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -38,7 +39,8 @@ class VendorTokenObtainPairSerializer(TokenObtainPairSerializer):
 #
 # class VendorTokenObtainPairSerializer(TokenObtainPairSerializer):
 #     """
-#     Custom TokenObtainPairSerializer that checks whether the user is in the 'vendor' group.
+#     Custom TokenObtainPairSerializer that checks
+#     whether the user is in the 'vendor' group.
 #     """
 #
 #     def validate(self, attrs):
