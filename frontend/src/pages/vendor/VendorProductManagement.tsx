@@ -1,3 +1,4 @@
+// New version - to be tested
 // // src/pages/vendor/VendorProductManagement.tsx
 // import React, { useState, useEffect } from 'react';
 // import { Button, TextField, Grid, Card, Typography } from 'react-bootstrap'; // Import Bootstrap components correctly
@@ -96,7 +97,7 @@
 // export default VendorProductManagement;
 
 
-
+// Initial version
 // // src/pages/vendor/VendorProductManagement.tsx
 // import React, { useState, useEffect } from 'react';
 // import { Button, TextField, Grid, Box, Typography } from 'react-bootstrap'; // Import Bootstrap components
