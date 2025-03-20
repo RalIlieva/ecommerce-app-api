@@ -42,12 +42,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(false); // Set loading to false after fetching data
   }, []);
 
+// For normal (non-vendor) login
   const login = async (email: string, password: string) => {
     const response = await api.post('/login/', { email, password });
     const { access, refresh } = response.data;
     localStorage.setItem('access_token', access);
     localStorage.setItem('refresh_token', refresh);
 
+// Fetch user profile data
     const meResponse = await api.get('/user/me/');
     const { email: meEmail, name: meName, uuid: meUuid, profile_uuid } = meResponse.data;
 
@@ -61,6 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(userData);
   };
 
+// Vendor login
   const vendorLogin = async (email: string, password: string) => {
     const response = await api.post('/vendor/login/login/', { email, password });
     const { access, refresh, user } = response.data;
