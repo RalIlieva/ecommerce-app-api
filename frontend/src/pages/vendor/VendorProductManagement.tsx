@@ -34,7 +34,7 @@ const VendorProductManagement: React.FC = () => {
   // Load available categories
   const fetchCategories = async () => {
     try {
-      const response = await api.get('/vendor/categories/');
+      const response = await api.get('/vendor/categories/categories/');
       setAllCategories(response.data.results || response.data); // depends on pagination
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -44,7 +44,7 @@ const VendorProductManagement: React.FC = () => {
   // Load available tags
   const fetchTags = async () => {
     try {
-      const response = await api.get('/vendor/tags/');
+      const response = await api.get('/vendor/tags/tags/');
       setAllTags(response.data.results || response.data);
     } catch (error) {
       console.error('Error fetching tags:', error);
@@ -61,7 +61,7 @@ const VendorProductManagement: React.FC = () => {
   const handleAddProduct = async () => {
     const newProduct = { name, price, stock, category, tags };
     try {
-      const response = await api.post('/vendor/products/', newProduct);
+      const response = await api.post('/vendor/products/products/', newProduct);
       setProducts([...products, response.data]);
       setSuccessMessage('Product added successfully.');
       setName('');
