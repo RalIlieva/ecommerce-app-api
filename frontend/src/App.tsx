@@ -25,9 +25,9 @@ import OrderPage from './pages/OrderPage';
 import VendorLogin from './pages/vendor/VendorLogin';
 import VendorRoute from './components/VendorRoute';
 import VendorDashboard from './pages/vendor/VendorDashboard';
-import VendorProducts from './pages/vendor/VendorProducts';
+// import VendorProducts from './pages/vendor/VendorProducts';
 import VendorOrders from './pages/vendor/VendorOrders';
-// import VendorProductManagement from './pages/vendor/VendorProductManagement';
+import VendorProductManagement from './pages/vendor/VendorProductManagement';
 
 
 const App: React.FC = () => {
@@ -63,8 +63,8 @@ const App: React.FC = () => {
                     {/* Wrap vendor-related routes with VendorRoute for protection */}
                     <Route element={<VendorRoute />}>
                            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
-{/*                            <Route path="/vendor/products" element={<VendorProductManagement />} /> */}
-                           <Route path="/vendor/products" element={<VendorProducts />} />
+                           <Route path="/vendor/products" element={<VendorProductManagement />} />
+{/*                            <Route path="/vendor/products" element={<VendorProducts />} /> */}
                             <Route path="/vendor/orders" element={<VendorOrders />} />
                     </Route>
 
