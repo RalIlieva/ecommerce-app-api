@@ -1,4 +1,3 @@
-//New version - to be tested
 // src/pages/vendor/VendorProductManagement.tsx
 
 import React, { useState, useEffect } from 'react';
