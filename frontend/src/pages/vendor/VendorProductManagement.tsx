@@ -1,7 +1,8 @@
 //New version - to be tested
 // src/pages/vendor/VendorProductManagement.tsx
+
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Container, Row, Col } from 'react-bootstrap'; // Import Bootstrap components correctly
+import { Button, Card, Container, Row, Col, Form } from 'react-bootstrap'; // Using Bootstrap components
 import api from '../../api';
 
 const VendorProductManagement: React.FC = () => {
@@ -36,65 +37,149 @@ const VendorProductManagement: React.FC = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <Typography variant="h4" gutterBottom>
-        Product Management
-      </Typography>
+    <Container className="mt-5">
+      <h4 className="mb-4">Product Management</h4>
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Product Name"
-            fullWidth
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Price"
-            fullWidth
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-          />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Stock"
-            fullWidth
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(Number(e.target.value))}
-          />
-        </Grid>
+      <Row className="mb-3">
+        <Col xs={12} sm={4}>
+          <Form.Group controlId="productName">
+            <Form.Label>Product Name</Form.Label>
+            <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          </Form.Group>
+        </Col>
+        <Col xs={12} sm={4}>
+          <Form.Group controlId="productPrice">
+            <Form.Label>Price</Form.Label>
+            <Form.Control type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+          </Form.Group>
+        </Col>
+        <Col xs={12} sm={4}>
+          <Form.Group controlId="productStock">
+            <Form.Label>Stock</Form.Label>
+            <Form.Control type="number" value={stock} onChange={(e) => setStock(Number(e.target.value))} />
+          </Form.Group>
+        </Col>
+      </Row>
 
-        <Grid item xs={12}>
-          <Button onClick={handleAddProduct} variant="contained">Add Product</Button>
-        </Grid>
-      </Grid>
+      <Button onClick={handleAddProduct} variant="primary">Add Product</Button>
 
-      <Typography variant="h6" sx={{ mt: 4 }}>Existing Products</Typography>
-      <Grid container spacing={2}>
+      <h6 className="mt-4">Existing Products</h6>
+      <Row>
         {products.map((product) => (
-          <Grid item xs={12} sm={4} key={product.id}>
-            <Card className="h-100">
+          <Col xs={12} sm={4} key={product.id} className="mb-3">
+            <Card>
               <Card.Body>
-                <Typography variant="body1">{product.name}</Typography>
-                <Typography variant="body2">Price: ${product.price}</Typography>
-                <Typography variant="body2">Stock: {product.stock}</Typography>
-                <Button variant="outline" sx={{ mt: 2 }}>Edit</Button>
-                <Button variant="outline" sx={{ mt: 2 }}>Delete</Button>
+                <Card.Title>{product.name}</Card.Title>
+                <Card.Text>Price: ${product.price}</Card.Text>
+                <Card.Text>Stock: {product.stock}</Card.Text>
+                <Button variant="outline-secondary" className="me-2">Edit</Button>
+                <Button variant="outline-danger">Delete</Button>
               </Card.Body>
             </Card>
-          </Grid>
+          </Col>
         ))}
-      </Grid>
-    </div>
+      </Row>
+    </Container>
   );
 };
 
 export default VendorProductManagement;
+
+// import React, { useState, useEffect } from 'react';
+// import { Button, Card, Container, Row, Col } from 'react-bootstrap'; // Import Bootstrap components correctly
+// import api from '../../api';
+//
+// const VendorProductManagement: React.FC = () => {
+//   const [products, setProducts] = useState<any[]>([]);
+//   const [name, setName] = useState('');
+//   const [price, setPrice] = useState<number>(0);
+//   const [stock, setStock] = useState<number>(0);
+//
+//   useEffect(() => {
+//     const fetchProducts = async () => {
+//       try {
+//         const response = await api.get('/vendor/products/products/');
+//         setProducts(response.data.results);
+//       } catch (error) {
+//         console.error('Error fetching products:', error);
+//       }
+//     };
+//     fetchProducts();
+//   }, []);
+//
+//   const handleAddProduct = async () => {
+//     const newProduct = { name, price, stock };
+//     try {
+//       const response = await api.post('/vendor/products/', newProduct);
+//       setProducts([...products, response.data]);
+//       setName('');
+//       setPrice(0);
+//       setStock(0);
+//     } catch (error) {
+//       console.error('Error adding product:', error);
+//     }
+//   };
+//
+//   return (
+//     <div className="container mt-5">
+//       <Typography variant="h4" gutterBottom>
+//         Product Management
+//       </Typography>
+//
+//       <Grid container spacing={2}>
+//         <Grid item xs={12} sm={4}>
+//           <TextField
+//             label="Product Name"
+//             fullWidth
+//             value={name}
+//             onChange={(e) => setName(e.target.value)}
+//           />
+//         </Grid>
+//         <Grid item xs={12} sm={4}>
+//           <TextField
+//             label="Price"
+//             fullWidth
+//             type="number"
+//             value={price}
+//             onChange={(e) => setPrice(Number(e.target.value))}
+//           />
+//         </Grid>
+//         <Grid item xs={12} sm={4}>
+//           <TextField
+//             label="Stock"
+//             fullWidth
+//             type="number"
+//             value={stock}
+//             onChange={(e) => setStock(Number(e.target.value))}
+//           />
+//         </Grid>
+//
+//         <Grid item xs={12}>
+//           <Button onClick={handleAddProduct} variant="contained">Add Product</Button>
+//         </Grid>
+//       </Grid>
+//
+//       <Typography variant="h6" sx={{ mt: 4 }}>Existing Products</Typography>
+//       <Grid container spacing={2}>
+//         {products.map((product) => (
+//           <Grid item xs={12} sm={4} key={product.id}>
+//             <Card className="h-100">
+//               <Card.Body>
+//                 <Typography variant="body1">{product.name}</Typography>
+//                 <Typography variant="body2">Price: ${product.price}</Typography>
+//                 <Typography variant="body2">Stock: {product.stock}</Typography>
+//                 <Button variant="outline" sx={{ mt: 2 }}>Edit</Button>
+//                 <Button variant="outline" sx={{ mt: 2 }}>Delete</Button>
+//               </Card.Body>
+//             </Card>
+//           </Grid>
+//         ))}
+//       </Grid>
+//     </div>
+//   );
+// };
+//
+// export default VendorProductManagement;
 
 
 // Initial version
