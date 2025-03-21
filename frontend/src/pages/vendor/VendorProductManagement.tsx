@@ -8,10 +8,11 @@ import ProductImageManager from '../../components/ProductImageManager';
 const VendorProductManagement: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [price, setPrice] = useState<number>(0);
   const [stock, setStock] = useState<number>(0);
-  const [category, setCategory] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [category, setCategory] = useState<any>(null);
+  const [tags, setTags] = useState<any[]>([]);
 
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [allTags, setAllTags] = useState<any[]>([]);
@@ -19,7 +20,6 @@ const VendorProductManagement: React.FC = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Load vendor's products
   const fetchProducts = async () => {
     try {
       const response = await api.get('/vendor/products/products/');
@@ -30,7 +30,6 @@ const VendorProductManagement: React.FC = () => {
     }
   };
 
-  // Load available categories
   const fetchCategories = async () => {
     try {
       const response = await api.get('/vendor/categories/categories/');
@@ -40,7 +39,6 @@ const VendorProductManagement: React.FC = () => {
     }
   };
 
-  // Load available tags
   const fetchTags = async () => {
     try {
       const response = await api.get('/vendor/tags/tags/');
@@ -56,17 +54,17 @@ const VendorProductManagement: React.FC = () => {
     fetchTags();
   }, []);
 
-  // Handle new product creation
   const handleAddProduct = async () => {
     setError('');
     setSuccessMessage('');
 
     const newProduct = {
       name,
+      description,
       price,
       stock,
-      category: { slug: category }, // ✅ nested object
-      tags: tags.map((slug) => ({ slug })) // ✅ array of nested objects
+      category: category ? { name: category.name, slug: category.slug } : null,
+      tags: tags.map((tag: any) => ({ name: tag.name, slug: tag.slug }))
     };
 
     console.log('Submitting product:', newProduct);
@@ -76,13 +74,18 @@ const VendorProductManagement: React.FC = () => {
       setProducts([...products, response.data]);
       setSuccessMessage('Product added successfully.');
       setName('');
+      setDescription('');
       setPrice(0);
       setStock(0);
-      setCategory('');
+      setCategory(null);
       setTags([]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding product:', error);
-      setError('Failed to add product.');
+      if (error.response?.data) {
+        setError(JSON.stringify(error.response.data, null, 2));
+      } else {
+        setError('Failed to add product.');
+      }
     }
   };
 
@@ -90,13 +93,13 @@ const VendorProductManagement: React.FC = () => {
     <Container className="mt-5">
       <h4 className="mb-4">Vendor Product Management</h4>
 
-      {error && <Alert variant="danger">{error}</Alert>}
+      {error && <Alert variant="danger"><pre>{error}</pre></Alert>}
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
 
       {/* Add Product Form */}
       <Row className="mb-3">
-        <Col xs={12} sm={4}>
-          <Form.Group controlId="productName">
+        <Col xs={12}>
+          <Form.Group controlId="productName" className="mb-3">
             <Form.Label>Product Name</Form.Label>
             <Form.Control
               type="text"
@@ -107,8 +110,21 @@ const VendorProductManagement: React.FC = () => {
           </Form.Group>
         </Col>
 
+        <Col xs={12}>
+          <Form.Group controlId="productDescription" className="mb-3">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </Form.Group>
+        </Col>
+
         <Col xs={12} sm={4}>
-          <Form.Group controlId="productPrice">
+          <Form.Group controlId="productPrice" className="mb-3">
             <Form.Label>Price</Form.Label>
             <Form.Control
               type="number"
@@ -120,7 +136,7 @@ const VendorProductManagement: React.FC = () => {
         </Col>
 
         <Col xs={12} sm={4}>
-          <Form.Group controlId="productStock">
+          <Form.Group controlId="productStock" className="mb-3">
             <Form.Label>Stock</Form.Label>
             <Form.Control
               type="number"
@@ -130,16 +146,17 @@ const VendorProductManagement: React.FC = () => {
             />
           </Form.Group>
         </Col>
-      </Row>
 
-      <Row className="mb-3">
-        <Col xs={12} sm={6}>
-          <Form.Group controlId="productCategory">
+        <Col xs={12} sm={4}>
+          <Form.Group controlId="productCategory" className="mb-3">
             <Form.Label>Category</Form.Label>
             <Form.Control
               as="select"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={category?.slug || ''}
+              onChange={(e) => {
+                const selected = allCategories.find((c) => c.slug === e.target.value);
+                setCategory(selected || null);
+              }}
               required
             >
               <option value="">Select Category</option>
@@ -152,16 +169,18 @@ const VendorProductManagement: React.FC = () => {
           </Form.Group>
         </Col>
 
-        <Col xs={12} sm={6}>
-          <Form.Group controlId="productTags">
+        <Col xs={12}>
+          <Form.Group controlId="productTags" className="mb-3">
             <Form.Label>Tags</Form.Label>
             <Form.Control
               as="select"
               multiple
-              value={tags}
-              onChange={(e) =>
-                setTags(Array.from(e.target.selectedOptions, (option) => option.value))
-              }
+              value={tags.map((tag) => tag.slug)}
+              onChange={(e) => {
+                const selectedValues = Array.from(e.target.selectedOptions, (o) => o.value);
+                const selectedTags = allTags.filter((tag) => selectedValues.includes(tag.slug));
+                setTags(selectedTags);
+              }}
             >
               {allTags.map((tag) => (
                 <option key={tag.uuid} value={tag.slug}>
@@ -193,8 +212,8 @@ const VendorProductManagement: React.FC = () => {
                 <Card.Text>
                   Category: {product.category?.name || product.category}
                 </Card.Text>
+                <Card.Text>{product.description}</Card.Text>
 
-                {/* Image management component */}
                 {product.uuid && product.slug && (
                   <ProductImageManager uuid={product.uuid} slug={product.slug} />
                 )}
@@ -217,6 +236,8 @@ const VendorProductManagement: React.FC = () => {
 };
 
 export default VendorProductManagement;
+
+
 
 // import React, { useState, useEffect } from 'react';
 // import { Button, Card, Container, Row, Col, Form, Alert } from 'react-bootstrap';
