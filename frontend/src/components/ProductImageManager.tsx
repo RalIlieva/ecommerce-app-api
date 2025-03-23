@@ -35,7 +35,7 @@ const ProductImageManager: React.FC<Props> = ({ uuid, slug }) => {
     formData.append('image', newImage);
 
     try {
-      await api.post(`/vendor/products/${uuid}/${slug}/upload-image/`, formData, {
+      await api.post(`/vendor/products/products/${uuid}/${slug}/upload-image/`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setNewImage(null);
@@ -47,7 +47,7 @@ const ProductImageManager: React.FC<Props> = ({ uuid, slug }) => {
 
   const handleDelete = async (imageId: number) => {
     try {
-      await api.delete(`/vendor/products/${uuid}/${slug}/images/${imageId}/delete/`);
+      await api.delete(`/vendor/products/products/{uuid}/${slug}/images/${imageId}/delete/`);
       setImages(images.filter((img) => img.id !== imageId));
     } catch (err) {
       console.error('Delete image error:', err);
