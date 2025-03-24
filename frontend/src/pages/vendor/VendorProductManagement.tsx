@@ -73,7 +73,7 @@ const VendorProductManagement: React.FC = () => {
 
   const handleEditProduct = async (product: any) => {
     try {
-      const response = await api.get(`/vendor/products/products/${product.uuid}/${product.slug}/`);
+      const response = await api.get(`/products/products/${product.uuid}/${product.slug}/`);
       setProductToEdit(response.data);
       setShowEditModal(true);
     } catch (error) {
@@ -218,6 +218,7 @@ const VendorProductManagement: React.FC = () => {
 };
 
 export default VendorProductManagement;
+
 
 
 
