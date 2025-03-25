@@ -28,6 +28,8 @@ import VendorDashboard from './pages/vendor/VendorDashboard';
 // import VendorProducts from './pages/vendor/VendorProducts';
 import VendorOrders from './pages/vendor/VendorOrders';
 import VendorProductManagement from './pages/vendor/VendorProductManagement';
+import VendorTags from './pages/vendor/VendorTags';
+import VendorCategories from './pages/vendor/VendorCategories'
 
 
 const App: React.FC = () => {
@@ -66,6 +68,8 @@ const App: React.FC = () => {
                            <Route path="/vendor/products" element={<VendorProductManagement />} />
 {/*                            <Route path="/vendor/products" element={<VendorProducts />} /> */}
                             <Route path="/vendor/orders" element={<VendorOrders />} />
+                            <Route path="/vendor/categories" element={<VendorCategories />} />
+                            <Route path="/vendor/tags" element={<VendorTags />} />
                     </Route>
 
 {/*                     <Route path="/vendor" element={<VendorRoute />}> */}
