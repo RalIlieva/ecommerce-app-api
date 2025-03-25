@@ -12,7 +12,7 @@ const VendorCategories: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get('/vendor/categories/');
+        const response = await api.get('/vendor/categories/categories/');
         setCategories(response.data.results);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -23,7 +23,7 @@ const VendorCategories: React.FC = () => {
 
   const handleCreateCategory = async () => {
     try {
-      const response = await api.post('/vendor/categories/create/', newCategory);
+      const response = await api.post('/vendor/categories/categories/create/', newCategory);
       setCategories([...categories, response.data]);
       setNewCategory({ name: '', slug: '', parent: '' });
       setShowCreateModal(false);
@@ -39,7 +39,7 @@ const VendorCategories: React.FC = () => {
 
   const handleUpdateCategory = async () => {
     try {
-      const response = await api.put(`/vendor/categories/${categoryToEdit.uuid}/manage/`, categoryToEdit);
+      const response = await api.put(`/vendor/categories/categories/${categoryToEdit.uuid}/manage/`, categoryToEdit);
       const updatedCategories = categories.map((cat) => cat.uuid === categoryToEdit.uuid ? response.data : cat);
       setCategories(updatedCategories);
       setShowEditModal(false);
@@ -51,7 +51,7 @@ const VendorCategories: React.FC = () => {
 
   const handleDeleteCategory = async (uuid: string) => {
     try {
-      await api.delete(`/vendor/categories/${uuid}/manage/`);
+      await api.delete(`/vendor/categories/categories/${uuid}/manage/`);
       setCategories(categories.filter((category) => category.uuid !== uuid));
     } catch (error) {
       console.error('Error deleting category:', error);
