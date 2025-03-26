@@ -22,10 +22,18 @@ const VendorCategories: React.FC = () => {
         setCategories(response.data.results);
         setAlertMessage('Categories loaded successfully');
         setAlertVariant('success');
+        // Hide alert after 3 seconds
+        setTimeout(() => {
+          setAlertMessage('');
+        }, 3000);
       } catch (error) {
         console.error('Error fetching categories:', error);
         setAlertMessage('Failed to load categories');
         setAlertVariant('danger');
+        // Hide alert after 3 seconds
+        setTimeout(() => {
+          setAlertMessage('');
+        }, 3000);
       } finally {
         setIsLoading(false);  // Stop loading
       }
@@ -43,10 +51,18 @@ const VendorCategories: React.FC = () => {
       setShowCreateModal(false);
       setAlertMessage('Category created successfully');
       setAlertVariant('success');
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
     } catch (error) {
       console.error('Error creating category:', error);
       setAlertMessage('Failed to create category');
       setAlertVariant('danger');
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
     } finally {
       setIsLoading(false);  // Hide spinner
     }
@@ -70,6 +86,10 @@ const VendorCategories: React.FC = () => {
       if (slugExists) {
         setAlertMessage('This slug already exists. Please choose a different one.');
         setAlertVariant('danger');
+        // Hide alert after 3 seconds
+        setTimeout(() => {
+          setAlertMessage('');
+        }, 3000);
         setIsLoading(false);  // Stop spinner
         return;
       }
@@ -82,10 +102,18 @@ const VendorCategories: React.FC = () => {
       setCategoryToEdit(null);
       setAlertMessage('Category updated successfully');
       setAlertVariant('success');
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
     } catch (error) {
       console.error('Error updating category:', error);
       setAlertMessage('Failed to update category');
       setAlertVariant('danger');
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
     } finally {
       setIsLoading(false);  // Hide spinner
     }
@@ -106,10 +134,18 @@ const VendorCategories: React.FC = () => {
       setShowDeleteModal(false);  // Close modal after deletion
       setAlertMessage('Category deleted successfully');
       setAlertVariant('success');
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
     } catch (error) {
       console.error('Error deleting category:', error);
       setAlertMessage('Failed to delete category');
       setAlertVariant('danger');
+      // Hide alert after 3 seconds
+      setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
     } finally {
       setCategoryToDelete(null);
       setIsLoading(false);  // Hide spinner
@@ -227,6 +263,7 @@ const VendorCategories: React.FC = () => {
 };
 
 export default VendorCategories;
+
 
 
 
