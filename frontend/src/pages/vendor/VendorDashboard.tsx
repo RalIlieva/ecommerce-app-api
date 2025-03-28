@@ -1,50 +1,23 @@
-// src/pages/vendor/VendorDashboard.tsx
-import React, { useEffect, useState } from 'react';
+// // src/pages/vendor/VendorDashboard.tsx
+
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
 import api from '../../api';
-
-interface DashboardStats {
-  orders: number;
-  sales: number;
-  products: number;
-}
-
-interface Product {
-  id: string;
-  uuid: string;
-  name: string;
-  price: number;
-  category: string;
-}
-
-interface Order {
-  id: string;
-  uuid: string;
-  user: string;
-  status: string;
-  created: string;
-  modified: string;
-}
-
-interface Payment {
-  id: string;
-  uuid: string;
-  order: string;
-  amount: number;
-  status: string;
-}
 
 const VendorDashboard: React.FC = () => {
   const [stats, setStats] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch vendor dashboard stats on component mount
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Adjust the endpoint based on your DRF vendor dashboard endpoint.
         const response = await api.get('/vendor/dashboard/dashboard/');
         setStats(response.data);
       } catch (error) {
         console.error('Error fetching dashboard stats:', error);
+        setError('Failed to load dashboard data.');
       } finally {
         setLoading(false);
       }
@@ -53,45 +26,188 @@ const VendorDashboard: React.FC = () => {
   }, []);
 
   if (loading) return <p>Loading...</p>;
-  if (!stats) return <p>No data available.</p>;
+  if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
-    <div className="container mt-5">
+    <Container className="mt-5">
       <h2>Vendor Dashboard</h2>
-      <div>
-        <p>Total Orders: {stats.total_orders}</p>
-        <p>Total Sales: ${stats.total_revenue.toFixed(2)}</p>
-        <p>Total Products: {stats.total_products}</p>
-      </div>
 
-      <h3>Products</h3>
-      <ul>
-        {stats.products.map((product: Product) => (
-          <li key={product.id}>
-            {product.name} - ${product.price} (Category: {product.category})
-          </li>
-        ))}
-      </ul>
+      {/* Total Stats Section */}
+      <Row className="mb-4">
+        <Col xs={12} sm={6} lg={4}>
+          <Card className="text-center">
+            <Card.Body>
+              <Card.Title>Total Orders</Card.Title>
+              <Card.Text>{stats.total_orders}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xs={12} sm={6} lg={4}>
+          <Card className="text-center">
+            <Card.Body>
+              <Card.Title>Total Revenue</Card.Title>
+              <Card.Text>${stats.total_revenue.toFixed(2)}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xs={12} sm={6} lg={4}>
+          <Card className="text-center">
+            <Card.Body>
+              <Card.Title>Total Products</Card.Title>
+              <Card.Text>{stats.total_products}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-      <h3>Orders</h3>
-      <ul>
-        {stats.orders.map((order: Order) => (
-          <li key={order.id}>
-            Order ID: {order.id} | Status: {order.status} | Created: {order.created}
-          </li>
-        ))}
-      </ul>
+      {/* Quick Actions Section */}
+      <Row className="mb-4">
+        <Col>
+          <Button variant="primary" className="w-100">Manage Products</Button>
+        </Col>
+        <Col>
+          <Button variant="primary" className="w-100">Manage Orders</Button>
+        </Col>
+        <Col>
+          <Button variant="primary" className="w-100">Manage Payments</Button>
+        </Col>
+      </Row>
 
-      <h3>Payments</h3>
-      <ul>
-        {stats.payments.map((payment: Payment) => (
-          <li key={payment.id}>
-            Payment ID: {payment.id} | Amount: ${payment.amount} | Status: {payment.status}
-          </li>
-        ))}
-      </ul>
-    </div>
+      {/* Top Products */}
+      <Row className="mb-4">
+        <Col>
+          <Card>
+            <Card.Header>Top Products</Card.Header>
+            <Card.Body>
+              <ul>
+                {stats.products.slice(0, 5).map((product: any) => (
+                  <li key={product.id}>
+                    {product.name} - ${product.price}
+                  </li>
+                ))}
+              </ul>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Recent Orders Section */}
+      <Row className="mb-4">
+        <Col>
+          <Card>
+            <Card.Header>Recent Orders</Card.Header>
+            <Card.Body>
+              <ul>
+                {stats.orders.slice(0, 5).map((order: any) => (
+                  <li key={order.id}>
+                    Order ID: {order.id} | Status: {order.status} | Created: {order.created}
+                  </li>
+                ))}
+              </ul>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
 export default VendorDashboard;
+
+
+// import React, { useEffect, useState } from 'react';
+// import api from '../../api';
+//
+// interface DashboardStats {
+//   orders: number;
+//   sales: number;
+//   products: number;
+// }
+//
+// interface Product {
+//   id: string;
+//   uuid: string;
+//   name: string;
+//   price: number;
+//   category: string;
+// }
+//
+// interface Order {
+//   id: string;
+//   uuid: string;
+//   user: string;
+//   status: string;
+//   created: string;
+//   modified: string;
+// }
+//
+// interface Payment {
+//   id: string;
+//   uuid: string;
+//   order: string;
+//   amount: number;
+//   status: string;
+// }
+//
+// const VendorDashboard: React.FC = () => {
+//   const [stats, setStats] = useState<any | null>(null);
+//   const [loading, setLoading] = useState(true);
+//
+//   useEffect(() => {
+//     const fetchStats = async () => {
+//       try {
+//         // Adjust the endpoint based on your DRF vendor dashboard endpoint.
+//         const response = await api.get('/vendor/dashboard/dashboard/');
+//         setStats(response.data);
+//       } catch (error) {
+//         console.error('Error fetching dashboard stats:', error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchStats();
+//   }, []);
+//
+//   if (loading) return <p>Loading...</p>;
+//   if (!stats) return <p>No data available.</p>;
+//
+//   return (
+//     <div className="container mt-5">
+//       <h2>Vendor Dashboard</h2>
+//       <div>
+//         <p>Total Orders: {stats.total_orders}</p>
+//         <p>Total Sales: ${stats.total_revenue.toFixed(2)}</p>
+//         <p>Total Products: {stats.total_products}</p>
+//       </div>
+//
+//       <h3>Products</h3>
+//       <ul>
+//         {stats.products.map((product: Product) => (
+//           <li key={product.id}>
+//             {product.name} - ${product.price} (Category: {product.category})
+//           </li>
+//         ))}
+//       </ul>
+//
+//       <h3>Orders</h3>
+//       <ul>
+//         {stats.orders.map((order: Order) => (
+//           <li key={order.id}>
+//             Order ID: {order.id} | Status: {order.status} | Created: {order.created}
+//           </li>
+//         ))}
+//       </ul>
+//
+//       <h3>Payments</h3>
+//       <ul>
+//         {stats.payments.map((payment: Payment) => (
+//           <li key={payment.id}>
+//             Payment ID: {payment.id} | Amount: ${payment.amount} | Status: {payment.status}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// };
+//
+// export default VendorDashboard;
