@@ -14,7 +14,7 @@ const VendorOrderDetails: React.FC = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await api.get(`/vendor/orders/orders/${order_uuid}/`);
-        setOrder(response.data);
+        setOrder(response.data.orders);
       } catch (error) {
         console.error('Error fetching order details:', error);
         setError('Failed to fetch order details.');

@@ -26,10 +26,12 @@ import VendorLogin from './pages/vendor/VendorLogin';
 import VendorRoute from './components/VendorRoute';
 import VendorDashboard from './pages/vendor/VendorDashboard';
 // import VendorProducts from './pages/vendor/VendorProducts';
-import VendorOrders from './pages/vendor/VendorOrders';
+// import VendorOrders from './pages/vendor/VendorOrders';
 import VendorProductManagement from './pages/vendor/VendorProductManagement';
 import VendorTags from './pages/vendor/VendorTags';
 import VendorCategories from './pages/vendor/VendorCategories'
+import VendorOrderManagement from './pages/vendor/VendorOrderManagement';
+import VendorOrderDetails from './pages/vendor/VendorOrderDetails';
 
 
 const App: React.FC = () => {
@@ -67,9 +69,11 @@ const App: React.FC = () => {
                            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
                            <Route path="/vendor/products" element={<VendorProductManagement />} />
 {/*                            <Route path="/vendor/products" element={<VendorProducts />} /> */}
-                            <Route path="/vendor/orders" element={<VendorOrders />} />
+{/*                             <Route path="/vendor/orders" element={<VendorOrders />} /> */}
                             <Route path="/vendor/categories" element={<VendorCategories />} />
                             <Route path="/vendor/tags" element={<VendorTags />} />
+                            <Route path="/vendor/orders" element={<VendorOrderManagement />} />
+                            <Route path="/vendor/orders/:order_uuid" element={<VendorOrderDetails />} />
                     </Route>
 
 {/*                     <Route path="/vendor" element={<VendorRoute />}> */}
