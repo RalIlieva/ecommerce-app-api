@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Button, Alert } from 'react-bootstrap';
+import { Container, Card, Button, Alert, Row, Col, Table } from 'react-bootstrap';
 import api from '../../api';
 import { useParams } from 'react-router-dom';
 
@@ -12,10 +12,10 @@ const VendorOrderDetails: React.FC = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        // Make sure the route matches your Django URLs (here: /vendor/orders/<uuid>/).
+        // Make sure the route matches your Django URLs (e.g.: /vendor/orders/<uuid>/)
         const response = await api.get(`/vendor/orders/${order_uuid}/`);
         console.log('Order details response:', response.data);
-        // The single order is returned at the top level in response.data:
+        // The single order is returned at the top level in response.data.
         setOrder(response.data);
       } catch (err) {
         console.error('Error fetching order details:', err);
@@ -33,62 +33,188 @@ const VendorOrderDetails: React.FC = () => {
 
   return (
     <Container className="mt-5">
-      <h2>Order Details</h2>
+      <h2>Vendor Order Details</h2>
 
-      {/* Render only if we got an order object */}
+      {/* Only render if we got an order object */}
       {order && (
-        <Card>
-          <Card.Body>
-            <Card.Title>Order ID: {order.id}</Card.Title>
-            <Card.Text>UUID: {order.uuid}</Card.Text>
-            <Card.Text>Status: {order.status}</Card.Text>
-            <Card.Text>Created: {new Date(order.created).toLocaleString()}</Card.Text>
-            <Card.Text>Modified: {new Date(order.modified).toLocaleString()}</Card.Text>
-            <Card.Text>User (ID): {order.user}</Card.Text>
-            <Card.Text>Total Amount: {order.total_amount}</Card.Text>
+        <>
+          {/* Top section: basic order info + status */}
+          <Row>
+            <Col md={6} className="mb-3">
+              <Card>
+                <Card.Header>Order Overview</Card.Header>
+                <Card.Body>
+                  <p><strong>Order ID:</strong> {order.id}</p>
+                  <p><strong>UUID:</strong> {order.uuid}</p>
+                  <p><strong>Status:</strong> {order.status}</p>
+                  <p><strong>Created:</strong> {new Date(order.created).toLocaleString()}</p>
+                  <p><strong>Modified:</strong> {new Date(order.modified).toLocaleString()}</p>
+                  <p><strong>User (ID):</strong> {order.user}</p>
+                  <p><strong>Total Amount:</strong> ${order.total_amount}</p>
+                  <Button
+                    variant="primary"
+                    onClick={() => alert('Update order status functionality here!')}
+                  >
+                    Update Status
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
 
-            <h5>Order Items</h5>
-            {order.items && order.items.length > 0 ? (
-              <ul>
-                {order.items.map((item: any) => (
-                  <li key={item.id}>
-                    {item.product.name} — Quantity: {item.quantity} — Price: ${item.price}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No items for this order.</p>
-            )}
+            {/* Shipping address on the right */}
+            <Col md={6} className="mb-3">
+              <Card>
+                <Card.Header>Shipping Address</Card.Header>
+                <Card.Body>
+                  {order.shipping_address ? (
+                    <>
+                      <p><strong>Full Name:</strong> {order.shipping_address.full_name}</p>
+                      <p><strong>Address Line 1:</strong> {order.shipping_address.address_line_1}</p>
+                      <p><strong>Address Line 2:</strong> {order.shipping_address.address_line_2}</p>
+                      <p><strong>City:</strong> {order.shipping_address.city}</p>
+                      <p><strong>Postal Code:</strong> {order.shipping_address.postal_code}</p>
+                      <p><strong>Country:</strong> {order.shipping_address.country}</p>
+                      <p><strong>Phone Number:</strong> {order.shipping_address.phone_number}</p>
+                    </>
+                  ) : (
+                    <p>No shipping address found.</p>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
 
-            <h5>Shipping Address</h5>
-            {order.shipping_address ? (
-              <>
-                <p>Full Name: {order.shipping_address.full_name}</p>
-                <p>Address Line 1: {order.shipping_address.address_line_1}</p>
-                <p>Address Line 2: {order.shipping_address.address_line_2}</p>
-                <p>City: {order.shipping_address.city}</p>
-                <p>Postal Code: {order.shipping_address.postal_code}</p>
-                <p>Country: {order.shipping_address.country}</p>
-                <p>Phone Number: {order.shipping_address.phone_number}</p>
-              </>
-            ) : (
-              <p>No shipping address found.</p>
-            )}
-
-            <Button
-              variant="primary"
-              onClick={() => alert('Updating status functionality here!')}
-            >
-              Update Status
-            </Button>
-          </Card.Body>
-        </Card>
+          {/* Order items table */}
+          <Row>
+            <Col>
+              <Card>
+                <Card.Header>Order Items</Card.Header>
+                <Card.Body>
+                  {order.items && order.items.length > 0 ? (
+                    <Table striped bordered hover responsive>
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Quantity</th>
+                          <th>Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {order.items.map((item: any) => (
+                          <tr key={item.id}>
+                            <td>{item.product.name}</td>
+                            <td>{item.quantity}</td>
+                            <td>${item.price}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  ) : (
+                    <p>No items for this order.</p>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </>
       )}
     </Container>
   );
 };
 
 export default VendorOrderDetails;
+
+// import React, { useState, useEffect } from 'react';
+// import { Container, Card, Button, Alert } from 'react-bootstrap';
+// import api from '../../api';
+// import { useParams } from 'react-router-dom';
+//
+// const VendorOrderDetails: React.FC = () => {
+//   const { order_uuid } = useParams<{ order_uuid: string }>();
+//   const [order, setOrder] = useState<any | null>(null);
+//   const [error, setError] = useState<string | null>(null);
+//   const [loading, setLoading] = useState(true);
+//
+//   useEffect(() => {
+//     const fetchOrderDetails = async () => {
+//       try {
+//         // Make sure the route matches your Django URLs (here: /vendor/orders/<uuid>/).
+//         const response = await api.get(`/vendor/orders/${order_uuid}/`);
+//         console.log('Order details response:', response.data);
+//         // The single order is returned at the top level in response.data:
+//         setOrder(response.data);
+//       } catch (err) {
+//         console.error('Error fetching order details:', err);
+//         setError('Failed to fetch order details.');
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//
+//     fetchOrderDetails();
+//   }, [order_uuid]);
+//
+//   if (loading) return <p>Loading...</p>;
+//   if (error) return <Alert variant="danger">{error}</Alert>;
+//
+//   return (
+//     <Container className="mt-5">
+//       <h2>Order Details</h2>
+//
+//       {/* Render only if we got an order object */}
+//       {order && (
+//         <Card>
+//           <Card.Body>
+//             <Card.Title>Order ID: {order.id}</Card.Title>
+//             <Card.Text>UUID: {order.uuid}</Card.Text>
+//             <Card.Text>Status: {order.status}</Card.Text>
+//             <Card.Text>Created: {new Date(order.created).toLocaleString()}</Card.Text>
+//             <Card.Text>Modified: {new Date(order.modified).toLocaleString()}</Card.Text>
+//             <Card.Text>User (ID): {order.user}</Card.Text>
+//             <Card.Text>Total Amount: {order.total_amount}</Card.Text>
+//
+//             <h5>Order Items</h5>
+//             {order.items && order.items.length > 0 ? (
+//               <ul>
+//                 {order.items.map((item: any) => (
+//                   <li key={item.id}>
+//                     {item.product.name} — Quantity: {item.quantity} — Price: ${item.price}
+//                   </li>
+//                 ))}
+//               </ul>
+//             ) : (
+//               <p>No items for this order.</p>
+//             )}
+//
+//             <h5>Shipping Address</h5>
+//             {order.shipping_address ? (
+//               <>
+//                 <p>Full Name: {order.shipping_address.full_name}</p>
+//                 <p>Address Line 1: {order.shipping_address.address_line_1}</p>
+//                 <p>Address Line 2: {order.shipping_address.address_line_2}</p>
+//                 <p>City: {order.shipping_address.city}</p>
+//                 <p>Postal Code: {order.shipping_address.postal_code}</p>
+//                 <p>Country: {order.shipping_address.country}</p>
+//                 <p>Phone Number: {order.shipping_address.phone_number}</p>
+//               </>
+//             ) : (
+//               <p>No shipping address found.</p>
+//             )}
+//
+//             <Button
+//               variant="primary"
+//               onClick={() => alert('Updating status functionality here!')}
+//             >
+//               Update Status
+//             </Button>
+//           </Card.Body>
+//         </Card>
+//       )}
+//     </Container>
+//   );
+// };
+//
+// export default VendorOrderDetails;
 
 // import React, { useState, useEffect } from 'react';
 // import { Container, Card, Button, Alert } from 'react-bootstrap';
