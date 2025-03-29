@@ -14,4 +14,6 @@ export interface Order {
   status: string;
   created: string;
   items: OrderItem[];
+  modified?: string;
+  total_amount?: string;
 }
