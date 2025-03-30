@@ -5,7 +5,7 @@ import api from '../../api';
 import { Order } from '../../api/orders';
 
 const VendorOrderDetails: React.FC = () => {
-  // We'll store a single order or null (while loading or if there's an error)
+  // Store a single order or null (while loading or if there's an error)
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -15,10 +15,9 @@ const VendorOrderDetails: React.FC = () => {
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        // Make sure the URL is correct, e.g. /vendor/orders/<uuid>/
         const response = await api.get(`/vendor/orders/${order_uuid}/`);
         console.log('Order details response:', response.data);
-        // The backend returns a single Order, so set that
+        // The backend returns a single Order
         setOrder(response.data);
       } catch (err) {
         console.error('Error fetching order details:', err);
