@@ -25,7 +25,6 @@ import OrderPage from './pages/OrderPage';
 import VendorLogin from './pages/vendor/VendorLogin';
 import VendorRoute from './components/VendorRoute';
 import VendorDashboard from './pages/vendor/VendorDashboard';
-// import VendorProducts from './pages/vendor/VendorProducts';
 import VendorProductManagement from './pages/vendor/VendorProductManagement';
 import VendorTags from './pages/vendor/VendorTags';
 import VendorCategories from './pages/vendor/VendorCategories'
@@ -67,7 +66,6 @@ const App: React.FC = () => {
                     <Route element={<VendorRoute />}>
                            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
                            <Route path="/vendor/products" element={<VendorProductManagement />} />
-{/*                            <Route path="/vendor/products" element={<VendorProducts />} /> */}
                             <Route path="/vendor/categories" element={<VendorCategories />} />
                             <Route path="/vendor/tags" element={<VendorTags />} />
                             <Route path="/vendor/orders" element={<VendorOrderManagement />} />
