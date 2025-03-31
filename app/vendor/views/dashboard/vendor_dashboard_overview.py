@@ -36,7 +36,7 @@ class VendorDashboardView(APIView):
         total_products = Product.objects.count()
         total_orders = Order.objects.count()
         # Calculate total revenue for all completed payments
-        total_revenue = Payment.objects.filter(status="completed").aggregate(
+        total_revenue = Payment.objects.filter(status="success").aggregate(
             total_revenue=Sum('amount')
         )['total_revenue'] or 0.0
 
@@ -59,7 +59,7 @@ class VendorDashboardView(APIView):
                 'modified'
             ),
             'payments': Payment.objects.filter(
-                status="completed"
+                status="success"
             ).values(
                 'id', 'uuid',
                 'order',

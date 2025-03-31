@@ -47,7 +47,8 @@ const VendorDashboard: React.FC = () => {
           <Card className="text-center">
             <Card.Body>
               <Card.Title>Total Revenue</Card.Title>
-              <Card.Text>${stats.total_revenue.toFixed(2)}</Card.Text>
+{/*               <Card.Text>${stats.total_revenue.toFixed(2)}</Card.Text> */}
+                <Card.Text>${parseFloat(stats.total_revenue).toFixed(2)}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
