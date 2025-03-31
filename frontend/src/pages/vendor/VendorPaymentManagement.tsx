@@ -10,8 +10,8 @@ const VendorPaymentManagement: React.FC = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await api.get('/vendor/payments/');
-        setPayments(response.data);
+        const response = await api.get('/vendor/dashboard/payments/');
+        setPayments(response.data.results);
       } catch (err) {
         console.error('Error fetching payments:', err);
         setError('Failed to fetch payments');

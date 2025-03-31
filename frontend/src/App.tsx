@@ -30,6 +30,7 @@ import VendorTags from './pages/vendor/VendorTags';
 import VendorCategories from './pages/vendor/VendorCategories'
 import VendorOrderManagement from './pages/vendor/VendorOrderManagement';
 import VendorOrderDetails from './pages/vendor/VendorOrderDetails';
+import VendorPaymentManagement from './pages/vendor/VendorPaymentManagement';
 
 
 const App: React.FC = () => {
@@ -70,6 +71,7 @@ const App: React.FC = () => {
                             <Route path="/vendor/tags" element={<VendorTags />} />
                             <Route path="/vendor/orders" element={<VendorOrderManagement />} />
                             <Route path="/vendor/orders/:order_uuid" element={<VendorOrderDetails />} />
+                            <Route path="/vendor/payments" element={<VendorPaymentManagement />} />
                     </Route>
                 </Routes>
             </div>
