@@ -74,7 +74,9 @@ const VendorDashboard: React.FC = () => {
           </Link>
         </Col>
         <Col>
+          <Link to="/vendor/payments">
           <Button variant="primary" className="w-100">Manage Payments</Button>
+          </Link>
         </Col>
       </Row>
 
