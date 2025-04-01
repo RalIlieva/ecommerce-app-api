@@ -6,6 +6,9 @@ from vendor.views.dashboard.vendor_dashboard_overview import \
 from vendor.views.dashboard.vendor_payment_views import VendorPaymentListView
 from vendor.views.dashboard.vendor_wishlist_views import VendorWishlistView
 from vendor.views.dashboard.vendor_cart_views import VendorCartInfoView
+from vendor.views.cart_aggregation import VendorCartAggregationView
+from vendor.views.wishlist_aggregation import VendorWishlistAggregationView
+
 
 app_name = 'vendor_dashboard'
 
@@ -26,4 +29,7 @@ urlpatterns = [
         'cart/', VendorCartInfoView.as_view(),
         name='cart-list'
     ),
+    # New aggregated endpoints:
+    path('cart/aggregation/', VendorCartAggregationView.as_view(), name='cart-aggregation'),
+    path('wishlist/aggregation/', VendorWishlistAggregationView.as_view(), name='wishlist-aggregation'),
 ]
