@@ -46,6 +46,25 @@ const WishlistPage: React.FC = () => {
     loadWishlist();
   }, [user, setWishlistCount]);
 
+  // Defined handleRemove function
+  const handleRemove = async (item: WishlistItem) => {
+    if (!user) {
+      alert('Please log in to manage your wishlist.');
+      return;
+    }
+    try {
+      await removeFromWishlist(item.product.uuid);
+      alert('Item removed from wishlist.');
+
+      const updatedWishlist = await fetchWishlist();
+      setWishlist(updatedWishlist);
+      setWishlistCount(updatedWishlist.items.length);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to remove item from wishlist.');
+    }
+  };
+
   const handleMoveToCart = async (item: WishlistItem) => {
     if (!user) {
       alert('Please log in to manage your wishlist.');
