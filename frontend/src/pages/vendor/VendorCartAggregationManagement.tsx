@@ -12,7 +12,7 @@ const VendorCartAggregationManagement: React.FC = () => {
     const fetchAggregatedCart = async () => {
       try {
         // Adjust the URL as needed based on your URL structure
-        const response = await api.get('/api/v1/vendor/dashboard/cart/aggregation/');
+        const response = await api.get('vendor/dashboard/cart/aggregation/');
         setAggregatedData(response.data);
       } catch (err) {
         console.error('Error fetching aggregated cart data:', err);

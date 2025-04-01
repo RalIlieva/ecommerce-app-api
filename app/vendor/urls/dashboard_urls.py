@@ -4,10 +4,14 @@ from django.urls import path
 from vendor.views.dashboard.vendor_dashboard_overview import \
     VendorDashboardView
 from vendor.views.dashboard.vendor_payment_views import VendorPaymentListView
-from vendor.views.dashboard.vendor_wishlist_views import VendorWishlistView
-from vendor.views.dashboard.vendor_cart_views import VendorCartInfoView
-from vendor.views.cart_aggregation import VendorCartAggregationView
-from vendor.views.wishlist_aggregation import VendorWishlistAggregationView
+from vendor.views.dashboard.vendor_wishlist_views import (
+    VendorWishlistView,
+    VendorWishlistAggregationView
+)
+from vendor.views.dashboard.vendor_cart_views import (
+    VendorCartInfoView,
+    VendorCartAggregationView
+)
 
 
 app_name = 'vendor_dashboard'
