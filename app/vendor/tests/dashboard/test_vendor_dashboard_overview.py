@@ -57,7 +57,7 @@ class VendorDashboardOverviewTests(TestCase):
             order=self.order,
             user=self.user,
             amount=200.00,
-            status='completed'
+            status='success'
         )
 
     def test_vendor_dashboard_overview(self):

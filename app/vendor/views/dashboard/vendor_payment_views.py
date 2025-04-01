@@ -13,4 +13,4 @@ class VendorPaymentListView(generics.ListAPIView):
 
     def get_queryset(self):
         # For a single-vendor system, return all payments
-        return Payment.objects.all()
+        return Payment.objects.all().order_by('-created')
