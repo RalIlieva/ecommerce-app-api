@@ -21,7 +21,7 @@ class VendorOrderListView(generics.ListAPIView):
     """
     API view for vendor users to retrieve a list of all orders.
     """
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-created')
     permission_classes = [permissions.IsAuthenticated, IsVendor]
     serializer_class = OrderSerializer
 
@@ -33,7 +33,7 @@ class VendorOrderDetailView(generics.RetrieveAPIView):
     """
     permission_classes = [permissions.IsAuthenticated, IsVendor]
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-created')
     lookup_field = 'uuid'
     lookup_url_kwarg = 'order_uuid'
 
@@ -47,7 +47,7 @@ class VendorOrderStatusUpdateView(generics.UpdateAPIView):
     """
     permission_classes = [permissions.IsAuthenticated, IsVendor]
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-created')
     lookup_field = 'uuid'
     lookup_url_kwarg = 'order_uuid'
 
