@@ -63,7 +63,7 @@ const App: React.FC = () => {
                     {/* Vendor routes */}
                     <Route path="/vendor/login" element={<VendorLogin />} />
 
-                    {/* Wrap vendor-related routes with VendorRoute for protection */}
+                    {/* Vendor-related routes with VendorRoute for protection */}
                     <Route element={<VendorRoute />}>
                            <Route path="/vendor/dashboard" element={<VendorDashboard />} />
                            <Route path="/vendor/products" element={<VendorProductManagement />} />
