@@ -1,4 +1,4 @@
-// Example using Axios in VendorCartAggregationManagement.tsx
+// Using Axios in VendorCartAggregationManagement.tsx
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Alert } from 'react-bootstrap';
 import api from '../../api';
@@ -11,7 +11,6 @@ const VendorCartAggregationManagement: React.FC = () => {
   useEffect(() => {
     const fetchAggregatedCart = async () => {
       try {
-        // Adjust the URL as needed based on your URL structure
         const response = await api.get('vendor/dashboard/cart/aggregation/');
         setAggregatedData(response.data);
       } catch (err) {
