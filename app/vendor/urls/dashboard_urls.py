@@ -35,5 +35,8 @@ urlpatterns = [
     ),
     # New aggregated endpoints:
     path('cart/aggregation/', VendorCartAggregationView.as_view(), name='cart-aggregation'),
-    path('wishlist/aggregation/', VendorWishlistAggregationView.as_view(), name='wishlist-aggregation'),
+    path(
+        'wishlist/aggregation/', VendorWishlistAggregationView.as_view(),
+        name='wishlist-aggregation'
+    ),
 ]
