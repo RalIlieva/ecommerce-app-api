@@ -43,7 +43,7 @@ const VendorPaymentManagement: React.FC = () => {
         </thead>
         <tbody>
           {payments.map((payment) => (
-            <tr key={payment.id}>
+            <tr key={payment.uuid}>
               <td>{payment.id}</td>
               <td>{payment.uuid}</td>
               <td>{payment.order}</td>
