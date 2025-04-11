@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Container, Row, Col, Alert, Modal } from 'react-bootstrap';
 import api from '../../api';
+import { Link } from 'react-router-dom';
 import ProductForm from '../../components/ProductForm';
 import ProductImageManager from '../../components/ProductImageManager';
 
@@ -130,6 +131,10 @@ const VendorProductManagement: React.FC = () => {
 
       {error && <Alert variant="danger"><pre>{error}</pre></Alert>}
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
+
+      <Link to="/vendor/dashboard">
+          <Button variant="secondary">&larr; Back to Dashboard</Button>
+       </Link>
 
       <h5 className="mb-3">Add New Product</h5>
       <ProductForm
