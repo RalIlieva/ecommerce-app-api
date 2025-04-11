@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Alert, Row, Col, Table } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import api from '../../api';
 import { Order } from '../../api/orders';
 
@@ -36,6 +36,10 @@ const VendorOrderDetails: React.FC = () => {
   return (
     <Container className="mt-5">
       <h2>Vendor Order Details</h2>
+
+      <Link to="/vendor/orders">
+        <Button variant="secondary" className="mb-3">&larr; Back to Order Management</Button>
+      </Link>
 
       {order && (
         <>
