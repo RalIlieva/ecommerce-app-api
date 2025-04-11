@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Table, Alert, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import api from '../../api';
-import { Order } from '../../api/orders';  // <-- 1) import your Order interface here
+import { Order } from '../../api/orders';
 
 const VendorOrderManagement: React.FC = () => {
   // 2) Use `Order[]` to get type safety for the orders array
@@ -36,6 +36,11 @@ const VendorOrderManagement: React.FC = () => {
   return (
     <Container className="mt-5">
       <h2>Vendor Order Management</h2>
+
+      <Link to="/vendor/dashboard">
+          <Button variant="secondary">&larr; Back to Dashboard</Button>
+      </Link>
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>
