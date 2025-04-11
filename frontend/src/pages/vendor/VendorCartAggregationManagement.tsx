@@ -1,8 +1,9 @@
 // Using Axios in VendorCartAggregationManagement.tsx
 
 import React, { useState, useEffect } from 'react';
-import { Container, Table, Alert } from 'react-bootstrap';
+import { Container, Table, Alert, Button } from 'react-bootstrap';
 import api from '../../api';
+import { Link } from 'react-router-dom';
 
 const VendorCartAggregationManagement: React.FC = () => {
   const [aggregatedData, setAggregatedData] = useState<any[]>([]);
@@ -30,6 +31,11 @@ const VendorCartAggregationManagement: React.FC = () => {
   return (
     <Container className="mt-5">
       <h2>Aggregated Cart Data</h2>
+
+      <Link to="/vendor/dashboard">
+        <Button variant="secondary">&larr; Back to Dashboard</Button>
+      </Link>
+
       <Table striped bordered hover responsive>
         <thead>
           <tr>
