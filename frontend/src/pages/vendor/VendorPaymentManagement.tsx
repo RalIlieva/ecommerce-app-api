@@ -1,4 +1,4 @@
-// pages/vendor/VendorCartAggregationManagement.tsx
+// pages/vendor/VendorPaymentManagement.tsx
 
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Alert, Button } from 'react-bootstrap';
