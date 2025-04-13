@@ -33,7 +33,7 @@ const VendorCartAggregationManagement: React.FC = () => {
       <h2>Aggregated Cart Data</h2>
 
       <Link to="/vendor/dashboard">
-        <Button variant="secondary">&larr; Back to Dashboard</Button>
+        <Button variant="secondary" className="mb-3">&larr; Back to Dashboard</Button>
       </Link>
 
       <Table striped bordered hover responsive>
