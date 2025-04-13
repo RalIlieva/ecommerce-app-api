@@ -133,7 +133,7 @@ const VendorProductManagement: React.FC = () => {
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
 
       <Link to="/vendor/dashboard">
-          <Button variant="secondary">&larr; Back to Dashboard</Button>
+          <Button variant="secondary" className="mb-3">&larr; Back to Dashboard</Button>
        </Link>
 
       <h5 className="mb-3">Add New Product</h5>
