@@ -1,4 +1,4 @@
-// // src/pages/vendor/VendorDashboard.tsx
+// src/pages/vendor/VendorDashboard.tsx
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
