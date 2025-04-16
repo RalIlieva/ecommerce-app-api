@@ -224,8 +224,6 @@ const VendorProductManagement: React.FC = () => {
 export default VendorProductManagement;
 
 
-
-
 // // src/pages/vendor/VendorProductManagement.tsx
 // // Loading spinners& UX polishers
 //
