@@ -203,33 +203,6 @@ const Products: React.FC = () => {
   );
 };
 
-//       {totalPages > 1 && (
-//         <div className="d-flex justify-content-center mt-4">
-//           <ul className="pagination">
-//             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-//               <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
-//                 &laquo;
-//               </button>
-//             </li>
-//             {Array.from({ length: totalPages }, (_, i) => (
-//               <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-//                 <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-//                   {i + 1}
-//                 </button>
-//               </li>
-//             ))}
-//             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-//               <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
-//                 &raquo;
-//               </button>
-//             </li>
-//           </ul>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
 export default Products;
 
 
