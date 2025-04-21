@@ -178,7 +178,7 @@ const VendorProductManagement: React.FC = () => {
         formResetRef={formResetRef}
       />
 
-      <h5 className="mt-5 mb-3">Your Products</h5>
+      <h5 className="mt-5 mb-3">My Products</h5>
 
       {/* Filters */}
       <Row className="mb-4">
