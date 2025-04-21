@@ -33,6 +33,7 @@ import VendorOrderDetails from './pages/vendor/VendorOrderDetails';
 import VendorPaymentManagement from './pages/vendor/VendorPaymentManagement';
 import VendorCartAggregationManagement from "./pages/vendor/VendorCartAggregationManagement";
 import VendorWishlistAggregationManagement from './pages/vendor/VendorWishlistAggregationManagement';
+import VendorProductDetail from './pages/vendor/VendorProductDetail';
 
 
 const App: React.FC = () => {
@@ -76,6 +77,7 @@ const App: React.FC = () => {
                             <Route path="/vendor/payments" element={<VendorPaymentManagement />} />
                             <Route path="/vendor/cart/aggregation" element={<VendorCartAggregationManagement />} />
                             <Route path="/vendor/wishlist/aggregation" element={<VendorWishlistAggregationManagement />} />
+                            <Route path="/vendor/products/:uuid/:slug" element={<VendorProductDetail />} />
                     </Route>
                 </Routes>
             </div>
