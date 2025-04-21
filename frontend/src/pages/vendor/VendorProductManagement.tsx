@@ -239,6 +239,15 @@ const VendorProductManagement: React.FC = () => {
                 )}
 
                 <div className="mt-3">
+                  <Button
+                    as={Link}
+                    to={`/vendor/products/${product.uuid}/${product.slug}`}
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                  >
+                    View
+                </Button>
                   <Button variant="outline-secondary" size="sm" className="me-2" onClick={() => handleEditProduct(product)}>
                     Edit
                   </Button>
