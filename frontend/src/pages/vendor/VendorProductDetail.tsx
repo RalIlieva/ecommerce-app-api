@@ -1,0 +1,66 @@
+// src/pages/vendor/VendorProductDetail.tsx
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Container, Row, Col, Button, Alert } from 'react-bootstrap';
+import api from '../../api';
+import ProductImageManager from '../../components/ProductImageManager';
+
+const VendorProductDetail: React.FC = () => {
+  const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await api.get(`/products/products/${uuid}/${slug}/`);
+        setProduct(response.data);
+      } catch (err) {
+        setError('Failed to load product details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (uuid && slug) {
+      fetchProduct();
+    }
+  }, [uuid, slug]);
+
+  if (loading) {
+    return <div className="text-center mt-5">Loading...</div>;
+  }
+
+  if (error) {
+    return <Alert variant="danger" className="mt-3">{error}</Alert>;
+  }
+
+  if (!product) {
+    return <div className="text-center mt-5">Product not found.</div>;
+  }
+
+  return (
+    <Container className="mt-5">
+      <h2 className="mb-4">Product Detail - {product.name}</h2>
+      <Row>
+        <Col md={6}>
+          <ProductImageManager uuid={product.uuid} slug={product.slug} />
+        </Col>
+        <Col md={6}>
+          <p><strong>Description:</strong> {product.description}</p>
+          <p><strong>Price:</strong> ${product.price}</p>
+          <p><strong>Stock:</strong> {product.stock}</p>
+          <p><strong>Category:</strong> {product.category?.name}</p>
+          <p><strong>Tags:</strong> {product.tags?.map((t: any) => t.name).join(', ')}</p>
+        </Col>
+      </Row>
+
+      <Link to="/vendor/products">
+        <Button variant="secondary" className="mt-4">&larr; Back to Products</Button>
+      </Link>
+    </Container>
+  );
+};
+
+export default VendorProductDetail;
