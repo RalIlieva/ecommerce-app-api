@@ -75,6 +75,7 @@ const VendorProductDetail: React.FC = () => {
 export default VendorProductDetail;
 
 
+
 // // Initial working version
 // // src/pages/vendor/VendorProductDetail.tsx
 // import React, { useEffect, useState } from 'react';
