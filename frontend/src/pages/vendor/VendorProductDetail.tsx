@@ -1,78 +1,190 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button, Alert } from 'react-bootstrap';
+// src/pages/VendorProductDetail.tsx
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import { Button, Modal } from 'react-bootstrap';
+import ProductForm from '../../components/ProductForm';
 import api from '../../api';
-import ProductImageManager from '../../components/ProductImageManager';
 
-const VendorProductDetail: React.FC = () => {
+const VendorProductDetail = () => {
   const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
   const [product, setProduct] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const formResetRef = useRef<() => void>(() => {});
 
+  const [allCategories, setAllCategories] = useState<any[]>([]);
+  const [allTags, setAllTags] = useState<any[]>([]);
+
+  // Fetch product details using the correct endpoint
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await api.get(`/products/products/${uuid}/${slug}/`);
-        setProduct(response.data);
-      } catch (err) {
-        setError('Failed to load product details.');
-      } finally {
-        setLoading(false);
+        const res = await api.get(`/products/products/${uuid}/${slug}/`);
+        setProduct(res.data);
+      } catch (error) {
+        console.error('Error fetching product:', error);
       }
     };
 
-    if (uuid && slug) {
-      fetchProduct();
-    }
+    if (uuid && slug) fetchProduct();
   }, [uuid, slug]);
 
-  const handleEdit = () => {
-    if (uuid && slug) {
-      navigate(`/vendor/products/${uuid}/${slug}/edit`);
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/vendor/categories/categories/');
+        setAllCategories(res.data.results || res.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Fetch tags
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await api.get('/vendor/tags/tags/');
+        setAllTags(res.data.results || res.data);
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  const handleUpdateProduct = async (updatedData: any) => {
+    if (!uuid) return;
+
+    try {
+      await api.put(`/vendor/products/products/${uuid}/manage/`, updatedData);
+      setShowEditModal(false);
+      formResetRef.current?.();
+
+      const res = await api.get(`/products/products/${uuid}/${slug}/`);
+      setProduct(res.data);
+    } catch (error) {
+      console.error('Failed to update product:', error);
     }
   };
 
-  if (loading) {
-    return <div className="text-center mt-5">Loading...</div>;
-  }
-
-  if (error) {
-    return <Alert variant="danger" className="mt-3">{error}</Alert>;
-  }
-
-  if (!product) {
-    return <div className="text-center mt-5">Product not found.</div>;
-  }
+  if (!product) return <div>Loading product...</div>;
 
   return (
-    <Container className="mt-5">
-      <h2 className="mb-4">Product Detail - {product.name}</h2>
-      <Row>
-        <Col md={6}>
-          <ProductImageManager uuid={product.uuid} slug={product.slug} />
-        </Col>
-        <Col md={6}>
-          <p><strong>Description:</strong> {product.description}</p>
-          <p><strong>Price:</strong> ${product.price}</p>
-          <p><strong>Stock:</strong> {product.stock}</p>
-          <p><strong>Category:</strong> {product.category?.name}</p>
-          <p><strong>Tags:</strong> {product.tags?.map((t: any) => t.name).join(', ')}</p>
-        </Col>
-      </Row>
+    <div className="container mt-4">
+      <h2>{product.name}</h2>
+      <p>{product.description}</p>
+      <p><strong>Price:</strong> ${product.price}</p>
+      <p><strong>Stock:</strong> {product.stock}</p>
+      <p><strong>Category:</strong> {product.category?.name}</p>
+      <p><strong>Tags:</strong> {product.tags?.map((tag: any) => tag.name).join(', ')}</p>
 
-      <div className="d-flex gap-2 mt-4">
-        <Button variant="primary" onClick={handleEdit}>Edit Product</Button>
-        <Link to="/vendor/products">
-          <Button variant="secondary">&larr; Back to Products</Button>
-        </Link>
-      </div>
-    </Container>
+      <Button variant="warning" onClick={() => setShowEditModal(true)}>
+        Edit Product
+      </Button>
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ProductForm
+            initialValues={product}
+            onSubmit={handleUpdateProduct}
+            categories={allCategories}
+            tags={allTags}
+            submitLabel="Update Product"
+            formResetRef={formResetRef}
+          />
+        </Modal.Body>
+      </Modal>
+    </div>
   );
 };
 
 export default VendorProductDetail;
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { useParams, Link, useNavigate } from 'react-router-dom';
+// import { Container, Row, Col, Button, Alert } from 'react-bootstrap';
+// import api from '../../api';
+// import ProductImageManager from '../../components/ProductImageManager';
+//
+// const VendorProductDetail: React.FC = () => {
+//   const { uuid, slug } = useParams<{ uuid: string; slug: string }>();
+//   const [product, setProduct] = useState<any>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const navigate = useNavigate();
+//
+//   useEffect(() => {
+//     const fetchProduct = async () => {
+//       try {
+//         const response = await api.get(`/products/products/${uuid}/${slug}/`);
+//         setProduct(response.data);
+//       } catch (err) {
+//         setError('Failed to load product details.');
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//
+//     if (uuid && slug) {
+//       fetchProduct();
+//     }
+//   }, [uuid, slug]);
+//
+//   const handleEdit = () => {
+//     if (uuid && slug) {
+//       navigate(`/vendor/products/${uuid}/${slug}/edit`);
+//     }
+//   };
+//
+//   if (loading) {
+//     return <div className="text-center mt-5">Loading...</div>;
+//   }
+//
+//   if (error) {
+//     return <Alert variant="danger" className="mt-3">{error}</Alert>;
+//   }
+//
+//   if (!product) {
+//     return <div className="text-center mt-5">Product not found.</div>;
+//   }
+//
+//   return (
+//     <Container className="mt-5">
+//       <h2 className="mb-4">Product Detail - {product.name}</h2>
+//       <Row>
+//         <Col md={6}>
+//           <ProductImageManager uuid={product.uuid} slug={product.slug} />
+//         </Col>
+//         <Col md={6}>
+//           <p><strong>Description:</strong> {product.description}</p>
+//           <p><strong>Price:</strong> ${product.price}</p>
+//           <p><strong>Stock:</strong> {product.stock}</p>
+//           <p><strong>Category:</strong> {product.category?.name}</p>
+//           <p><strong>Tags:</strong> {product.tags?.map((t: any) => t.name).join(', ')}</p>
+//         </Col>
+//       </Row>
+//
+//       <div className="d-flex gap-2 mt-4">
+//         <Button variant="primary" onClick={handleEdit}>Edit Product</Button>
+//         <Link to="/vendor/products">
+//           <Button variant="secondary">&larr; Back to Products</Button>
+//         </Link>
+//       </div>
+//     </Container>
+//   );
+// };
+//
+// export default VendorProductDetail;
 
 
 
