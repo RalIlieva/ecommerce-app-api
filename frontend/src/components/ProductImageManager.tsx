@@ -1,3 +1,4 @@
+// src/components/ProductImageManager.tsx
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Alert, Spinner } from 'react-bootstrap';
 import api from '../api';
