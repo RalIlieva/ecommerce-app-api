@@ -1,3 +1,4 @@
+// src/pages/vendor/VendorOrderDetails.tsx
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Alert, Row, Col, Table, Form } from 'react-bootstrap';
 import { useParams, Link } from 'react-router-dom';
