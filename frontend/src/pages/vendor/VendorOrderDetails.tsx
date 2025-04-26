@@ -159,6 +159,7 @@ const VendorOrderDetails: React.FC = () => {
 
 export default VendorOrderDetails;
 
+// // Initial version - working
 // // src/pages/vendor/VendorOrderDetails.tsx
 // import React, { useState, useEffect } from 'react';
 // import { Container, Card, Button, Alert, Row, Col, Table } from 'react-bootstrap';
