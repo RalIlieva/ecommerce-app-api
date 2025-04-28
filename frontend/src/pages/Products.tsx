@@ -205,6 +205,7 @@ const Products: React.FC = () => {
 
 export default Products;
 
+
 // // src/pages/Products.tsx
 // import React, { useEffect, useState } from 'react';
 // import { useLocation } from 'react-router-dom';
