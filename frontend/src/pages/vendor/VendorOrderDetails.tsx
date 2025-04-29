@@ -159,6 +159,7 @@ const VendorOrderDetails: React.FC = () => {
 
 export default VendorOrderDetails;
 
+// // TO DELETE
 // // Initial version - working
 // // src/pages/vendor/VendorOrderDetails.tsx
 // import React, { useState, useEffect } from 'react';
