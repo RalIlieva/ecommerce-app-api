@@ -60,33 +60,6 @@ class VendorOrderListView(generics.ListAPIView):
         return queryset
 
 
-# class VendorOrderListView(generics.ListAPIView):
-#     """
-#     API view for vendor users to retrieve a list of all orders.
-#     """
-#     queryset = Order.objects.all().order_by('-created')
-#     permission_classes = [permissions.IsAuthenticated, IsVendor]
-#     serializer_class = OrderSerializer
-#
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         uuid = self.request.query_params.get('uuid')
-#         email = self.request.query_params.get('email')
-#         start_date = self.request.query_params.get('start_date')
-#         end_date = self.request.query_params.get('end_date')
-#
-#         if uuid:
-#             queryset = queryset.filter(uuid=uuid)
-#         if email:
-#             queryset = queryset.filter(user__email__icontains=email)
-#         if start_date:
-#             queryset = queryset.filter(created__gte=start_date)
-#         if end_date:
-#             queryset = queryset.filter(created__lte=end_date)
-#
-#         return queryset
-
-
 class VendorOrderDetailView(generics.RetrieveAPIView):
     """
     Vendor View to retrieve or update an order.
