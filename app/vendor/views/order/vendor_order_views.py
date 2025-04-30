@@ -43,6 +43,7 @@ class VendorOrderListView(generics.ListAPIView):
 
         return queryset
 
+
 class VendorOrderDetailView(generics.RetrieveAPIView):
     """
     Vendor View to retrieve or update an order.
