@@ -134,7 +134,7 @@ const VendorDashboard: React.FC = () => {
 export default VendorDashboard;
 
 
-// Initial version
+// Initial version - to delete
 // import React, { useEffect, useState } from 'react';
 // import api from '../../api';
 //
