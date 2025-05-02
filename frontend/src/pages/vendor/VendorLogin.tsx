@@ -14,13 +14,13 @@ const VendorLogin: React.FC = () => {
     e.preventDefault();
     setError(null);
     try {
-      // Call the vendor login function which uses the /vendor/login/ endpoint.
+      // Call the vendor login function that uses the /vendor/login/ endpoint.
       await vendorLogin(email, password);
       // Retrieve user data from localStorage.
       const storedUser = localStorage.getItem('user');
       const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-      // If the backend returns groups, we can check for 'vendor'
+      // If the backend returns groups, check for 'vendor'
       if (
         !parsedUser ||
         !parsedUser.groups ||
