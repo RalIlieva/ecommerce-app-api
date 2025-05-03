@@ -174,7 +174,6 @@ const VendorOrderManagement: React.FC = () => {
 
 export default VendorOrderManagement;
 
-
 // // TO DELETE
 // // src/pages/vendor/VendorOrderManagement.tsx
 // import React, { useState, useEffect } from 'react';
