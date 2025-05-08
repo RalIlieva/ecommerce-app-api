@@ -6,13 +6,7 @@ import { Link } from 'react-router-dom';
 import api from '../../api';
 import { Order } from '../../api/orders';
 
-interface VendorOrderManagementProps {
-  onSessionExpired: (msg: string) => void;
-}
-
-const VendorOrderManagement: React.FC<VendorOrderManagementProps> = ({
-  onSessionExpired,
-}) => {
+const VendorOrderManagement: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,13 +30,7 @@ const VendorOrderManagement: React.FC<VendorOrderManagementProps> = ({
         ? response.data.results
         : [];
       setOrders(results);
-    } catch (err: any) {
-      // If session expired, trigger the banner/redirect handler
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
-
+    } catch (err) {
       console.error('Error fetching orders:', err);
       setError('Failed to fetch orders.');
     } finally {
@@ -188,6 +176,7 @@ const VendorOrderManagement: React.FC<VendorOrderManagementProps> = ({
 };
 
 export default VendorOrderManagement;
+
 
 
 // // src/pages/vendor/VendorOrderManagement.tsx

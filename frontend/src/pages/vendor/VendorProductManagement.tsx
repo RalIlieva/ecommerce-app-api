@@ -17,13 +17,7 @@ import ProductForm from '../../components/ProductForm';
 import ProductImageManager from '../../components/ProductImageManager';
 import Pagination from '../../components/Pagination';
 
-interface VendorProductManagementProps {
-  onSessionExpired: (msg: string) => void;
-}
-
-const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
-  onSessionExpired,
-}) => {
+const VendorProductManagement: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [allTags, setAllTags] = useState<any[]>([]);
@@ -57,11 +51,7 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
       setProducts(response.data.results);
       setCurrentPage(response.data.current_page);
       setTotalPages(response.data.total_pages);
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
+    } catch (err) {
       console.error('Error fetching products:', err);
       setError('Failed to fetch products.');
     }
@@ -72,11 +62,7 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
     try {
       const response = await api.get('/vendor/categories/categories/');
       setAllCategories(response.data.results || response.data);
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
+    } catch (err) {
       console.error('Error fetching categories:', err);
     }
   };
@@ -86,11 +72,7 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
     try {
       const response = await api.get('/vendor/tags/tags/');
       setAllTags(response.data.results || response.data);
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
+    } catch (err) {
       console.error('Error fetching tags:', err);
     }
   };
@@ -117,10 +99,6 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
       formResetRef.current?.();
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
       console.error('Error adding product:', err);
       setError(err.response?.data ? JSON.stringify(err.response.data, null, 2) : 'Failed to add product.');
     }
@@ -132,11 +110,7 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
       const response = await api.get(`/products/products/${product.uuid}/${product.slug}/`);
       setProductToEdit(response.data);
       setShowEditModal(true);
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
+    } catch (err) {
       console.error('Failed to fetch full product detail:', err);
       setError('Could not load product details for editing.');
     }
@@ -155,10 +129,6 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
       setProductToEdit(null);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
       console.error('Error updating product:', err);
       setError(err.response?.data ? JSON.stringify(err.response.data, null, 2) : 'Failed to update product.');
     }
@@ -178,11 +148,7 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
       fetchProducts(currentPage);
       setSuccessMessage('Product deleted successfully.');
       setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        onSessionExpired('Your session has expired. Please log in again.');
-        return;
-      }
+    } catch (err) {
       console.error('Error deleting product:', err);
       setError('Failed to delete product.');
     } finally {
@@ -354,6 +320,7 @@ const VendorProductManagement: React.FC<VendorProductManagementProps> = ({
 };
 
 export default VendorProductManagement;
+
 
 
 
