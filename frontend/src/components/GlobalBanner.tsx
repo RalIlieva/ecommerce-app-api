@@ -1,5 +1,4 @@
 // src/components/GlobalBanner.tsx
-
 import React from 'react';
 
 interface GlobalBannerProps {
