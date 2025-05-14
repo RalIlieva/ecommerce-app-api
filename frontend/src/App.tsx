@@ -1,5 +1,4 @@
 // src/App.tsx
-
 import React, { useContext, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
