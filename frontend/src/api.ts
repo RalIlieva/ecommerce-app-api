@@ -7,6 +7,11 @@ import {
   clearTokens,
 } from './utils';
 
+// Dispatch a global event when session expires
+function fireSessionExpired() {
+  window.dispatchEvent(new Event('sessionExpired'));
+}
+
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
@@ -25,7 +30,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// On 401, try a single refresh + retry
+// On 401, try a single refresh + retry; if that fails, fire event & redirect
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
@@ -40,29 +45,33 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        // <-- use `api` so it hits `${baseURL}/token/refresh/`
         const { data } = await api.post('/token/refresh/', {
           refresh: getRefreshToken(),
         });
-
         setTokens(data.access, data.refresh);
-
-        // update header + retry
         originalRequest.headers = {
           ...originalRequest.headers,
           Authorization: `Bearer ${data.access}`,
         };
         return api(originalRequest);
-      } catch (refreshError) {
+      } catch {
+        // Refresh failed: clear tokens, notify app, then redirect
         clearTokens();
-        return Promise.reject(refreshError);
+        fireSessionExpired();
+        const redirectTo = window.location.pathname.startsWith('/vendor')
+          ? '/vendor/login'
+          : '/login';
+        window.location.href = redirectTo;
+        return Promise.reject(error);
       }
     }
+
     return Promise.reject(error);
   }
 );
 
 export default api;
+
 
 
 // // src/api.ts - currently working version
