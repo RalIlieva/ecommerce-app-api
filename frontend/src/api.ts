@@ -30,40 +30,34 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// On 401, try a single refresh + retry; if that fails, fire event & redirect
+// Response interceptor: handle 401, attempt one refresh, then fire sessionExpired event
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & {
-      _retry?: boolean;
-    };
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      getRefreshToken()
-    ) {
+    // Only handle 401 once per request
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      try {
-        const { data } = await api.post('/token/refresh/', {
-          refresh: getRefreshToken(),
-        });
-        setTokens(data.access, data.refresh);
-        originalRequest.headers = {
-          ...originalRequest.headers,
-          Authorization: `Bearer ${data.access}`,
-        };
-        return api(originalRequest);
-      } catch {
-        // Refresh failed: clear tokens, notify app, then redirect
-        clearTokens();
-        fireSessionExpired();
-        const redirectTo = window.location.pathname.startsWith('/vendor')
-          ? '/vendor/login'
-          : '/login';
-        window.location.href = redirectTo;
-        return Promise.reject(error);
+
+      const refresh = getRefreshToken();
+      if (refresh) {
+        try {
+          const { data } = await api.post('/token/refresh/', { refresh });
+          setTokens(data.access, data.refresh);
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${data.access}`;
+          }
+          // Retry the original request
+          return api(originalRequest);
+        } catch {
+          // Refresh failed
+        }
       }
+
+      // No valid refresh token or refresh failed
+      clearTokens();
+      fireSessionExpired();
     }
 
     return Promise.reject(error);
@@ -71,6 +65,82 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+
+
+// // src/api.ts - bugged version - infinite loop
+// import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+// import {
+//   getAccessToken,
+//   getRefreshToken,
+//   setTokens,
+//   clearTokens,
+// } from './utils';
+//
+// // Dispatch a global event when session expires
+// function fireSessionExpired() {
+//   window.dispatchEvent(new Event('sessionExpired'));
+// }
+//
+// const api = axios.create({
+//   baseURL:
+//     import.meta.env.VITE_API_URL ||
+//     (window.location.hostname === 'localhost'
+//       ? 'http://localhost:8000/api/v1'
+//       : 'http://app:8000/api/v1'),
+//   headers: { 'Content-Type': 'application/json' },
+// });
+//
+// // Attach token to every request
+// api.interceptors.request.use((config) => {
+//   const token = getAccessToken();
+//   if (token && config.headers) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });
+//
+// // On 401, try a single refresh + retry; if that fails, fire event & redirect
+// api.interceptors.response.use(
+//   (res) => res,
+//   async (error: AxiosError) => {
+//     const originalRequest = error.config as AxiosRequestConfig & {
+//       _retry?: boolean;
+//     };
+//
+//     if (
+//       error.response?.status === 401 &&
+//       !originalRequest._retry &&
+//       getRefreshToken()
+//     ) {
+//       originalRequest._retry = true;
+//       try {
+//         const { data } = await api.post('/token/refresh/', {
+//           refresh: getRefreshToken(),
+//         });
+//         setTokens(data.access, data.refresh);
+//         originalRequest.headers = {
+//           ...originalRequest.headers,
+//           Authorization: `Bearer ${data.access}`,
+//         };
+//         return api(originalRequest);
+//       } catch {
+//         // Refresh failed: clear tokens, notify app, then redirect
+//         clearTokens();
+//         fireSessionExpired();
+//         const redirectTo = window.location.pathname.startsWith('/vendor')
+//           ? '/vendor/login'
+//           : '/login';
+//         window.location.href = redirectTo;
+//         return Promise.reject(error);
+//       }
+//     }
+//
+//     return Promise.reject(error);
+//   }
+// );
+//
+// export default api;
 
 
 
