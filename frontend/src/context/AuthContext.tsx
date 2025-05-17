@@ -106,6 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export default AuthContext;
 
+
 // // Initial version - working
 // import React, { createContext, useState, useEffect } from 'react';
 // import api from '../api';
