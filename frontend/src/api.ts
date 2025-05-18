@@ -66,7 +66,6 @@ api.interceptors.response.use(
 
 export default api;
 
-
 // // src/api.ts - currently working version
 // import axios from 'axios';
 //
