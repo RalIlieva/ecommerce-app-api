@@ -140,7 +140,6 @@ const Navbar: React.FC = () => {
 
 export default Navbar;
 
-
 // // Initial working version - almost perfect
 // // src/components/Navbar.tsx
 // import React, { useState, useContext } from 'react';
