@@ -12,6 +12,7 @@ function fireSessionExpired() {
   window.dispatchEvent(new Event('sessionExpired'));
 }
 
+// Main API client (with interceptor)
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
@@ -21,7 +22,6 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach token to every request
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
   if (token && config.headers) {
@@ -30,32 +30,41 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor: handle 401, attempt one refresh, then fire sessionExpired event
+// “Bare” client for refresh calls—no interceptors here
+const authApi = axios.create({
+  baseURL: api.defaults.baseURL,
+  headers: { 'Content-Type': 'application/json' },
+});
+
 api.interceptors.response.use(
-  (res) => res,
+  (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-    // Only handle 401 once per request
+    // Only attempt refresh once
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       const refresh = getRefreshToken();
       if (refresh) {
         try {
-          const { data } = await api.post('/token/refresh/', { refresh });
+          // Use the bare client so we don't re-enter this interceptor
+          const { data } = await authApi.post('/token/refresh/', { refresh });
+
+          // Persist new tokens
           setTokens(data.access, data.refresh);
+
+          // Update the failed request’s header and retry it
           if (originalRequest.headers) {
             originalRequest.headers.Authorization = `Bearer ${data.access}`;
           }
-          // Retry the original request
           return api(originalRequest);
         } catch {
-          // Refresh failed
+          // Refresh failed: fall through to logout
         }
       }
 
-      // No valid refresh token or refresh failed
+      // No refresh token or refresh attempt failed
       clearTokens();
       fireSessionExpired();
     }
@@ -65,6 +74,75 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+
+// // src/api.ts - bugs infinite loop
+// import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+// import {
+//   getAccessToken,
+//   getRefreshToken,
+//   setTokens,
+//   clearTokens,
+// } from './utils';
+//
+// // Dispatch a global event when session expires
+// function fireSessionExpired() {
+//   window.dispatchEvent(new Event('sessionExpired'));
+// }
+//
+// const api = axios.create({
+//   baseURL:
+//     import.meta.env.VITE_API_URL ||
+//     (window.location.hostname === 'localhost'
+//       ? 'http://localhost:8000/api/v1'
+//       : 'http://app:8000/api/v1'),
+//   headers: { 'Content-Type': 'application/json' },
+// });
+//
+// // Attach token to every request
+// api.interceptors.request.use((config) => {
+//   const token = getAccessToken();
+//   if (token && config.headers) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+//   return config;
+// });
+//
+// // Response interceptor: handle 401, attempt one refresh, then fire sessionExpired event
+// api.interceptors.response.use(
+//   (res) => res,
+//   async (error: AxiosError) => {
+//     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+//
+//     // Only handle 401 once per request
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+//
+//       const refresh = getRefreshToken();
+//       if (refresh) {
+//         try {
+//           const { data } = await api.post('/token/refresh/', { refresh });
+//           setTokens(data.access, data.refresh);
+//           if (originalRequest.headers) {
+//             originalRequest.headers.Authorization = `Bearer ${data.access}`;
+//           }
+//           // Retry the original request
+//           return api(originalRequest);
+//         } catch {
+//           // Refresh failed
+//         }
+//       }
+//
+//       // No valid refresh token or refresh failed
+//       clearTokens();
+//       fireSessionExpired();
+//     }
+//
+//     return Promise.reject(error);
+//   }
+// );
+//
+// export default api;
 
 // // src/api.ts - currently working version
 // import axios from 'axios';
