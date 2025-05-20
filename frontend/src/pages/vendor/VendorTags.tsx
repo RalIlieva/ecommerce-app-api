@@ -21,12 +21,12 @@ const VendorTags: React.FC = () => {
       try {
         const response = await api.get('/vendor/tags/tags/');
         setTags(response.data.results);
-        setAlertMessage('Tags loaded successfully');
-        setAlertVariant('success');
-        // Hide alert after 3 seconds
-        setTimeout(() => {
-          setAlertMessage('');
-        }, 3000);
+//         setAlertMessage('Tags loaded successfully');
+//         setAlertVariant('success');
+//         // Hide alert after 3 seconds
+//         setTimeout(() => {
+//           setAlertMessage('');
+//         }, 3000);
       } catch (error) {
         console.error('Error fetching tags:', error);
         setAlertMessage('Failed to load tags');
