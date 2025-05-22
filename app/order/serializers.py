@@ -32,6 +32,8 @@ class OrderSerializer(serializers.ModelSerializer):
     # shipping_address = serializers.CharField()  # Add shipping address field
     # Return full address
     shipping_address = ShippingAddressSerializer(read_only=True)
+    user_email = serializers.EmailField(source='user.email', read_only=True)
+    user_name = serializers.CharField(source='user.name', read_only=True)
 
     class Meta:
         model = Order
@@ -39,6 +41,8 @@ class OrderSerializer(serializers.ModelSerializer):
             'id', 'uuid', 'user', 'status', 'created', 'modified', 'items',
             'total_amount',
             'shipping_address',
+            'user_email',
+            'user_name',
         ]
         read_only_fields = [
             'id', 'uuid',  'user', 'status', 'created', 'modified'

@@ -70,6 +70,8 @@ const VendorOrderDetails: React.FC = () => {
                 <Card.Body>
                   <p><strong>Order ID:</strong> {order.id}</p>
                   <p><strong>UUID:</strong> {order.uuid}</p>
+                  <p><strong>User Name:</strong> {order.user_name}</p>
+                  <p><strong>User Email:</strong> {order.user_email}</p>
                   <p><strong>Status:</strong> {order.status}</p>
                   <p><strong>Created:</strong> {new Date(order.created).toLocaleString()}</p>
                   <p><strong>Modified:</strong> {new Date(order.modified).toLocaleString()}</p>
