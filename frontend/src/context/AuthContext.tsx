@@ -1,3 +1,4 @@
+// src/context/AuthContext.tsx
 import React, {
   createContext,
   useState,
@@ -106,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 export default AuthContext;
 
 
-// // src/context/AuthContext.tsx
+// // src/context/AuthContext.tsx - to delete
 // import React, {
 //   createContext,
 //   useState,
