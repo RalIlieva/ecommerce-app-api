@@ -9,4 +9,13 @@ export default defineConfig({
     port: 5173,        // Specify the port Vite should use
     strictPort: true,  // Prevent fallback to another port if 5173 is in use
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/setupTests.ts',
+    include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    coverage: {
+      reporter: ['text', 'lcov'],
+    },
+  },
 })
