@@ -21,14 +21,6 @@ const VendorCategories: React.FC = () => {
       try {
         const response = await api.get('/vendor/categories/categories/');
         setCategories(response.data.results);
-
-//         setAlertMessage('Categories loaded successfully');
-//         setAlertVariant('success');
-//         // Hide alert after 3 seconds
-//         setTimeout(() => {
-//           setAlertMessage('');
-//         }, 3000);
-
       } catch (error) {
         console.error('Error fetching categories:', error);
         setAlertMessage('Failed to load categories');
