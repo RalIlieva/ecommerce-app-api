@@ -321,8 +321,7 @@ const VendorProductManagement: React.FC = () => {
 
 export default VendorProductManagement;
 
-
-// // Working version
+// // Working version - to delete
 // // src/pages/vendor/VendorProductManagement.tsx
 // import React, { useState, useEffect, useRef } from 'react';
 // import { Button, Card, Container, Row, Col, Alert, Modal, Form } from 'react-bootstrap';
