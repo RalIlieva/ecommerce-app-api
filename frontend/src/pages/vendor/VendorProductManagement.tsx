@@ -320,7 +320,6 @@ const VendorProductManagement: React.FC = () => {
 
 export default VendorProductManagement;
 
-
 // // Working version - to delete
 // // src/pages/vendor/VendorProductManagement.tsx
 // import React, { useState, useEffect, useRef } from 'react';
