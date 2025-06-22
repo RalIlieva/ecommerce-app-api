@@ -114,7 +114,7 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route
-            path="/products/:uuid/:slug"
+            path="/products/products/:uuid/:slug"
             element={<ProductDetail />}
           />
           <Route path="/categories" element={<CategoryList />} />
