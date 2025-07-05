@@ -163,4 +163,3 @@ describe('VendorOrderDetails', () => {
     expect(api.patch).toHaveBeenCalledWith('/vendor/orders/order-uuid/status/', { status: 'shipped' });
   });
 });
-
