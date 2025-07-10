@@ -306,9 +306,3 @@ describe('VendorProductDetail (basic fetch)', () => {
     );
   });
 });
-
-
-
-
-
-
