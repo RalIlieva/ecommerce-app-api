@@ -1,11 +1,12 @@
+// src/tests/ProductGrid.test.tsx
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import ProductGrid from '../components/ProductGrid';
-import { vi } from 'vitest';
 import { Product } from '../api/types';
+import { vi } from 'vitest';
 
-// 1) Mock the ProductCard child so we don't need its full implementation
-vi.mock('./ProductCard', () => ({
+// 1) Mock out the ProductCard child, so we don't pull in its complexities
+vi.mock('../components/ProductCard', () => ({
   default: ({ product }: { product: Product }) => (
     <div data-testid="card">{product.name}</div>
   ),
@@ -50,3 +51,4 @@ describe('ProductGrid', () => {
     expect(cards[1].textContent).toBe('Second');
   });
 });
+
