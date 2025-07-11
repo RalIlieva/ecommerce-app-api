@@ -87,17 +87,31 @@ import api from '../api';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 // Mock React-Bootstrap components
-vi.mock('react-bootstrap', () => ({
-  Container: (p: any) => <div>{p.children}</div>,
-  Row: (p: any) => <div>{p.children}</div>,
-  Col: (p: any) => <div>{p.children}</div>,
-  Button: (p: any) => <button {...p}>{p.children}</button>,
-  Modal: (p: any) => <div>{p.children}</div>,
-  Alert: (p: any) => <div role="alert">{p.children}</div>,
-  Spinner: () => <div>Loading...</div>,
-  Form: { Group: (p: any) => <div>{p.children}</div>, Control: (p: any) => <input {...p} />, Select: (p: any) => <select {...p}>{p.children}</select> },
-  Table: (p: any) => <table>{p.children}</table>,
-}));
+vi.mock('react-bootstrap', () => {
+  // Basic layout components
+  const Container = (p: any) => <div>{p.children}</div>;
+  const Row = (p: any) => <div>{p.children}</div>;
+  const Col = (p: any) => <div>{p.children}</div>;
+  const Button = (p: any) => <button {...p}>{p.children}</button>;
+
+  // Modal with subcomponents
+  const Modal = (p: any) => <div>{p.children}</div>;
+  Modal.Header = (p: any) => <div>{p.children}</div>;
+  Modal.Body = (p: any) => <div>{p.children}</div>;
+  Modal.Title = (p: any) => <h2>{p.children}</h2>;
+
+  // Other components
+  const Alert = (p: any) => <div role="alert">{p.children}</div>;
+  const Spinner = () => <div>Loading...</div>;
+  const Form = {
+    Group: (p: any) => <div>{p.children}</div>,
+    Control: (p: any) => <input {...p} />,
+    Select: (p: any) => <select {...p}>{p.children}</select>
+  };
+  const Table = (p: any) => <table>{p.children}</table>;
+
+  return { Container, Row, Col, Button, Modal, Alert, Spinner, Form, Table };
+}););
 
 // Mock child components
 vi.mock('../components/ProductForm', () => ({ __esModule: true, default: () => <div data-testid="mock-form"/> }));
