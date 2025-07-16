@@ -114,16 +114,22 @@ vi.mock('react-bootstrap', () => {
   const Row = ({ children }: any) => <div>{children}</div>;
   const Col = ({ children }: any) => <div>{children}</div>;
   const Card = ({ children }: any) => <div>{children}</div>;
+  Card.Body = ({ children }: any) => <div>{children}</div>;
+  Card.Title = ({ children }: any) => <h5>{children}</h5>;
+  Card.Text = ({ children }: any) => <p>{children}</p>;
   const Button = (props: any) => <button {...props}>{props.children}</button>;
   const Alert = (props: any) => <div role={props.variant === 'danger' ? 'alert' : undefined}>{props.children}</div>;
   const Modal = ({ children }: any) => <div>{children}</div>;
   Modal.Header = ({ children }: any) => <div>{children}</div>;
   Modal.Body = ({ children }: any) => <div>{children}</div>;
+  Modal.Footer = ({ children }: any) => <div>{children}</div>;
   Modal.Title = ({ children }: any) => <h2>{children}</h2>;
   const Form = {
     Control: (props: any) => <input {...props} />,
     Select: (props: any) => <select {...props}>{props.children}</select>
   };
+  const CardDeck = ({ children }: any) => <div>{children}</div>; // if used
+
   return { Container, Row, Col, Card, Button, Alert, Modal, Form };
 });
 
@@ -195,3 +201,4 @@ describe('VendorProductManagement', () => {
     expect(alert.textContent).toContain('Failed to fetch products.');
   });
 });
+
