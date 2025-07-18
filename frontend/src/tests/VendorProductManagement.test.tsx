@@ -102,25 +102,18 @@
 
 // src/tests/VendorProductManagement.test.tsx
 import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { vi } from 'vitest';
 import VendorProductManagement from '../pages/vendor/VendorProductManagement';
 import api from '../api';
 import { MemoryRouter } from 'react-router-dom';
 
-/*
-  react-bootstrap mock -------------------------------------------------------
-  We provide minimal functional stand-ins for just the pieces used by the
-  component under test.  Anything we don't need we leave out so that we don't
-  accidentally create invalid React elements (which would trigger the
-  "Element type is invalid" runtime error we saw earlier).
-*/
+/* react-bootstrap mock ---------------------------------------------------- */
 vi.mock('react-bootstrap', () => {
   const Container = ({ children }: any) => <div>{children}</div>;
   const Row = ({ children }: any) => <div>{children}</div>;
   const Col = ({ children }: any) => <div>{children}</div>;
 
-  // Minimal Card implementation with static subcomponents.
   const CardRoot = ({ children }: any) => <div>{children}</div>;
   const CardBody = ({ children }: any) => <div>{children}</div>;
   const CardTitle = ({ children }: any) => <h5>{children}</h5>;
@@ -131,12 +124,10 @@ vi.mock('react-bootstrap', () => {
 
   const Button = ({ children, ...rest }: any) => <button {...rest}>{children}</button>;
 
-  // Alert: give role="alert" when variant="danger" so we can query in tests.
   const Alert = ({ children, variant }: any) => (
     <div role={variant === 'danger' ? 'alert' : undefined}>{children}</div>
   );
 
-  // Modal + subparts
   const ModalRoot = ({ children }: any) => <div>{children}</div>;
   const ModalHeader = ({ children }: any) => <div>{children}</div>;
   const ModalBody = ({ children }: any) => <div>{children}</div>;
@@ -147,9 +138,8 @@ vi.mock('react-bootstrap', () => {
   (ModalRoot as any).Footer = ModalFooter;
   (ModalRoot as any).Title = ModalTitle;
 
-  // Form bits we actually touch in the component (Control & Select)
   const Form: any = {
-    Control: ({ children, ...rest }: any) => <input {...rest} />,
+    Control: (props: any) => <input {...props} />,
     Select: ({ children, ...rest }: any) => <select {...rest}>{children}</select>,
   };
 
@@ -165,24 +155,24 @@ vi.mock('react-bootstrap', () => {
   };
 });
 
-/*
-  Child component mocks ------------------------------------------------------
-  We keep these *interactive* enough that the parent component logic runs.  In
-  particular, the ProductForm mock renders a button with the supplied
-  `submitLabel` prop so we can click it to trigger `onSubmit`.
-*/
+/* Child component mocks --------------------------------------------------- */
 vi.mock('../components/ProductForm', () => ({
   __esModule: true,
   default: ({ submitLabel = 'Submit', onSubmit }: any) => (
     <div data-testid="product-form">
-      <button onClick={() => onSubmit?.({
-        name: 'NewProd',
-        description: 'New description',
-        price: 1,
-        stock: 1,
-        category: { name: 'Cat1', slug: 'cat1' },
-        tags: [],
-      })}>
+      <button
+        type="button"
+        onClick={() =>
+          onSubmit?.({
+            name: 'NewProd',
+            description: 'New description',
+            price: 1,
+            stock: 1,
+            category: { name: 'Cat1', slug: 'cat1' },
+            tags: [],
+          })
+        }
+      >
         {submitLabel}
       </button>
     </div>
@@ -211,16 +201,14 @@ vi.mock('../components/Pagination', () => ({
   ),
 }));
 
-/*
-  API mock ------------------------------------------------------------------
-*/
+/* API mock ---------------------------------------------------------------- */
 vi.mock('../api');
 const mockedGet = api.get as unknown as vi.Mock;
 const mockedPost = api.post as unknown as vi.Mock;
 const mockedPut = api.put as unknown as vi.Mock;
 const mockedDelete = api.delete as unknown as vi.Mock;
 
-// Utility render helper -----------------------------------------------------
+/* Render helper ------------------------------------------------------------ */
 const renderPage = () =>
   render(
     <MemoryRouter>
@@ -228,18 +216,19 @@ const renderPage = () =>
     </MemoryRouter>
   );
 
-// ---------------------------------------------------------------------------
+/* Tests ------------------------------------------------------------------- */
 describe('VendorProductManagement', () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   it('fetches and displays products, categories, and tags, and handles add product success', async () => {
-    // categories
-    mockedGet.mockResolvedValueOnce({ data: { results: [{ uuid: 'c1', name: 'Cat1', slug: 'cat1' }] } });
-    // tags
-    mockedGet.mockResolvedValueOnce({ data: { results: [{ id: 't1', name: 'Tag1', slug: 'tag1' }] } });
-    // products list
+    mockedGet.mockResolvedValueOnce({
+      data: { results: [{ uuid: 'c1', name: 'Cat1', slug: 'cat1' }] },
+    }); // categories
+    mockedGet.mockResolvedValueOnce({
+      data: { results: [{ id: 't1', name: 'Tag1', slug: 'tag1' }] },
+    }); // tags
     mockedGet.mockResolvedValueOnce({
       data: {
         results: [
@@ -257,35 +246,31 @@ describe('VendorProductManagement', () => {
         current_page: 1,
         total_pages: 1,
       },
-    });
+    }); // products
 
     renderPage();
 
-    // initial heading always there synchronously; product list async.
     expect(screen.getByText('Vendor Product Management')).toBeTruthy();
     expect(await screen.findByText('Prod1')).toBeTruthy();
 
-    // Simulate successful add (ProductForm mock calls onSubmit with payload)
     mockedPost.mockResolvedValueOnce({});
-    // after add, component refetches products (we'll return an empty list)
     mockedGet.mockResolvedValueOnce({
       data: { results: [], current_page: 1, total_pages: 1 },
-    });
+    }); // refetch after add
 
-    fireEvent.click(screen.getByRole('button', { name: /Add Product/i }));
+    const form = screen.getByTestId('product-form');
+    const addBtn = within(form).getByRole('button', { name: /Add Product/i });
+    fireEvent.click(addBtn);
 
-    // success message appears
     await waitFor(() => {
       expect(screen.getByText('Product added successfully.')).toBeTruthy();
     });
   });
 
   it('handles fetch products failure', async () => {
-    // categories & tags succeed (empty)
-    mockedGet.mockResolvedValueOnce({ data: { results: [] } });
-    mockedGet.mockResolvedValueOnce({ data: { results: [] } });
-    // products error
-    mockedGet.mockRejectedValueOnce(new Error('fail'));
+    mockedGet.mockResolvedValueOnce({ data: { results: [] } }); // categories
+    mockedGet.mockResolvedValueOnce({ data: { results: [] } }); // tags
+    mockedGet.mockRejectedValueOnce(new Error('fail')); // products
 
     renderPage();
 
@@ -293,4 +278,6 @@ describe('VendorProductManagement', () => {
     expect(alert.textContent).toContain('Failed to fetch products.');
   });
 });
+
+
 
