@@ -31,7 +31,7 @@ vi.mock('react-bootstrap', () => {
   const Table = (p: any) => <table>{p.children}</table>;
 
   return { Container, Row, Col, Button, Modal, Alert, Spinner, Form, Table };
-}););
+});
 
 // Mock child components
 vi.mock('../components/ProductForm', () => ({ __esModule: true, default: () => <div data-testid="mock-form"/> }));
