@@ -444,6 +444,10 @@ describe('<VendorTags />', () => {
     });
 
     render(<VendorTags />);
+    // Should call the correct endpoint
+    await waitFor(() => {
+      expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags');
+    });
 
     // wrapper + spinner text
     await waitFor(() => {
@@ -463,7 +467,7 @@ describe('<VendorTags />', () => {
   it('creates a tag successfully', async () => {
     mockedGet.mockResolvedValueOnce({ data: { results: [] } });
     render(<VendorTags />);
-    await waitFor(() => expect(mockedGet).toHaveBeenCalled());
+    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags'));
 
     fireEvent.click(screen.getByRole('button', { name: /create tag/i }));
     expect(screen.getByTestId('modal')).toBeTruthy();
@@ -472,9 +476,15 @@ describe('<VendorTags />', () => {
     fireEvent.change(nameInput, { target: { value: 'New Tag' } });
     fireEvent.change(slugInput, { target: { value: 'new-tag' } });
 
-    mockedPost.mockResolvedValueOnce({ data: { uuid: 't3', name: 'New Tag', slug: 'new-tag' } });
+    mockedPost.mockResolvedValueOnce({
+      data: { uuid: 't3', name: 'New Tag', slug: 'new-tag' }
+    });
     fireEvent.click(screen.getByRole('button', { name: /^create$/i }));
+    await waitFor(() => {
+      expect(mockedPost).toHaveBeenCalledWith('/vendor/tags/tags', { name: 'New Tag', slug: 'new-tag' });
+    });
 
+    // Modal closes and new tag appears
     await waitFor(() => {
       expect(screen.queryByTestId('modal')).toBeNull();
     });
@@ -485,7 +495,7 @@ describe('<VendorTags />', () => {
   it('shows error if create fails', async () => {
     mockedGet.mockResolvedValueOnce({ data: { results: [] } });
     render(<VendorTags />);
-    await waitFor(() => expect(mockedGet).toHaveBeenCalled());
+    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags'));
 
     fireEvent.click(screen.getByRole('button', { name: /create tag/i }));
     const [ni, si] = screen.getAllByRole('textbox') as HTMLInputElement[];
@@ -501,40 +511,43 @@ describe('<VendorTags />', () => {
   });
 
   it('prevents duplicate slug on edit', async () => {
-    const t1 = { uuid: 't1', id: 1, name: 'A', slug: 'a' };
-    const t2 = { uuid: 't2', id: 2, name: 'B', slug: 'b' };
+    const t1 = { uuid: 't1', name: 'A', slug: 'a' };
+    const t2 = { uuid: 't2', name: 'B', slug: 'b' };
     mockedGet.mockResolvedValueOnce({ data: { results: [t1, t2] } });
 
     render(<VendorTags />);
-    await waitFor(() => screen.getByRole('heading', { name: 'A' }));
+    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags'));
 
     fireEvent.click(screen.getAllByRole('button', { name: /edit/i })[0]);
     const [, slugInput] = screen.getAllByRole('textbox') as HTMLInputElement[];
     fireEvent.change(slugInput, { target: { value: 'b' } });
 
-    mockedGet.mockResolvedValueOnce({ data: { results: [t1, t2] } });
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
-
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent('This slug already exists');
     });
   });
 
   it('updates a tag successfully', async () => {
-    const t1 = { uuid: 't1', id: 1, name: 'A', slug: 'a' };
+    const t1 = { uuid: 't1', name: 'A', slug: 'a' };
     mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
 
     render(<VendorTags />);
-    await waitFor(() => screen.getByRole('heading', { name: 'A' }));
+    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags'));
 
     fireEvent.click(screen.getByRole('button', { name: /edit/i }));
     const [nameInput] = screen.getAllByRole('textbox') as HTMLInputElement[];
     fireEvent.change(nameInput, { target: { value: 'A+' } });
 
-    mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
-    mockedPut.mockResolvedValueOnce({ data: { ...t1, name: 'A+' } });
+    mockedPut.mockResolvedValueOnce({
+      data: { ...t1, name: 'A+', slug: 'a' }
+    });
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
+    await waitFor(() => {
+      expect(mockedPut).toHaveBeenCalledWith('/vendor/tags/tags/t1', { name: 'A+', slug: 'a' });
+    });
 
+    // Modal closes and heading updates
     await waitFor(() => {
       expect(screen.queryByTestId('modal')).toBeNull();
     });
@@ -547,14 +560,18 @@ describe('<VendorTags />', () => {
     mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
 
     render(<VendorTags />);
-    await waitFor(() => screen.getByRole('heading', { level: 3, name: 'DeleteMe' }));
+    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags'));
 
     fireEvent.click(screen.getByRole('button', { name: /delete$/i }));
     expect(screen.getByTestId('modal')).toBeTruthy();
 
     mockedDelete.mockResolvedValueOnce({});
     fireEvent.click(screen.getByRole('button', { name: /^delete$/i }));
+    await waitFor(() => {
+      expect(mockedDelete).toHaveBeenCalledWith('/vendor/tags/tags/t1');
+    });
 
+    // Modal closes and tag is removed
     await waitFor(() => {
       expect(screen.queryByRole('heading', { level: 3, name: 'DeleteMe' })).toBeNull();
     });
