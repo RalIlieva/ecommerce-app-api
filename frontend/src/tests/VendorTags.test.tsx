@@ -130,7 +130,7 @@ describe('<VendorTags />', () => {
     mockedGet.mockResolvedValueOnce({ data: { results: [t1, t2] } });
 
     render(<VendorTags />);
-    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags'));
+    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags'));
 
     fireEvent.click(screen.getAllByRole('button', { name: /edit/i })[0]);
     const [, slugInput] = screen.getAllByRole('textbox') as HTMLInputElement[];
