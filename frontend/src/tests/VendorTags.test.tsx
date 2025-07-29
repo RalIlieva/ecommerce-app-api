@@ -296,7 +296,7 @@ describe('<VendorTags />', () => {
     mockedPost.mockResolvedValueOnce({ data: { uuid: 't3', name: 'New Tag', slug: 'new-tag' } });
     fireEvent.click(screen.getByRole('button', { name: /^create$/i }));
     await waitFor(() =>
-      expect(mockedPost).toHaveBeenCalledWith('/vendor/tags/tags/', { name: 'New Tag', slug: 'new-tag' })
+      expect(mockedPost).toHaveBeenCalledWith('/vendor/tags/tags/create/', { name: 'New Tag', slug: 'new-tag' })
     );
 
     await waitFor(() => expect(screen.queryByTestId('modal')).not.toBeInTheDocument());
