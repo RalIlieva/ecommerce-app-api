@@ -378,7 +378,7 @@ describe('<VendorTags />', () => {
     fireEvent.click(screen.getAllByRole('button', { name: /^delete$/i })[1]);
 
     await waitFor(() =>
-      expect(mockedDelete).toHaveBeenCalledWith('/vendor/tags/tags/t1')
+      expect(mockedDelete).toHaveBeenCalledWith('/vendor/tags/tags/t1/manage/')
     );
 
     await waitFor(() =>
