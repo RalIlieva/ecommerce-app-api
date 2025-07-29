@@ -354,7 +354,7 @@ describe('<VendorTags />', () => {
     mockedPut.mockResolvedValueOnce({ data: { ...t1, name: 'A+', slug: 'a' } });
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
     await waitFor(() =>
-      expect(mockedPut).toHaveBeenCalledWith('/vendor/tags/tags/t1', { name: 'A+', slug: 'a' })
+      expect(mockedPut).toHaveBeenCalledWith('/vendor/tags/tags/t1/manage/', { name: 'A+', slug: 'a' })
     );
 
     await waitFor(() => expect(screen.queryByTestId('modal')).not.toBeInTheDocument());
