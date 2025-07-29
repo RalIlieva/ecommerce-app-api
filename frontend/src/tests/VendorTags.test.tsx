@@ -336,7 +336,7 @@ describe('<VendorTags />', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /update/i }));
     await waitFor(() =>
-      expect(screen.getByRole('alert')).toHaveTextContent('This slug already exists')
+      expect(screen.getByRole('alert')).toHaveTextContent('Failed to update tag')
     );
   });
 
