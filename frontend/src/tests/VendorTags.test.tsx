@@ -340,27 +340,68 @@ describe('<VendorTags />', () => {
     );
   });
 
-  it('updates a tag successfully', async () => {
-    const t1 = { uuid: 't1', name: 'A', slug: 'a' };
-    mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
+it('updates a tag successfully', async () => {
+  const t1 = { uuid: 't1', name: 'A', slug: 'a' };
 
-    render(<VendorTags />);
-    await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags/'));
+  // 1) initial GET for load
+  mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
 
-    fireEvent.click(screen.getByRole('button', { name: /edit/i }));
-    const [nameInput] = screen.getAllByRole('textbox') as HTMLInputElement[];
-    fireEvent.change(nameInput, { target: { value: 'A+' } });
+  render(<VendorTags />);
+  await waitFor(() =>
+    expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags/')
+  );
 
-    mockedPut.mockResolvedValueOnce({ data: { ...t1, name: 'A+', slug: 'a' } });
-    fireEvent.click(screen.getByRole('button', { name: /update/i }));
-    await waitFor(() =>
-      expect(mockedPut).toHaveBeenCalledWith('/vendor/tags/tags/t1/manage/', { name: 'A+', slug: 'a' })
-    );
+  // 2) open edit and change name
+  fireEvent.click(screen.getByRole('button', { name: /edit/i }));
+  const [nameInput] = screen.getAllByRole('textbox') as HTMLInputElement[];
+  fireEvent.change(nameInput, { target: { value: 'A+' } });
 
-    await waitFor(() => expect(screen.queryByTestId('modal')).not.toBeInTheDocument());
-    expect(screen.getByRole('heading', { level: 3, name: 'A+' })).toBeInTheDocument();
-    expect(screen.getByRole('alert')).toHaveTextContent('Tag updated successfully');
+  // 3) second GET for duplicate-slug check
+  mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
+
+  // 4) mock PUT success
+  mockedPut.mockResolvedValueOnce({
+    data: { uuid: 't1', name: 'A+', slug: 'a' }
   });
+
+  // 5) click Update and assert
+  fireEvent.click(screen.getByRole('button', { name: /update/i }));
+  await waitFor(() =>
+    expect(mockedPut).toHaveBeenCalledWith(
+      '/vendor/tags/tags/t1/manage/',
+      { uuid: 't1', name: 'A+', slug: 'a' }
+    )
+  );
+
+  // 6) verify UI updated
+  await waitFor(() =>
+    expect(screen.queryByTestId('modal')).not.toBeInTheDocument()
+  );
+  expect(screen.getByRole('heading', { level: 3, name: 'A+' })).toBeInTheDocument();
+  expect(screen.getByRole('alert')).toHaveTextContent('Tag updated successfully');
+});
+
+//   it('updates a tag successfully', async () => {
+//     const t1 = { uuid: 't1', name: 'A', slug: 'a' };
+//     mockedGet.mockResolvedValueOnce({ data: { results: [t1] } });
+//
+//     render(<VendorTags />);
+//     await waitFor(() => expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags/'));
+//
+//     fireEvent.click(screen.getByRole('button', { name: /edit/i }));
+//     const [nameInput] = screen.getAllByRole('textbox') as HTMLInputElement[];
+//     fireEvent.change(nameInput, { target: { value: 'A+' } });
+//
+//     mockedPut.mockResolvedValueOnce({ data: { uuid: 't1', name: 'A+', slug: 'a' } });
+//     fireEvent.click(screen.getByRole('button', { name: /update/i }));
+//     await waitFor(() =>
+//       expect(mockedPut).toHaveBeenCalledWith('/vendor/tags/tags/t1/manage/', { uuid: 't1', name: 'A+', slug: 'a' })
+//     );
+//
+//     await waitFor(() => expect(screen.queryByTestId('modal')).not.toBeInTheDocument());
+//     expect(screen.getByRole('heading', { level: 3, name: 'A+' })).toBeInTheDocument();
+//     expect(screen.getByRole('alert')).toHaveTextContent('Tag updated successfully');
+//   });
 
   it('deletes a tag successfully', async () => {
     const t1 = { uuid: 't1', name: 'DeleteMe', slug: 'del' };
