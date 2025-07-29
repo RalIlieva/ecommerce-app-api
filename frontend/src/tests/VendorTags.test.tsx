@@ -266,12 +266,6 @@ describe('<VendorTags />', () => {
       expect(mockedGet).toHaveBeenCalledWith('/vendor/tags/tags/')
     );
 
-//     // Two “Loading...” instances (spinner + text)
-//     await waitFor(() => {
-//       const loaders = screen.getAllByText(/Loading\.\.\./);
-//       expect(loaders).toHaveLength(2);
-//     });
-
     // Then none
     await waitFor(() => {
       expect(screen.queryAllByText(/Loading\.\.\./)).toHaveLength(0);
