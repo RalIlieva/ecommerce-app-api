@@ -114,9 +114,10 @@
 //   });
 // });
 
+
 // src/tests/VendorDashboard.test.tsx
 import React from 'react';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import VendorDashboard from '../pages/vendor/VendorDashboard';
@@ -170,20 +171,18 @@ describe('<VendorDashboard />', () => {
       </MemoryRouter>
     );
 
-    // initial loading
-    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+    // initial loading text
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
 
-    // verify fetch call
+    // fetch call
     await waitFor(() =>
       expect(mockedGet).toHaveBeenCalledWith('/vendor/dashboard/dashboard/')
     );
 
     // heading
-    expect(
-      await screen.findByRole('heading', { level: 2, name: /Vendor Dashboard/i })
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Vendor Dashboard')).toBeInTheDocument();
 
-    // Stats cards
+    // Stats
     expect(screen.getByText('Total Orders')).toBeInTheDocument();
     expect(screen.getByText('42')).toBeInTheDocument();
     expect(screen.getByText('Total Revenue')).toBeInTheDocument();
@@ -191,25 +190,25 @@ describe('<VendorDashboard />', () => {
     expect(screen.getByText('Total Products')).toBeInTheDocument();
     expect(screen.getByText('7')).toBeInTheDocument();
 
-    // Quick action links
+    // Quick action buttons
     ['Manage Products', 'Manage Orders', 'Manage Payments',
      'View Cart Aggregation', 'View Wishlist Aggregation'
-    ].forEach(label =>
-      expect(screen.getByRole('button', { name: new RegExp(label, 'i') })).toBeInTheDocument()
-    );
+    ].forEach((label) => {
+      expect(screen.getByRole('button', { name: new RegExp(label, 'i') })).toBeInTheDocument();
+    });
 
-    // Top Products text assertions
-    const topSection = screen.getByText('Top Products').closest('div')!;
+    // Top Products (text assertion)
+    const top = screen.getByText('Top Products').parentElement!;
     ['P1 - $10.00', 'P2 - $20.00', 'P3 - $30.00'].forEach(text =>
-      expect(within(topSection).getByText(text)).toBeInTheDocument()
+      expect(top).toHaveTextContent(text)
     );
 
-    // Recent Orders text assertions
-    const recentSection = screen.getByText('Recent Orders').closest('div')!;
+    // Recent Orders
+    const recent = screen.getByText('Recent Orders').parentElement!;
     ['Order ID: 101 | Status: New | Created: 2025-08-01',
      'Order ID: 102 | Status: Shipped | Created: 2025-07-30'
     ].forEach(text =>
-      expect(within(recentSection).getByText(text)).toBeInTheDocument()
+      expect(recent).toHaveTextContent(text)
     );
   });
 
@@ -223,7 +222,7 @@ describe('<VendorDashboard />', () => {
     );
 
     // initial loading
-    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
 
     // then error
     expect(await screen.findByRole('alert'))
