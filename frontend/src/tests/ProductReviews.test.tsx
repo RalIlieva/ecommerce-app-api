@@ -159,7 +159,8 @@ describe('<ProductReviews />', () => {
 
     // Success message and form reset
     expect(await screen.findByText(/Review submitted!/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Rating \(1-5\)/i)).toHaveValue(0);
+    expect(screen.getByLabelText(/Rating \(1-5\)/i)).toHaveValue('0');
+//     expect(screen.getByLabelText(/Rating \(1-5\)/i)).toHaveValue(0);
     expect(screen.getByLabelText(/^Comment$/i)).toHaveValue('');
 
     // Reloaded list present
