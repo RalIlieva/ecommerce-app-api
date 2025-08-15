@@ -171,7 +171,6 @@
 //   });
 // });
 
-
 // src/tests/OrderPage.test.tsx
 import React from 'react';
 import { render, screen, waitFor, within } from '@testing-library/react';
@@ -267,19 +266,30 @@ describe('<OrderPage />', () => {
     const createdLabel = screen.getByText(/Created on:/i);
     expect(createdLabel.parentElement).toHaveTextContent(`Created on: ${createdStr}`);
 
-    // Total amount
-    expect(screen.getByText(/Order Total:/i).nextSibling).toHaveTextContent('$45.67');
+    // Total amount — assert on the whole <p>
+    const totalLine = screen.getByText(/Order Total:/i).parentElement!;
+    expect(totalLine).toHaveTextContent(/\$45\.67/);
 
     // Shipping address block
     expect(screen.getByText(/Shipping Address/i)).toBeInTheDocument();
-    expect(screen.getByText(/Name:/i).nextSibling).toHaveTextContent('John Doe');
-    expect(screen.getByText(/Address:/i).nextSibling).toHaveTextContent(
-      '123 Main St, Apt 4'
-    );
-    expect(screen.getByText(/City:/i).nextSibling).toHaveTextContent('Sofia');
-    expect(screen.getByText(/Postal Code:/i).nextSibling).toHaveTextContent('1000');
-    expect(screen.getByText(/Country:/i).nextSibling).toHaveTextContent('BG');
-    expect(screen.getByText(/Phone:/i).nextSibling).toHaveTextContent('123456');
+
+    const nameLine = screen.getByText(/^Name:/i).closest('p')!;
+    expect(nameLine).toHaveTextContent(/Name:\s*John Doe/);
+
+    const addrLine = screen.getByText(/^Address:/i).closest('p')!;
+    expect(addrLine).toHaveTextContent(/Address:\s*123 Main St,\s*Apt 4/);
+
+    const cityLine = screen.getByText(/^City:/i).closest('p')!;
+    expect(cityLine).toHaveTextContent(/City:\s*Sofia/);
+
+    const postalLine = screen.getByText(/^Postal Code:/i).closest('p')!;
+    expect(postalLine).toHaveTextContent(/Postal Code:\s*1000/);
+
+    const countryLine = screen.getByText(/^Country:/i).closest('p')!;
+    expect(countryLine).toHaveTextContent(/Country:\s*BG/);
+
+    const phoneLine = screen.getByText(/^Phone:/i).closest('p')!;
+    expect(phoneLine).toHaveTextContent(/Phone:\s*123456/);
 
     // Items list
     const list = screen.getByRole('list');
