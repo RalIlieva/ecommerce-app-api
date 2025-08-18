@@ -9,7 +9,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from products.models import Category, Product
 from order.models import Order
-from order.services import create_order
+# from order.services import create_order
 from checkout.models import ShippingAddress
 
 ORDERS_URL = reverse('order:order-list')
