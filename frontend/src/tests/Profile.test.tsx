@@ -76,10 +76,6 @@ describe('VendorOrderManagement', () => {
     expect(rowForUuid2!).toHaveTextContent('shipped');
     expect(rowForUuid2!).toHaveTextContent(created2);
 
-    // (Optional) If there’s a “View Details” link/button per row, assert via role:
-    // const link1 = within(rowForUuid1!).getByRole('link', { name: /view details/i });
-    // expect(link1).toHaveAttribute('href', '/vendor/orders/uuid-1'); // adjust as needed
-
     // Ensure the fetch happened (no brittle URL assertion)
     await waitFor(() => expect(mockedGet).toHaveBeenCalled());
   });
