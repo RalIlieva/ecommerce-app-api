@@ -1,4 +1,5 @@
 // src/tests/ProductCard.test.tsx
+
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
