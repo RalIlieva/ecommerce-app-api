@@ -1,4 +1,5 @@
 // src/pages/CartPage.tsx
+
 import React, { useEffect, useState, useContext } from 'react';
 import api from '../api';
 import { Cart, CartItem } from '../api/types';
