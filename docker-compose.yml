@@ -29,11 +29,22 @@ services:
       - dev-db-data:/var/lib/postgresql/data
     env_file:
       - .env
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 5
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test:
+        [
+          "CMD-SHELL",
+          # fallbacks ensure test succeeds even if envs aren't present
+          "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-postgres} -h 127.0.0.1 || exit 1"
+        ]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 30       # give CI time
+      start_period: 20s # grace period before counting retries
 
   redis:
 #    image: redis:6.2.6

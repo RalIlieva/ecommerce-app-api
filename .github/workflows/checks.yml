@@ -5,9 +5,8 @@ on: [push]
 jobs:
   test-lint:
     name: Test and Lint
-
-#    runs-on: ubuntu-20.04
     runs-on: ubuntu-latest
+
     env:
       DB_HOST: db
       DB_NAME: ${{ secrets.DB_NAME }}
@@ -18,6 +17,7 @@ jobs:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -28,7 +28,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up .env file
+      # Backend .env for compose
+      - name: Set up backend .env
         run: |
           echo "DB_HOST=${{ env.DB_HOST }}" >> .env
           echo "DB_NAME=${{ env.DB_NAME }}" >> .env
@@ -41,14 +42,20 @@ jobs:
           echo "STRIPE_PUBLISHABLE_KEY=${{ env.STRIPE_PUBLISHABLE_KEY }}" >> .env
           echo "SECRET_KEY=${{ env.SECRET_KEY }}" >> .env
           echo "ADMIN_NAME=${{ env.ADMIN_NAME }}" >> .env
-          echo "ADMIN_EMAIL=${{ env.ADMIN_EMAIL }}" >> .env 
+          echo "ADMIN_EMAIL=${{ env.ADMIN_EMAIL }}" >> .env
+
+      # Frontend .env so compose doesn't fail parsing
+      - name: Create frontend .env for CI
+        run: |
+          mkdir -p frontend
+          echo "VITE_API_URL=http://localhost:8000/api/v1" > frontend/.env
 
       - name: Check Docker and Docker Compose Version
         run: |
           docker version
           docker compose version
 
-      - name: Build and start services
+      - name: Build and start db
         run: docker compose up -d db
 
       - name: List Docker Containers
@@ -57,13 +64,15 @@ jobs:
       - name: Wait for db service to be healthy
         run: |
           echo "Waiting for the database service to be healthy..."
-          MAX_RETRIES=30
+          MAX_RETRIES=60  # 5 minutes in 5s steps
           RETRY_COUNT=0
-          until [ "`docker inspect -f '{{json .State.Health.Status}}' $(docker compose ps -q db 2>/dev/null) 2>/dev/null`" == '"healthy"' ]; do
+          until [ "`docker inspect -f '{{json .State.Health.Status}}' $(docker compose ps -q db 2>/dev/null) 2>/dev/null`" = '"healthy"' ]; do
             sleep 5
             RETRY_COUNT=$((RETRY_COUNT+1))
             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
               echo "Database did not become healthy after $((MAX_RETRIES*5)) seconds."
+              echo "---- DB logs ----"
+              docker compose logs --no-color db || true
               exit 1
             fi
             echo "Still waiting for database..."
@@ -78,4 +87,93 @@ jobs:
 
       - name: Shutdown services
         if: always()
-        run: docker compose down
+        run: |
+          if docker compose config > /dev/null 2>&1; then
+            docker compose down --volumes --remove-orphans
+          else
+            echo "Skipping docker compose down (invalid config or missing env files)."
+          fi
+
+
+
+#name: Checks
+#
+#on: [push]
+#
+#jobs:
+#  test-lint:
+#    name: Test and Lint
+#
+##    runs-on: ubuntu-20.04
+#    runs-on: ubuntu-latest
+#    env:
+#      DB_HOST: db
+#      DB_NAME: ${{ secrets.DB_NAME }}
+#      DB_USER: ${{ secrets.DB_USER }}
+#      DB_PASS: ${{ secrets.DB_PASS }}
+#      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+#      STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+#      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+#      ADMIN_NAME: ${{ secrets.ADMIN_NAME }}
+#      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+#    steps:
+#      - name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USER }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Set up .env file
+#        run: |
+#          echo "DB_HOST=${{ env.DB_HOST }}" >> .env
+#          echo "DB_NAME=${{ env.DB_NAME }}" >> .env
+#          echo "DB_USER=${{ env.DB_USER }}" >> .env
+#          echo "DB_PASS=${{ env.DB_PASS }}" >> .env
+#          echo "POSTGRES_DB=${{ env.DB_NAME }}" >> .env
+#          echo "POSTGRES_USER=${{ env.DB_USER }}" >> .env
+#          echo "POSTGRES_PASSWORD=${{ env.DB_PASS }}" >> .env
+#          echo "STRIPE_SECRET_KEY=${{ env.STRIPE_SECRET_KEY }}" >> .env
+#          echo "STRIPE_PUBLISHABLE_KEY=${{ env.STRIPE_PUBLISHABLE_KEY }}" >> .env
+#          echo "SECRET_KEY=${{ env.SECRET_KEY }}" >> .env
+#          echo "ADMIN_NAME=${{ env.ADMIN_NAME }}" >> .env
+#          echo "ADMIN_EMAIL=${{ env.ADMIN_EMAIL }}" >> .env
+#
+#      - name: Check Docker and Docker Compose Version
+#        run: |
+#          docker version
+#          docker compose version
+#
+#      - name: Build and start services
+#        run: docker compose up -d db
+#
+#      - name: List Docker Containers
+#        run: docker ps -a
+#
+#      - name: Wait for db service to be healthy
+#        run: |
+#          echo "Waiting for the database service to be healthy..."
+#          MAX_RETRIES=30
+#          RETRY_COUNT=0
+#          until [ "`docker inspect -f '{{json .State.Health.Status}}' $(docker compose ps -q db 2>/dev/null) 2>/dev/null`" == '"healthy"' ]; do
+#            sleep 5
+#            RETRY_COUNT=$((RETRY_COUNT+1))
+#            if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+#              echo "Database did not become healthy after $((MAX_RETRIES*5)) seconds."
+#              exit 1
+#            fi
+#            echo "Still waiting for database..."
+#          done
+#          echo "Database is healthy!"
+#
+#      - name: Run Tests
+#        run: docker compose run --rm app sh -c "python manage.py test"
+#
+#      - name: Run Linting
+#        run: docker compose run --rm app sh -c "flake8"
+#
+#      - name: Shutdown services
+#        if: always()
+#        run: docker compose down
